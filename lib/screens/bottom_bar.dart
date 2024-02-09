@@ -19,7 +19,8 @@ class BottomBar extends StatefulWidget {
 
 class _BottomBarState extends State<BottomBar> {
   late int selectedIndex;
-  // List of pages in the bottom navigation bar
+  DateTime? currentPress;
+  // List of pages in the0 bottom navigation bar
   final List<Widget> _pages = const [
     HomePage(),
     CartPage(),
@@ -61,7 +62,7 @@ class _BottomBarState extends State<BottomBar> {
   }
   @override
   Widget build(BuildContext context) {
-    DateTime? currentPress;
+    
     return PopScope(
       canPop: false,
       onPopInvoked: (didPop) async {
@@ -82,7 +83,7 @@ class _BottomBarState extends State<BottomBar> {
             );
             return Future.value(null);
           } else {
-            return;
+            return Future.value(null);
           }
         }
       },

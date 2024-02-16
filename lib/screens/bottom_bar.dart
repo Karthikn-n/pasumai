@@ -3,6 +3,7 @@
 
 import 'package:app_3/screens/subscription_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'cart_page.dart';
 import 'home_page.dart';
@@ -70,20 +71,24 @@ class _BottomBarState extends State<BottomBar> {
           setState(() {
             selectedIndex = 0;
           });
-          return Future.value(null);
+          return;
         } else {
           final now = DateTime.now();
           if(currentPress == null || now.difference(currentPress!) > const Duration(seconds: 2)){
             currentPress = now;
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Press back again to exit'),
-                duration: Duration(seconds: 1),
+              SnackBar(
+                elevation: 1,
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                backgroundColor:  Color(0xFF60B47B),
+                content: const Text('Press back again to exit', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
+                duration: const Duration(seconds: 1),
               ),
             );
-            return Future.value(null);
+            return;
           } else {
-            return Future.value(null);
+            SystemNavigator.pop();
           }
         }
       },
@@ -121,6 +126,7 @@ class _BottomBarState extends State<BottomBar> {
                   ],
                 ),
                 child: BottomNavigationBar(
+                  
                   items: List.generate(4, (index) {
                     return BottomNavigationBarItem(
                       icon: Icon(
@@ -148,6 +154,7 @@ class _BottomBarState extends State<BottomBar> {
                 ),
               ),
             ),
+         
           ],
         ),
       ),

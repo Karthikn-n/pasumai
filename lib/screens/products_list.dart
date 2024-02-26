@@ -1,6 +1,7 @@
 import 'package:app_3/screens/bottom_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../data/cart_repo.dart';
 import '../data/common_data.dart';
@@ -91,12 +92,14 @@ class _ProductListPageState extends State<ProductListPage> {
       body: Stack(
         children: [
           Container(
-            margin: EdgeInsets.only(bottom: screenWidth > 600?  screenHeight * 0.2: screenHeight * 0.08),
+            margin: EdgeInsets.only(bottom: screenWidth > 600?  screenHeight * 0.2: screenHeight * 0.135),
             child: CustomScrollView(
+              // physics: BouncingScrollPhysics(),
               slivers: [
                 SliverAppBar(
                     expandedHeight: screenWidth > 600?  screenHeight * 0.4 : screenHeight * 0.150,
-                    floating: false,
+                    floating: true,
+                    pinned: true,
                     surfaceTintColor: Colors.transparent,
                     automaticallyImplyLeading: false,
                     flexibleSpace: FlexibleSpaceBar(
@@ -328,7 +331,7 @@ class _ProductListPageState extends State<ProductListPage> {
                             ),
                           ],
                         );
-                      
+
                       },
                     childCount: productCategories.length
                     )
@@ -339,47 +342,51 @@ class _ProductListPageState extends State<ProductListPage> {
           ),
           // total amount
           Positioned(
-            left: screenWidth > 600 ? screenHeight * 0.55 : screenHeight * 0.04,
+            // left: screenWidth > 600 ? screenHeight * 0.55 : screenHeight * 0.04,
             // right: screenHeight * 0.000,
-            top: screenWidth > 600?  screenHeight * 0.55: screenHeight * 0.8,
-            bottom: screenWidth > 600?  screenHeight * 0.0: 0,
-            child: Center(
-              child: Row(
+            top: screenWidth > 600?  screenHeight * 0.55: screenHeight * 0.75,
+            // bottom: screenWidth > 600?  screenHeight * 0.0: 0,
+            child: Container(
+              height: screenWidth > 600 ? screenHeight * 0.4 : screenHeight * 0.2,
+              width: screenWidth * 1,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                border: Border(top: BorderSide(color: Colors.black12)),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(26), 
+                  topRight: Radius.circular(26)
+                )
+              ),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                    height: screenHeight * 0.14,
-                    width: 180,
-                    margin: const EdgeInsets.only(bottom: 4),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: const Color(0xFF60B47B)),
-                      borderRadius: const BorderRadius.only(topLeft: Radius.circular(8), bottomLeft: Radius.circular(8))
-                    ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: 10, left: 20, 
+                      right: MediaQuery.of(context).size.width > 600 ? 20: 20, 
+                      bottom: MediaQuery.of(context).size.width > 600 ? 8 : 10),
                     child: Row(
                       children: [
-                        // SizedBox(width: 20,),
-                        const SizedBox(width: 10,),
-                        const Text(
-                          'Total - ',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w300
-                          ),
-                        ),
-                        const Icon(
-                          Icons.currency_rupee,
-                          size: 20,
-                        ),
-                        // SizedBox(width: 10,),
-                        Expanded(
+                        const Expanded(
                           child: Text(
-                            '${calculateTotalAmount()}',
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w300
+                            'Total:',
+                            style: TextStyle(
+                              fontSize: 18, 
+                              fontWeight: FontWeight.w600
                             ),
                           ),
                         ),
+                        const Spacer(),
+                        Text(
+                          calculateTotalAmount() == 0
+                          ? 'Add Somthing'
+                          : '₹${calculateTotalAmount()}', 
+                          style: const TextStyle(
+                            fontSize: 18, 
+                            fontWeight: FontWeight.w600
+                          ),
+                        ),
+                      
                       ],
                     ),
                   ),
@@ -388,33 +395,30 @@ class _ProductListPageState extends State<ProductListPage> {
                       navigateToNextPage();
                     },
                     child: Container(
-                      height:  screenHeight * 0.14,
-                      width: 130,
-                      margin: const EdgeInsets.only(bottom: 4),
+                      width: screenWidth > 600 ? screenHeight * 1.2: screenHeight * 0.4,
+                      height: screenWidth > 600 ? screenHeight * 0.1 : screenHeight * 0.05,
                       decoration: BoxDecoration(
                         color: const Color(0xFF60B47B),
-                        border: Border.all(color: const Color(0xFF60B47B)),
-                        borderRadius: const BorderRadius.only(
-                          topRight: Radius.circular(8),
-                          bottomRight: Radius.circular(8)
-                        )
+                        borderRadius: BorderRadius.circular(8)
                       ),
                       child: const Center(
                         child: Text(
                           'View cart',
                           style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white
                           ),
                         ),
                       ),
                     ),
                   )
                 ],
+              
               ),
             ),
           )
+        
         ],
       ),
     );
@@ -524,7 +528,7 @@ class _ProductListPageState extends State<ProductListPage> {
   }
   PageRouteBuilder _createhomeRoute() {
   return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => const BottomBar(),
+    pageBuilder: (context, animation, secondaryAnimation) => BottomBar(selectedIndex: 1,),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       const begin = Offset(1.0, 0.0);
       const end = Offset.zero;
@@ -536,9 +540,9 @@ class _ProductListPageState extends State<ProductListPage> {
 
       return SlideTransition(position: offsetAnimation, child: child);
     },
-    settings: const RouteSettings(
-      arguments: {'selectedIndex' : 1}
-    )
+    // settings: const RouteSettings(
+    //   arguments: {'selectedIndex' : 1}
+    // )
   );
 }
 

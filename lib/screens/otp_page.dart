@@ -376,7 +376,7 @@ class _OtpPageState extends State<OtpPage> {
      
   PageRouteBuilder _createhomeRoute() {
   return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => const BottomBar(),
+    pageBuilder: (context, animation, secondaryAnimation) => BottomBar(selectedIndex: 0,),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       const begin = Offset(1.0, 0.0);
       const end = Offset.zero;

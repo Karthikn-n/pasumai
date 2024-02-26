@@ -10,16 +10,14 @@ import 'home_page.dart';
 import 'profile_page.dart';
 
 class BottomBar extends StatefulWidget {
- // This will help to navigate with any of the page in this bottom bar from other page
-
-  const BottomBar({super.key});
+   int selectedIndex;
+   BottomBar({super.key, required this.selectedIndex});
 
   @override
   State<BottomBar> createState() => _BottomBarState();
 }
 
 class _BottomBarState extends State<BottomBar> {
-  late int selectedIndex;
   DateTime? currentPress;
   // List of pages in the0 bottom navigation bar
   final List<Widget> _pages = const [
@@ -56,9 +54,8 @@ class _BottomBarState extends State<BottomBar> {
     super.didChangeDependencies();
 
     // Retrieve the mobile number from the previous screen
-    final args = ModalRoute.of(context)!.settings.arguments as Map<String, int>;
-    selectedIndex = args['selectedIndex']!;
-   
+    // final args = ModalRoute.of(context)!.settings.arguments as Map<String, int>;
+    // selectedIndex = args['selectedIndex']!;
 
   }
   @override
@@ -67,9 +64,9 @@ class _BottomBarState extends State<BottomBar> {
     return PopScope(
       canPop: false,
       onPopInvoked: (didPop) async {
-        if(selectedIndex != 0){
+        if(widget.selectedIndex != 0 ){
           setState(() {
-            selectedIndex = 0;
+            widget.selectedIndex = 0;
           });
           return;
         } else {
@@ -81,7 +78,7 @@ class _BottomBarState extends State<BottomBar> {
                 elevation: 1,
                 behavior: SnackBarBehavior.floating,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-                backgroundColor:  Color(0xFF60B47B),
+                backgroundColor:  const Color(0xFF60B47B),
                 content: const Text('Press back again to exit', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
                 duration: const Duration(seconds: 1),
               ),
@@ -100,7 +97,7 @@ class _BottomBarState extends State<BottomBar> {
             Positioned.fill(
               child: PageStorage(
                 bucket: PageStorageBucket(),
-                child: _pages[selectedIndex],
+                child: _pages[widget.selectedIndex],
               ),
             ),
             
@@ -131,7 +128,7 @@ class _BottomBarState extends State<BottomBar> {
                     return BottomNavigationBarItem(
                       icon: Icon(
                         _selectedIcons[index],
-                        color: selectedIndex == index ? Colors.blue : Colors.grey.shade500,
+                        color: widget.selectedIndex == index ? Colors.blue : Colors.grey.shade500,
                         size: 28.0,
                       ),
                       label: _getLabel(index),
@@ -139,7 +136,7 @@ class _BottomBarState extends State<BottomBar> {
                   }),
                   type: BottomNavigationBarType.fixed,
                   showUnselectedLabels: true,
-                  currentIndex: selectedIndex,
+                  currentIndex: widget.selectedIndex,
                   selectedItemColor: Colors.blue,
                   unselectedItemColor: Colors.grey.shade500,
                   backgroundColor: Colors.transparent,
@@ -148,7 +145,7 @@ class _BottomBarState extends State<BottomBar> {
                   unselectedFontSize: 12.0,
                   onTap: (value) {
                     setState(() {
-                      selectedIndex = value;
+                      widget.selectedIndex = value;
                     });
                   },
                 ),

@@ -5,6 +5,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/common_data.dart';
+import '../screens/category/qucik_order.dart';
 
 // auth app bar
 Widget customAppbar(String title){
@@ -123,33 +124,38 @@ Widget categoryWidget(BuildContext context){
             physics: const BouncingScrollPhysics(),
             itemCount: categories.length,
             itemBuilder: (context, index) {
-              return Column(
-                children: [
-                  Container(
-                    height: 100,
-                    width: 90,
-                    margin: const EdgeInsets.only(left: 20),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: CachedNetworkImage(
-                        imageUrl: categories[index],
-                        fit: BoxFit.cover,
+              return GestureDetector(
+                onTap: () {
+                  navigateToPage(context, names[index]);
+                },
+                child: Column(
+                  children: [
+                    Container(
+                      height: 100,
+                      width: 90,
+                      margin: const EdgeInsets.only(left: 20),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: CachedNetworkImage(
+                          imageUrl: categories[index],
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 10,),
-                  Container(
-                    margin: const EdgeInsets.only(left: 10),
-                    width: 90,
-                    height: 24,
-                    child: Text(
-                      names[index],
-                      style: const TextStyle(
-                        fontSize: 14,
+                    const SizedBox(height: 10,),
+                    Container(
+                      margin: const EdgeInsets.only(left: 10),
+                      width: 90,
+                      height: 24,
+                      child: Text(
+                        names[index],
+                        style: const TextStyle(
+                          fontSize: 14,
+                        ),
                       ),
-                    ),
-                  )
-                ],
+                    )
+                  ],
+                ),
               );
             },
           ),
@@ -159,6 +165,19 @@ Widget categoryWidget(BuildContext context){
   );
 }
 
+void navigateToPage(BuildContext context, String name) {
+  switch (name) {
+    case 'Quick Order':
+      Navigator.pushNamed(context, '/quickOrder');
+      break;
+    // case 'Fast Food':
+      // Navigator.push(context, MaterialPageRoute(builder: (context) => FastFoodPage()));
+      // break;
+    // Add more cases for other names as needed
+    default:
+      // Handle default case or any additional cases
+  }
+}
 // best seller
 Widget quickOrder(BuildContext context, String title){
    double screenHeight = MediaQuery.of(context).size.height;

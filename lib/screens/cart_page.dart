@@ -140,7 +140,7 @@ class _CartPageState extends State<CartPage> {
     super.dispose();
   }
 
-
+// http://pasumaibhoomi.com/api/cart
   // update the quantity
   void updateQuantity(int productIndex, int newQuantity) {
     if (newQuantity > 0) {
@@ -473,234 +473,459 @@ class _CartPageState extends State<CartPage> {
               Positioned(
                 left: screenHeight * 0.0000,
                 right: screenHeight * 0.000,
-                top: screenWidth > 600?  screenHeight * 0.33: screenHeight * 0.65,
+                top: screenWidth > 600?  screenHeight * 0.33: screenHeight * 0.7,
                 bottom: screenWidth > 600?  screenHeight * 0.00: screenHeight * 0.00004,
-                
-                child: Center(
-                  child: Row(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border(top: BorderSide(color: Colors.black12)),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(28), 
+                      topRight: Radius.circular(28)
+                      )
+                    ),
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Container(
-                        height: screenWidth > 600?  screenHeight * 0.13: screenHeight * 0.056,
-                        width: screenWidth > 600?  screenHeight * 0.48 : screenHeight * 0.24,
-                        margin: EdgeInsets.only(left: screenWidth > 600?  screenHeight * 0.5 : screenHeight * 0.045,),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: const Color(0xFF60B47B)),
-                          borderRadius: BorderRadius.only(topLeft: Radius.circular(screenHeight * 0.008), bottomLeft: Radius.circular(screenHeight * 0.008))
-                        ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10, bottom: 10, left: 20, right: 20),
                         child: Row(
                           children: [
-                            // SizedBox(width: 20,),
-                            SizedBox(width: screenWidth > 600?  screenHeight * 0.06: screenHeight * 0.0068,),
-                            Text(
-                              'Total - ',
-                              style: TextStyle(
-                                fontSize: screenWidth > 600?  screenHeight * 0.053: screenHeight * 0.028,
-                                fontWeight: FontWeight.w300
+                            const Expanded(
+                              child: Text(
+                                'Total:',
+                                style: TextStyle(
+                                  fontSize: 18, 
+                                  fontWeight: FontWeight.w600
+                                ),
                               ),
                             ),
-                            Icon(
-                              Icons.currency_rupee,
-                              size: screenWidth > 600?  screenHeight * 0.053: screenHeight * 0.028,
-                            ),
-                            // SizedBox(width: 10,),
+                            const Spacer(),
                             Text(
-                              subtotal.toStringAsFixed(1),
-                              style: TextStyle(
-                                fontSize: screenWidth > 600?  screenHeight * 0.053: screenHeight * 0.028,
-                                fontWeight: FontWeight.w300
+                              subtotal == 0
+                              ? 'Add Somthing'
+                              : '₹$subtotal', 
+                              style: const TextStyle(
+                                fontSize: 18, 
+                                fontWeight: FontWeight.w600
                               ),
                             ),
+                          
                           ],
                         ),
                       ),
                       GestureDetector(
                         onTap: () {
-                          if(screenWidth > 600) {
-                            showModalBottomSheet(
-                              backgroundColor: Colors.white,
-                              context: context, 
-                              // shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-                              builder: (context) {
-                                return SizedBox(
-                                height: 450,
-                                width: double.infinity,
-                                child: Container(
-                                  margin: const EdgeInsets.only(left: 10,right: 10, top: 20),
-                                  child:  Column(
-                                    children: [
-                                      Center(
-                                        child: Container(
-                                          width: 50,
-                                          margin: EdgeInsets.only(left: 30, right: 30,),
-                                          child: Divider(thickness: 3, color: Colors.black45,),
+                          if (subtotal > 0) {
+                            if(screenWidth > 600) {
+                              showModalBottomSheet(
+                                backgroundColor: Colors.white,
+                                context: context, 
+                                // shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                                builder: (context) {
+                                  return SizedBox(
+                                  height: 450,
+                                  width: double.infinity,
+                                  child: Container(
+                                    margin: const EdgeInsets.only(left: 10,right: 10, top: 20),
+                                    child:  Column(
+                                      children: [
+                                        Center(
+                                          child: Container(
+                                            width: 50,
+                                            margin: EdgeInsets.only(left: 30, right: 30,),
+                                            child: Divider(thickness: 3, color: Colors.black45,),
+                                          ),
                                         ),
-                                      ),
-                                      Row(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          SizedBox(
-                                            width: 230,
-                                            child: Column(
-                                              children: [
-                                                const SizedBox(height: 8,),
-                                                Row(
+                                        Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(
+                                              width: 230,
+                                              child: Column(
                                                 children: [
-                                                  Expanded(
-                                                    child: Text(
+                                                  const SizedBox(height: 8,),
+                                                  Row(
+                                                  children: [
+                                                    Text(
                                                       'Total',
                                                       style: TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight: FontWeight.w400
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.w600
                                                       ),
                                                     ),
-                                                  ),
-                                                  SizedBox(width: 130,),
-                                                  Icon(
-                                                    Icons.currency_rupee,
-                                                    size: 12,
-                                                  ),
-                                                  Text(
-                                                    '$subtotal',
-                                                    style: TextStyle(
-                                                      fontSize: 14,
-                                                      fontWeight: FontWeight.w600
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                                const SizedBox(height: 8,),
-                                                Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Row(
-                                                      children: [
-                                                        Text(
-                                                          'Delivery Fee',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight: FontWeight.w400
-                                                          ),
-                                                        ),
-                                                        SizedBox(width: 2,),
-                                                        Icon(Icons.info_outline, size: 10,),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 70,),
-                                                  Icon(
-                                                    Icons.currency_rupee,
-                                                    size: 12,
-                                                  ),
-                                                  Text(
-                                                    '$deliveryFee',
-                                                    style: TextStyle(
-                                                      fontSize: 14,
-                                                      fontWeight: FontWeight.w600
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                                const SizedBox(height: 8,),
-                                                Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Row(
-                                                      children: [
-                                                        Text(
-                                                          'Platform Fee',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight: FontWeight.w400
-                                                          ),
-                                                        ),
-                                                        SizedBox(width: 2,),
-                                                        Icon(Icons.info_outline, size: 10,),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 60,),
-                                                  Icon(
-                                                    Icons.currency_rupee,
-                                                    size: 14,
-                                                  ),
-                                                  Text(
-                                                    '$platformFee',
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight: FontWeight.w600
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                                const SizedBox(height: 10,),
-                                                const SizedBox(
-                                                  // margin: EdgeInsets.only(left: 10, right: 10),
-                                                  width: 210,
-                                                  child: Divider(
-                                                    thickness: 1,
-                                                    color: Colors.black54,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 2,),
-                                                Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: Text(
-                                                        'To pay',
-                                                        style: TextStyle(
-                                                          fontSize: 14,
-                                                          fontWeight: FontWeight.w400
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(width: 110,),
-                                                    Icon(
-                                                      Icons.currency_rupee,
-                                                      size: 12,
-                                                    ),
+                                                    Spacer(),
                                                     Text(
-                                                      '${subtotal + deliveryFee + platformFee}',
+                                                      '₹$subtotal',
                                                       style: TextStyle(
-                                                        fontSize: 14,
+                                                        fontSize: 16,
                                                         fontWeight: FontWeight.w600
                                                       ),
                                                     )
                                                   ],
                                                 ),
-                                                SizedBox(height: 2,),
-                                                SizedBox(
+                                                  const SizedBox(height: 8,),
+                                                  Row(
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                          'Delivery Fee',
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight: FontWeight.w600
+                                                          ),
+                                                        ),
+                                                        SizedBox(width: 2,),
+                                                        Icon(Icons.info_outline, size: 10,),
+                                                      ],
+                                                    ),
+                                                    Spacer(),
+                                                    Text(
+                                                      '₹$deliveryFee',
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.w600
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                                  const SizedBox(height: 8,),
+                                                  Row(
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                          'Platform Fee',
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight: FontWeight.w600
+                                                          ),
+                                                        ),
+                                                        SizedBox(width: 2,),
+                                                        Icon(Icons.info_outline, size: 10,),
+                                                      ],
+                                                    ),
+                                                    Spacer(),
+                                                    Text(
+                                                      '₹$platformFee',
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.w600
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                                  const SizedBox(height: 10,),
+                                                  const SizedBox(
+                                                    // margin: EdgeInsets.only(left: 10, right: 10),
+                                                    width: 210,
+                                                    child: Divider(
+                                                      thickness: 1,
+                                                      color: Colors.black54,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 2,),
+                                                  Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: Text(
+                                                          'To pay',
+                                                          style: TextStyle(
+                                                            fontSize: 18,
+                                                            fontWeight: FontWeight.w600
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        '₹${subtotal + deliveryFee + platformFee}',
+                                                        style: TextStyle(
+                                                          fontSize: 18,
+                                                          fontWeight: FontWeight.w600
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                  SizedBox(height: 2,),
+                                                  SizedBox(
+                                              // margin: EdgeInsets.only(left: 10, right: 10),
+                                              width: 210,
+                                              child: Divider(
+                                                thickness: 1,
+                                                color: Colors.black54,
+                                              ),
+                                            ),
+                                            
+                                                ],
+                                              ),
+                                            ),
+                                            Container(
+                                              height: 150,
+                                              width: 250,
+                                              margin: EdgeInsets.only(left: 10, right: 10, top: 8),
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(8),
+                                                color: Color(0xFFF3F3F3)
+                                              ),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  SizedBox(
+                                                    width: 250,
+                                                    height: 50,
+                                                    child: ClipRRect(
+                                                      borderRadius: BorderRadius.circular(8),
+                                                      child: Image.asset(
+                                                        'assets/category/map.jpg',
+                                                        fit: BoxFit.cover,
+                                                      )
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    margin: EdgeInsets.only(left: 8, top: 8),
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Row(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Text(
+                                                              'Confrim Address',
+                                                              style: TextStyle(
+                                                                fontSize: 14,
+                                                                fontWeight: FontWeight.w700
+                                                              ),
+                                                            ),
+                                                            SizedBox(width: 5,),
+                                                            Icon(
+                                                              Icons.edit_rounded,
+                                                              size: 14,
+                                                              color: Colors.blue.shade300,
+                                                            )
+                                                          ],
+                                                        ),
+                                                        SizedBox(
+                                                          width: 240,
+                                                          child: Text(
+                                                            'W4MW+6MW, 9th Main Rd, Madurai, Tamil Nadu 625020',
+                                                            maxLines: 3,
+                                                            overflow: TextOverflow.ellipsis,
+                                                            style: TextStyle(
+                                                              fontWeight: FontWeight.w400
+                                                            ),
+                                                          )
+                                                        )
+                                                      ],
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),                                              
+                                            GestureDetector(
+                                              onTap: () async {
+                                                String url = 'http://pasumaibhoomi.com/api/checkout';
+                                                List<Map<String, dynamic>> productsData = [];
+                                                  for (int i = 0; i < cartRepository.addedProducts.length; i++) {
+                                                    AddedProduct cartItem = cartRepository.addedProducts[i];
+                                                    Map<String, dynamic> productData = {
+                                                      'prdt_id': i + 1,
+                                                      'prdt_quantity': cartItem.quantity,
+                                                      'prdt_price': cartItem.price,
+                                                      'prdt_total': cartItem.quantity * double.parse(cartItem.price),
+                                                    };
+                                                    productsData.add(productData);
+                                                  }
+                                                Map<String, dynamic> userData = {
+                                                  'customer_id': UserId.getUserId(),
+                                                  'total': subtotal,
+                                                  'products': productsData
+                                                };
+                                                String jsonData = json.encode(userData);
+                                                print('Json Data: $jsonData');
+                                                String encryptedUserData = encryptAES(jsonData);
+                                                final response = await http.post(Uri.parse(url), body: {'data' : encryptedUserData});
+                                  
+                                                print('Success: ${response.statusCode}');
+                                                if(response.statusCode == 200){
+                                                  print('Response: ${response.body}');
+                                                }else{
+                                                  print('Error: ${response.body}');
+                                                }
+                                              },
+                                              child: Container(
+                                                height: 45,
+                                                width: 110,
+                                                margin: const EdgeInsets.only(top: 55, bottom: 8),
+                                                decoration: BoxDecoration(
+                                                  color: const Color(0xFF60B47B),
+                                                  borderRadius: BorderRadius.circular(8),
+                                                ),
+                                                child: const Center(
+                                                  child: Text(
+                                                    'Place Order',
+                                                    style: TextStyle(
+                                                      fontSize: 13,
+                                                      color: Colors.white,
+                                                      fontWeight: FontWeight.w600,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                            }else{
+                              showModalBottomSheet(
+                                backgroundColor: Colors.white,
+                                context: context, 
+                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                                builder: (context) {
+                                  return SizedBox(
+                                    height: screenWidth > 600 ? screenHeight * 2.6 : screenHeight * 0.6,
+                                    width: double.infinity,
+                                    child: Container(
+                                      margin: const EdgeInsets.only(left: 30,right: 30, top: 30),
+                                      child:  Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Center(
+                                            child: Container(
+                                              width: 50,
+                                              margin: EdgeInsets.only(left: 30, right: 30,),
+                                              child: Divider(thickness: 3, color: Colors.black45,),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 10,),
+                                          Row(
+                                          children: [
+                                            Text(
+                                              'Total',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600
+                                              ),
+                                            ),
+                                            Spacer(),
+                                            Text(
+                                              '₹$subtotal',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                          const SizedBox(height: 10,),
+                                          Row(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  'Delivery Fee',
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w600
+                                                  ),
+                                                ),
+                                                SizedBox(width: 4,),
+                                                Icon(Icons.info_outline, size: 12,),
+                                              ],
+                                            ),
+                                            Spacer(),
+                                            Text(
+                                              '₹$deliveryFee',
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w600
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                          const SizedBox(height: 10,),
+                                          Row(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  'Platform Fee',
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w600
+                                                  ),
+                                                ),
+                                                SizedBox(width: 4,),
+                                                Icon(Icons.info_outline, size: 12,),
+                                              ],
+                                            ),
+                                            //  SizedBox(width: 120,),
+                                            Spacer(),
+                                            Text(
+                                              '₹$platformFee',
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w600
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                          const SizedBox(height: 10,),
+                                          const SizedBox(
                                             // margin: EdgeInsets.only(left: 10, right: 10),
-                                            width: 210,
+                                            width: double.infinity,
                                             child: Divider(
                                               thickness: 1,
                                               color: Colors.black54,
                                             ),
                                           ),
-                                          
-                                              ],
+                                          const SizedBox(height: 10,),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                'To pay',
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w600
+                                                ),
+                                              ),
+                                              Spacer(),
+                                              Text(
+                                                '₹${subtotal + deliveryFee + platformFee}',
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w600
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                          SizedBox(height: 10,),
+                                          SizedBox(
+                                            // margin: EdgeInsets.only(left: 10, right: 10),
+                                            width: double.infinity,
+                                            child: Divider(
+                                              thickness: 1,
+                                              color: Colors.black54,
                                             ),
                                           ),
                                           Container(
-                                            height: 150,
-                                            width: 250,
-                                            margin: EdgeInsets.only(left: 10, right: 10, top: 8),
+                                            margin: EdgeInsets.only(left: 10, right: 10),
                                             decoration: BoxDecoration(
                                               borderRadius: BorderRadius.circular(8),
                                               color: Color(0xFFF3F3F3)
                                             ),
-                                            child: Column(
+                                            child: Row(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 SizedBox(
-                                                  width: 250,
-                                                  height: 50,
+                                                  width: 120,
                                                   child: ClipRRect(
                                                     borderRadius: BorderRadius.circular(8),
-                                                    child: Image.asset(
-                                                      'assets/category/map.jpg',
-                                                      fit: BoxFit.cover,
-                                                    )
+                                                    child: Image.asset('assets/category/map.jpg')
                                                   ),
                                                 ),
                                                 Container(
@@ -727,7 +952,7 @@ class _CartPageState extends State<CartPage> {
                                                         ],
                                                       ),
                                                       SizedBox(
-                                                        width: 240,
+                                                        width: 150,
                                                         child: Text(
                                                           'W4MW+6MW, 9th Main Rd, Madurai, Tamil Nadu 625020',
                                                           maxLines: 3,
@@ -740,9 +965,10 @@ class _CartPageState extends State<CartPage> {
                                                     ],
                                                   ),
                                                 )
+                                              
                                               ],
                                             ),
-                                          ),                                              
+                                          ),
                                           GestureDetector(
                                             onTap: () async {
                                               String url = 'http://pasumaibhoomi.com/api/checkout';
@@ -776,8 +1002,8 @@ class _CartPageState extends State<CartPage> {
                                             },
                                             child: Container(
                                               height: 45,
-                                              width: 110,
-                                              margin: const EdgeInsets.only(top: 55, bottom: 8),
+                                              width: double.infinity,
+                                              margin: const EdgeInsets.only(top: 15, bottom: 8),
                                               decoration: BoxDecoration(
                                                 color: const Color(0xFF60B47B),
                                                 borderRadius: BorderRadius.circular(8),
@@ -794,302 +1020,41 @@ class _CartPageState extends State<CartPage> {
                                               ),
                                             ),
                                           )
+                                        
                                         ],
                                       ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          );
-                          }else{
-                            showModalBottomSheet(
-                              backgroundColor: Colors.white,
-                              context: context, 
-                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-                              builder: (context) {
-                                return SizedBox(
-                                  height: screenWidth > 600 ? screenHeight * 2.6 : screenHeight * 1,
-                                  width: double.infinity,
-                                  child: Container(
-                                    margin: const EdgeInsets.only(left: 30,right: 30, top: 30),
-                                    child:  Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Center(
-                                          child: Container(
-                                            width: 50,
-                                            margin: EdgeInsets.only(left: 30, right: 30,),
-                                            child: Divider(thickness: 3, color: Colors.black45,),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 10,),
-                                        Row(
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              'Total',
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w400
-                                              ),
-                                            )
-                                          ),
-                                          Icon(
-                                            Icons.currency_rupee,
-                                            size: 14,
-                                          ),
-                                          Text(
-                                            '$subtotal',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                        const SizedBox(height: 10,),
-                                        Row(
-                                        children: [
-                                          Expanded(
-                                            child: Row(
-                                              children: [
-                                                Text(
-                                                  'Delivery Fee',
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w400
-                                                  ),
-                                                ),
-                                                SizedBox(width: 4,),
-                                                Icon(Icons.info_outline, size: 12,),
-                                              ],
-                                            ),
-                                          ),
-                                          Icon(
-                                            Icons.currency_rupee,
-                                            size: 14,
-                                          ),
-                                          Text(
-                                            '$deliveryFee',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                        const SizedBox(height: 10,),
-                                        Row(
-                                        children: [
-                                          Expanded(
-                                            child: Row(
-                                              children: [
-                                                Text(
-                                                  'Platform Fee',
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w400
-                                                  ),
-                                                ),
-                                                SizedBox(width: 4,),
-                                                Icon(Icons.info_outline, size: 12,),
-                                              ],
-                                            ),
-                                          ),
-                                          //  SizedBox(width: 120,),
-                                          Icon(
-                                            Icons.currency_rupee,
-                                            size: 14,
-                                          ),
-                                          Text(
-                                            '$platformFee',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                        const SizedBox(height: 10,),
-                                        const SizedBox(
-                                          // margin: EdgeInsets.only(left: 10, right: 10),
-                                          width: double.infinity,
-                                          child: Divider(
-                                            thickness: 1,
-                                            color: Colors.black54,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 10,),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                                'To pay',
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w400
-                                                ),
-                                              )
-                                            ),
-                                            Icon(
-                                              Icons.currency_rupee,
-                                              size: 14,
-                                            ),
-                                            Text(
-                                              '${subtotal + deliveryFee + platformFee}',
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                        SizedBox(height: 10,),
-                                        SizedBox(
-                                          // margin: EdgeInsets.only(left: 10, right: 10),
-                                          width: double.infinity,
-                                          child: Divider(
-                                            thickness: 1,
-                                            color: Colors.black54,
-                                          ),
-                                        ),
-                                        Container(
-                                          margin: EdgeInsets.only(left: 10, right: 10),
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(8),
-                                            color: Color(0xFFF3F3F3)
-                                          ),
-                                          child: Row(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              SizedBox(
-                                                width: 120,
-                                                child: ClipRRect(
-                                                  borderRadius: BorderRadius.circular(8),
-                                                  child: Image.asset('assets/category/map.jpg')
-                                                ),
-                                              ),
-                                              Container(
-                                                margin: EdgeInsets.only(left: 8, top: 8),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        Text(
-                                                          'Confrim Address',
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight: FontWeight.w700
-                                                          ),
-                                                        ),
-                                                        SizedBox(width: 5,),
-                                                        Icon(
-                                                          Icons.edit_rounded,
-                                                          size: 14,
-                                                          color: Colors.blue.shade300,
-                                                        )
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      width: 150,
-                                                      child: Text(
-                                                        'W4MW+6MW, 9th Main Rd, Madurai, Tamil Nadu 625020',
-                                                        maxLines: 3,
-                                                        overflow: TextOverflow.ellipsis,
-                                                        style: TextStyle(
-                                                          fontWeight: FontWeight.w400
-                                                        ),
-                                                      )
-                                                    )
-                                                  ],
-                                                ),
-                                              )
-                                            
-                                            ],
-                                          ),
-                                        ),
-                                        GestureDetector(
-                                          onTap: () async {
-                                            String url = 'http://pasumaibhoomi.com/api/checkout';
-                                            List<Map<String, dynamic>> productsData = [];
-                                              for (int i = 0; i < cartRepository.addedProducts.length; i++) {
-                                                AddedProduct cartItem = cartRepository.addedProducts[i];
-                                                Map<String, dynamic> productData = {
-                                                  'prdt_id': i + 1,
-                                                  'prdt_quantity': cartItem.quantity,
-                                                  'prdt_price': cartItem.price,
-                                                  'prdt_total': cartItem.quantity * double.parse(cartItem.price),
-                                                };
-                                                productsData.add(productData);
-                                              }
-                                            Map<String, dynamic> userData = {
-                                              'customer_id': UserId.getUserId(),
-                                              'total': subtotal,
-                                              'products': productsData
-                                            };
-                                            String jsonData = json.encode(userData);
-                                            print('Json Data: $jsonData');
-                                            String encryptedUserData = encryptAES(jsonData);
-                                            final response = await http.post(Uri.parse(url), body: {'data' : encryptedUserData});
-                              
-                                            print('Success: ${response.statusCode}');
-                                            if(response.statusCode == 200){
-                                              print('Response: ${response.body}');
-                                            }else{
-                                              print('Error: ${response.body}');
-                                            }
-                                          },
-                                          child: Container(
-                                            height: 45,
-                                            width: double.infinity,
-                                            margin: const EdgeInsets.only(top: 15, bottom: 8),
-                                            decoration: BoxDecoration(
-                                              color: const Color(0xFF60B47B),
-                                              borderRadius: BorderRadius.circular(8),
-                                            ),
-                                            child: const Center(
-                                              child: Text(
-                                                'Place Order',
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w300,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                      
-                                      ],
                                     ),
-                                  ),
-                                );
-                              },
-                            ); 
+                                  );
+                                },
+                              ); 
+                            }
+                          } else{
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Nothing in cart', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 12),),
+                                behavior: SnackBarBehavior.floating,
+                                elevation: 0,
+                                backgroundColor: const Color(0xFF60B47B),
+                                duration: const Duration(seconds: 1),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                              )
+                            );
                           }
                         },
                         child: Container(
-                          height: screenWidth > 600?  screenHeight * 0.13:  screenHeight * 0.056,
-                          width: screenWidth > 600?  screenHeight * 0.48 : screenHeight * 0.14,
-                          margin: const EdgeInsets.only(right: 25),
+                          width: screenWidth > 600 ? screenHeight * 1.2 : screenHeight * 0.4,
+                          height: screenWidth > 600 ? screenHeight * 0.1 : screenHeight * 0.05,
                           decoration: BoxDecoration(
                             color: const Color(0xFF60B47B),
-                            border: Border.all(color: const Color(0xFF60B47B)),
-                            borderRadius: const BorderRadius.only(
-                              topRight: Radius.circular(8),
-                              bottomRight: Radius.circular(8)
-                            )
+                            borderRadius: BorderRadius.circular(8)
                           ),
                           child: const Center(
                             child: Text(
                               'Buy now',
                               style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white
                               ),
                             ),
                           ),

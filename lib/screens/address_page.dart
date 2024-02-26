@@ -298,24 +298,21 @@ final _formKey = GlobalKey<FormState>();
    
   
   PageRouteBuilder _createhomeRoute() {
-  return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => const BottomBar(),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      const begin = Offset(1.0, 0.0);
-      const end = Offset.zero;
-      const curve = Curves.easeInOutCirc;
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => BottomBar(selectedIndex: 0,),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(1.0, 0.0);
+        const end = Offset.zero;
+        const curve = Curves.easeInOutCirc;
 
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
-      var offsetAnimation = animation.drive(tween);
+        var offsetAnimation = animation.drive(tween);
 
-      return SlideTransition(position: offsetAnimation, child: child);
-    },
-    settings: const RouteSettings(
-      arguments: {'selectedIndex' : 0}
-    )
-  );
-}
+        return SlideTransition(position: offsetAnimation, child: child);
+      },
+    );
+  }
 
   void saveUserData(Map<String, dynamic> userData) async {
     final pref = await SharedPreferences.getInstance();

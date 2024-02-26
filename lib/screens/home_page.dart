@@ -51,7 +51,6 @@ class _HomePageState extends State<HomePage> {
   ScrollController _scrollController = ScrollController();
   // banner properties
   int _currentindex = 0;
-  
   PageController _bannerController = PageController();
   double minRatingFilter = 0;
   List<String> appliedFilters = [];
@@ -209,7 +208,8 @@ class _HomePageState extends State<HomePage> {
                       heading('Quick order', headingSize),
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const ProductListPage(),));
+                          Navigator.of(context).pushNamed('/productList');
+                          
                         },
                         child: Container(
                           margin: EdgeInsets.only(left: screenWidth > 600 ?  screenWidth * 0.8: screenWidth * 0.37,),
@@ -247,8 +247,7 @@ class _HomePageState extends State<HomePage> {
                       GestureDetector(
                         onTap: () {
                           Navigator.of(context).push(PageRouteBuilder(
-                            pageBuilder: (context, animation, secondaryAnimation) => const BottomBar(),
-                            settings: const RouteSettings(arguments: {'selectedIndex': 2}),
+                            pageBuilder: (context, animation, secondaryAnimation) =>  BottomBar(selectedIndex: 2,),
                             transitionsBuilder: (context, animation, secondaryAnimation, child) {
                               return child;
                             },
@@ -292,6 +291,7 @@ class _HomePageState extends State<HomePage> {
         ]
       ),
     ); 
+  
   }
 }
 

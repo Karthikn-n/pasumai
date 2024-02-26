@@ -23,22 +23,41 @@ class _SubscriptionListState extends State<SubscriptionList> {
   late ConnectivityResult _isConnected;
   late Timer _sessionTime;
   bool _isInitialCheckDone = false;
-@override
-  void initState() {
-    super.initState();
-    _isConnected = ConnectivityResult.none;
-    _sessionTime = Timer(Duration.zero, () {});
-    _loadConnectivityFromCache();
-    checkConnectivity();
-    connectivitySubscription = Connectivity().onConnectivityChanged.listen((event) {
-      setState(() {
-        _isConnected = event;
-        _saveConnectivityToCache();
+  late ScrollController _controller;
+  int initialItemCount = products.length - 6;
+  @override
+    void initState() {
+      super.initState();
+      _isConnected = ConnectivityResult.none;
+      _sessionTime = Timer(Duration.zero, () {});
+      _loadConnectivityFromCache();
+      checkConnectivity();
+      connectivitySubscription = Connectivity().onConnectivityChanged.listen((event) {
+        setState(() {
+          _isConnected = event;
+          _saveConnectivityToCache();
+        });
+        _restartSessionTimer();
       });
-      _restartSessionTimer();
+      _controller = ScrollController();
+      _controller.addListener(_scrollListener);
+    }
+
+  void _scrollListener(){
+    if (_controller.offset >= _controller.position.maxScrollExtent &&
+            !_controller.position.outOfRange) {
+          _loadMoreItems();
+        }
+  }
+  void _loadMoreItems() {
+    // Simulate loading more items in the background
+    Future.delayed(const Duration(milliseconds: 500), () {
+      setState(() {
+        // Increase the number of initially loaded items
+        initialItemCount += 2;
+      });
     });
   }
-
   void _loadConnectivityFromCache() async {
     final prefs = await SharedPreferences.getInstance();
     final cachedConnectivity = prefs.getString('connectivity');
@@ -83,6 +102,7 @@ class _SubscriptionListState extends State<SubscriptionList> {
     connectivitySubscription.cancel();
     _sessionTime.cancel();
     super.dispose();
+    _controller.dispose();
   }
 
   @override
@@ -109,6 +129,7 @@ class _SubscriptionListState extends State<SubscriptionList> {
     return Scaffold(
       appBar: subscribeListAppBar(context),
       body: CustomScrollView(
+        controller: _controller,
         physics: const BouncingScrollPhysics(),
         slivers: [
           SliverAppBar(
@@ -297,7 +318,7 @@ class _SubscriptionListState extends State<SubscriptionList> {
                 );
               
             },
-            childCount: products.length - 4 
+            childCount: products.length  
             ),
             
           ),
@@ -306,4 +327,7 @@ class _SubscriptionListState extends State<SubscriptionList> {
       ),
     );
   }
+
 }
+
+

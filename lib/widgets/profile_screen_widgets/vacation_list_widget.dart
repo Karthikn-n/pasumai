@@ -27,7 +27,7 @@ class VacationListWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const AppTextWidget(
-                        text: "Vacations", 
+                        text: "Vacation Mode", 
                         fontSize: 16, 
                         fontWeight: FontWeight.w500
                       ),
@@ -83,7 +83,7 @@ class VacationListWidget extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const AppTextWidget(
-                              text: "Vacations", 
+                              text: "Vacation Mode", 
                               fontSize: 16, 
                               fontWeight: FontWeight.w500
                             ),
@@ -156,7 +156,7 @@ class VacationListWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const AppTextWidget(
-                          text: "Vacations", 
+                          text: "Vacation Mode", 
                           fontSize: 16, 
                           fontWeight: FontWeight.w500
                         ),
@@ -248,7 +248,16 @@ class VacationListWidget extends StatelessWidget {
                               const SizedBox(width: 10,),
                               GestureDetector(
                                 onTap: ()  {
-                                  provider.confirmDeleteVacation(provider.vacations[index].id, context, size);
+                                  if (DateTime.now().hour >= 15 ) {
+                                    final alertMessage = snackBarMessage(
+                                      context: context, 
+                                      message: "You can't delete vacation after 3PM", 
+                                      backgroundColor: Theme.of(context).primaryColor, 
+                                      sidePadding: size.width * 0.1, bottomPadding: size.height * 0.85);
+                                    ScaffoldMessenger.of(context).showSnackBar(alertMessage);
+                                  }else{
+                                     provider.confirmDeleteVacation(provider.vacations[index].id, context, size);
+                                  }
                                 },
                                 child: const Icon(CupertinoIcons.delete, size: 20, color: Colors.red,)
                               )
@@ -404,10 +413,10 @@ class VacationListWidget extends StatelessWidget {
                                   onPressed: () async {
                                     DateTime? endDate = await showDatePicker(
                                       context: context, 
-                                      firstDate: DateTime.now(), 
+                                      firstDate: isUpdating ? updatedStartDate! : provider.startDate!, 
                                       helpText: "End date",
                                       lastDate: DateTime(2100),
-                                      initialDate: isUpdating ? updatedEndDate : DateTime.now()
+                                      initialDate: isUpdating ? updatedStartDate! : provider.startDate!
                                     );
                                     if (isUpdating) {
                                       provider.updateTime(isStart: false, updatedDate: endDate);

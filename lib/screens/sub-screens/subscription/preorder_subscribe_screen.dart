@@ -107,6 +107,12 @@ class _PreOrderProductScreen extends State<PreOrderProductsScreen>{
                   // Subscription End Date
                   SubscriptionDetailWidget(title: "End date: ", value: DateFormat("dd MMM yyyy").format(DateTime.parse(preOrderData.endDate))),
                   const SizedBox(height: 6,),
+                  // Subscription Grace Date
+                  SubscriptionDetailWidget(
+                    title: "Grace date: ", 
+                    valueColor: Colors.orange,
+                    value: DateFormat("dd MMM yyyy").format(DateTime.parse(preOrderData.graceDate))),
+                  const SizedBox(height: 6,),
                   // total Subscription amount
                   SubscriptionDetailWidget(title: "Total Amount: ", value: "₹${preOrderData.total}"),
                   const SizedBox(height: 6,),

@@ -26,7 +26,7 @@ class OrdersHistoryWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const AppTextWidget(
-                      text: "Your Orders", 
+                      text: "Order History", 
                       fontSize: 16, 
                       fontWeight: FontWeight.w500
                     ),
@@ -64,7 +64,7 @@ class OrdersHistoryWidget extends StatelessWidget {
                           Row(
                             children: [
                               const AppTextWidget(
-                                text: "Your Orders", 
+                                text: "Order History", 
                                 fontSize: 16, 
                                 fontWeight: FontWeight.w500
                               ),
@@ -155,7 +155,7 @@ class OrdersHistoryWidget extends StatelessWidget {
                       Column(
                         children: [
                           const AppTextWidget(
-                            text: "Your Orders", 
+                            text: "Order History", 
                             fontSize: 16, 
                             fontWeight: FontWeight.w500
                           ),

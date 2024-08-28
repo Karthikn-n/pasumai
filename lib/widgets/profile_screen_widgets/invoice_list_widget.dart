@@ -22,7 +22,7 @@ class InvoiceListWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const AppTextWidget(
-                      text: "Invoices", 
+                      text: "Invoice Listing", 
                       fontSize: 16, 
                       fontWeight: FontWeight.w500
                     ),
@@ -48,7 +48,7 @@ class InvoiceListWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const AppTextWidget(
-                        text: "Invoices", 
+                        text: "Invoice Listing", 
                         fontSize: 16, 
                         fontWeight: FontWeight.w500
                       ),
@@ -67,7 +67,7 @@ class InvoiceListWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const AppTextWidget(
-                    text: "Invoices", 
+                    text: "Invoice Listing", 
                     fontSize: 16, 
                     fontWeight: FontWeight.w500
                   ),
@@ -86,6 +86,7 @@ class InvoiceListWidget extends StatelessWidget {
   Widget invoicesList(Size size, List<InvoiceModel> invoices){
     return Consumer<ProfileProvider>(
       builder: (context, provider, child) {
+        invoices = invoices.reversed.toList();
         return GestureDetector(
           onTap: () {
             ScaffoldMessenger.of(context).hideCurrentSnackBar();

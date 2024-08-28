@@ -173,6 +173,7 @@ class AddressProvider extends ChangeNotifier{
       ScaffoldMessenger.of(context).showSnackBar(deleteAddressMessage).closed.then((value) async {
         if (addresses.length == 1) {
           addresses.clear();
+          notifyListeners();
         }else{
           addresses.removeAt(index);
           await getAddressesAPI();

@@ -23,7 +23,7 @@ class YourAddressWidget extends StatelessWidget {
                 return Column(
                   children: [
                     const AppTextWidget(
-                      text: "Your addresses", 
+                      text: "My Addresses", 
                       fontSize: 16, 
                       fontWeight: FontWeight.w500
                     ),
@@ -42,7 +42,7 @@ class YourAddressWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const AppTextWidget(
-                          text: "Your addresses", 
+                          text: "My Addresses", 
                           fontSize: 16, 
                           fontWeight: FontWeight.w500
                         ),
@@ -75,7 +75,7 @@ class YourAddressWidget extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const AppTextWidget(
-                            text: "Your addresses", 
+                            text: "My Addresses", 
                             fontSize: 16, 
                             fontWeight: FontWeight.w500
                           ),
@@ -110,7 +110,7 @@ class YourAddressWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const AppTextWidget(
-                        text: "Your addresses", 
+                        text: "My Addresses", 
                         fontSize: 16, 
                         fontWeight: FontWeight.w500
                       ),

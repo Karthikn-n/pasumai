@@ -312,15 +312,10 @@ class _HomePageState extends State<HomePage> {
                           // Category Heading
                           Padding(
                             padding: const EdgeInsets.all(8),
-                            child: GestureDetector(
-                              onTap: (){
-                                localeProvider.changeLocaleToTamil();
-                              },
-                              child: AppTextWidget(
-                                text:  localeProvider.of(context).category,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                              ),
+                            child: AppTextWidget(
+                              text:  localeProvider.of(context).category,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                           const SizedBox(height: 12,),
@@ -553,71 +548,65 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           const SizedBox(height: 12,),
-                          GestureDetector(
-                            onTap: (){
-                              
-                            },
-                            child: Consumer<SubscriptionProvider>(
-                              builder: (context, value, child) {
-                                
-                                return  value.subscribeProducts.isEmpty
-                                ? FutureBuilder(
-                                  future: value.getSubscribProducts(), 
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState == ConnectionState.waiting) {
-                                      return SizedBox(
-                                        height: size.height * 0.06,
-                                        child: ListView.builder(
-                                          scrollDirection: Axis.horizontal,
-                                          itemCount: 5,
-                                          itemBuilder: (context, index) {
-                                            return Container(
-                                              height: size.height * 0.05,
-                                              width: size.width * 0.3,
-                                              decoration: BoxDecoration(
-                                                color: Colors.grey.shade300
-                                              ),
-                                            );
-                                          },
+                          Consumer<SubscriptionProvider>(
+                            builder: (context, value, child) {
+                              return  value.subscribeProducts.isEmpty
+                              ? FutureBuilder(
+                                future: value.getSubscribProducts(), 
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return SizedBox(
+                                      height: size.height * 0.06,
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: 5,
+                                        itemBuilder: (context, index) {
+                                          return Container(
+                                            height: size.height * 0.05,
+                                            width: size.width * 0.3,
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey.shade300
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  }else{
+                                    return HomeScreenProducts(
+                                      products: value.subscribeProducts, 
+                                      icon: Container(
+                                        padding: const EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(8),
+                                          color: Theme.of(context).primaryColor,
                                         ),
-                                      );
-                                    }else{
-                                      return HomeScreenProducts(
-                                        products: value.subscribeProducts, 
-                                        icon: Container(
-                                          padding: const EdgeInsets.all(5),
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(8),
-                                            color: Theme.of(context).primaryColor,
-                                          ),
-                                          child: const AppTextWidget(
-                                            text: "Subscribe", fontSize: 13, 
-                                            fontWeight: FontWeight.w500,
-                                            fontColor: Colors.white,
-                                          )
-                                        ),
-                                      );
-                                    }
-                                  } ,
-                                )
-                                  // Subscribe product list
-                                : HomeScreenProducts(
-                                  products: value.subscribeProducts, 
-                                  icon: Container(
-                                    padding: const EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      color: Theme.of(context).primaryColor,
-                                    ),
-                                    child: const AppTextWidget(
-                                      text: "Subscribe", fontSize: 13, 
-                                      fontWeight: FontWeight.w500,
-                                      fontColor: Colors.white,
-                                    )
+                                        child: const AppTextWidget(
+                                          text: "Subscribe", fontSize: 13, 
+                                          fontWeight: FontWeight.w500,
+                                          fontColor: Colors.white,
+                                        )
+                                      ),
+                                    );
+                                  }
+                                } ,
+                              )
+                                // Subscribe product list
+                              : HomeScreenProducts(
+                                products: value.subscribeProducts, 
+                                icon: Container(
+                                  padding: const EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Theme.of(context).primaryColor,
                                   ),
-                                );
-                              },
-                            )
+                                  child: const AppTextWidget(
+                                    text: "Subscribe", fontSize: 13, 
+                                    fontWeight: FontWeight.w500,
+                                    fontColor: Colors.white,
+                                  )
+                                ),
+                              );
+                            },
                           ),
                           const SizedBox(height: 20,)
                         ],

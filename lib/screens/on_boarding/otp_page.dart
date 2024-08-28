@@ -172,16 +172,16 @@ class _OtpPageState extends State<OtpPage> {
                           buttonName: 'Verify',
                           onPressed: () async {
                             // await addressProvider.getRegionLocation();
-                            if(prefs.getBool("registered") ?? false){
-                                      prefs.remove("registered");
-                                      prefs.setBool("newUserVerified", true);
-                                      Navigator.pushReplacement(context, SideTransistionRoute(screen: const NewAddressFormWidget(fromOnboarding: true,)));
-                                    }else{
-                                      addressProvider.getAddressesAPI();
-                                      Navigator.pushReplacement(context, SideTransistionRoute(screen: BottomBar(selectedIndex: 0)),).then((value) {
-                                        prefs.remove("phoneNo");
-                                      },);
-                                    }
+                            // if(prefs.getBool("registered") ?? false){
+                            //           prefs.remove("registered");
+                            //           prefs.setBool("newUserVerified", true);
+                            //           Navigator.pushReplacement(context, SideTransistionRoute(screen: const NewAddressFormWidget(fromOnboarding: true,)));
+                            //         }else{
+                            //           addressProvider.getAddressesAPI();
+                            //           Navigator.pushReplacement(context, SideTransistionRoute(screen: BottomBar(selectedIndex: 0)),).then((value) {
+                            //             prefs.remove("phoneNo");
+                            //           },);
+                            //         }
                             //  Navigator.pushReplacement(context, SideTransistionRoute(screen: const NewAddressFormWidget(fromOnboarding: true,)));
                             FocusScope.of(context).unfocus();
                             String otp = '';

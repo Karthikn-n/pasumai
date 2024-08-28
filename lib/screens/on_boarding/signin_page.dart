@@ -44,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
     if (connectivityService.isConnected) {
       return Scaffold(
         resizeToAvoidBottomInset: true,
-        appBar: const AppBarWidget(title: "Signin"),
+        appBar: const AppBarWidget(title: "Login"),
         body: Container(
           height: size.height,
           color: Colors.white,
@@ -66,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
                     Row(
                       children: [
                         const AppTextWidget(
-                          text: 'Sign in to your account',
+                          text: 'Login to your account',
                           fontSize: 16,
                           fontWeight: FontWeight.w300,
                         ),

@@ -37,7 +37,7 @@ class ProfileProvider extends ChangeNotifier{
   String orderTotal = "";
   List<ProductOrdered> orderedProducts = [];
   String selectedFilter = "";
-  List<String> filterOptions = ['3 months', '6 months', '9 months', 'Clear'];
+  List<String> filterOption = ['3 months', '6 months', '9 months', ];
 
   // Subscription Section Data
   List<ActiveSubscriptionModel> activeSubscriptions = [];
@@ -102,6 +102,10 @@ class ProfileProvider extends ChangeNotifier{
       List<dynamic> results = decodedResponse['results'] as List;
       print('Orders List length before parsing: ${results.length}');
       orderInfoData.clear();
+      selectedFilter = filter != null 
+        ? filter == "1y" 
+          ? "" : filter == "3m" ? "3 months" : filter == "6m" ? "6 months" : filter == "9m"
+          ? "9 months" : "" : ""; 
       orderInfoData = results.map((order) => OrderInfo.fromMap(order)).toList();
       print('Orders List length after parsing: ${orderInfoData.length}');
     } else {

@@ -171,7 +171,7 @@ class OrderDetailWidget extends StatelessWidget {
                   Consumer<ProfileProvider>(
                     builder: (context, orderedProvider, child) {
                       return SizedBox(
-                        height: size.height * 0.17 * orderedProvider.orderedProducts.length,
+                        height: size.height * 0.18 * orderedProvider.orderedProducts.length,
                         child: ListView.builder(
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: orderedProvider.orderedProducts.length,
@@ -261,7 +261,8 @@ class OrderDetailWidget extends StatelessWidget {
                         ),
                       );
                     },
-                  )
+                  ),
+                  const SizedBox(height: 20,)
                 ],
               ),
             ),

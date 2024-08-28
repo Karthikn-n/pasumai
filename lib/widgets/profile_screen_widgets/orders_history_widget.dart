@@ -5,6 +5,7 @@ import 'package:app_3/widgets/common_widgets.dart/button_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/snackbar_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:app_3/widgets/profile_screen_widgets/order_detail_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -60,14 +61,72 @@ class OrdersHistoryWidget extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const AppTextWidget(
-                            text: "Your Orders", 
-                            fontSize: 16, 
-                            fontWeight: FontWeight.w500
+                          Row(
+                            children: [
+                              const AppTextWidget(
+                                text: "Your Orders", 
+                                fontSize: 16, 
+                                fontWeight: FontWeight.w500
+                              ),
+                              provider.selectedFilter.isNotEmpty
+                              ? GestureDetector(
+                                onTap: () async {
+                                  await provider.orderList(filter: "1y");
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: Colors.grey.shade300)
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      AppTextWidget(
+                                        text: provider.selectedFilter, 
+                                        fontSize: 13, 
+                                        fontWeight: FontWeight.w500
+                                      ),
+                                      const SizedBox(width: 4,),
+                                      GestureDetector(
+                                        onTap: () async {
+                                          await provider.orderList(filter: "1y");
+                                        },
+                                        child: const Icon(CupertinoIcons.xmark_circle, size: 17, color: Colors.red,)
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              )
+                              : Container()
+                            ],
                           ),
-                          GestureDetector(
-                            onTap: ()async{
-                            },
+                          PopupMenuButton(
+                            color: Colors.white,
+                            elevation: 2,
+                            style: ButtonStyle(
+                              backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor)
+                            ),
+                            itemBuilder: (context) {
+                              return provider.filterOption.map((option) {
+                                return PopupMenuItem(
+                                  onTap: () async {
+                                    print("clear selected 1");
+                                    await provider.orderList(
+                                      filter: option == "3 months" 
+                                      ? "3m" : option == "6 months" 
+                                      ? "6m" : option == "9 months" 
+                                      ? "9m" : ""
+                                    );
+                                  },
+                                  child: AppTextWidget(
+                                    text: option, 
+                                    fontSize: 14, 
+                                    fontColor: provider.selectedFilter == option ? Theme.of(context).primaryColor : null,
+                                    fontWeight: FontWeight.w500
+                                  )
+                                );
+                              },).toList();
+                            } ,
                             child: AppTextWidget(
                               text: "Filter", 
                               fontSize: 14, 
@@ -93,10 +152,44 @@ class OrdersHistoryWidget extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const AppTextWidget(
-                        text: "Your Orders", 
-                        fontSize: 16, 
-                        fontWeight: FontWeight.w500
+                      Column(
+                        children: [
+                          const AppTextWidget(
+                            text: "Your Orders", 
+                            fontSize: 16, 
+                            fontWeight: FontWeight.w500
+                          ),
+                          provider.selectedFilter.isNotEmpty
+                          ? GestureDetector(
+                            onTap: () async {
+                               await provider.orderList(filter: "1y");
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: Colors.grey.shade300)
+                              ),
+                              child: Row(
+                                children: [
+                                  AppTextWidget(
+                                    text: provider.selectedFilter, 
+                                    fontSize: 13, 
+                                    fontWeight: FontWeight.w500
+                                  ),
+                                  const SizedBox(width: 4,),
+                                  GestureDetector(
+                                    onTap: () async {
+                                      await provider.orderList(filter: "1y");
+                                    },
+                                    child: const Icon(CupertinoIcons.xmark_circle, size: 17, color: Colors.red,)
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
+                          : Container()
+                        ],
                       ),
                       PopupMenuButton(
                         color: Colors.white,
@@ -105,23 +198,15 @@ class OrdersHistoryWidget extends StatelessWidget {
                           backgroundColor: WidgetStatePropertyAll(Theme.of(context).scaffoldBackgroundColor)
                         ),
                         itemBuilder: (context) {
-                          return provider.filterOptions.map((option) {
+                          return provider.filterOption.map((option) {
                             return PopupMenuItem(
-                              
                               onTap: () async {
                                 await provider.orderList(
                                   filter: option == "3 months" 
                                   ? "3m" : option == "6 months" 
                                   ? "6m" : option == "9 months" 
-                                  ? "9m" : option == "Clear" 
-                                  ? "1y" : ""
-                                ).then((value) {
-                                  if (option == "Clear") {
-                                    provider.setFilter(filter: "", isCleared: true);
-                                  }else{
-                                    provider.setFilter(filter: option);
-                                  }
-                                },);
+                                  ? "9m" : ""
+                                );
                               },
                               child: AppTextWidget(
                                 text: option, 
@@ -139,6 +224,7 @@ class OrdersHistoryWidget extends StatelessWidget {
                           fontColor: Theme.of(context).primaryColor,
                         ),
                       )
+                    
                     ],
                   ),
                   const SizedBox(height: 15,),

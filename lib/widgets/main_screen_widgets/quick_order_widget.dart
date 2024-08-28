@@ -15,13 +15,14 @@ class QuickOrderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final connectivityService = Provider.of<ConnectivityService>(context);
+    final apiProvider = Provider.of<ApiProvider>(context);
     Size size = MediaQuery.sizeOf(context);
     if (!connectivityService.isConnected) {
       return Scaffold(
         appBar: AppBarWidget(
           title: 'Quick order',
           needBack: true,
-          onBack: () => Navigator.pop(context),
+          onBack: () => apiProvider.setQuick(false),
         ),
         body: Center(
           child: Image.asset('assets/category/nointernet.png'),
@@ -32,7 +33,7 @@ class QuickOrderWidget extends StatelessWidget {
         appBar: AppBarWidget(
           title: 'Quick order',
           needBack: true,
-          onBack: () => Navigator.pop(context),
+          onBack: () => apiProvider.setQuick(false),
         ),
         body: Consumer2<ApiProvider, AddressProvider>(
           builder: (context, productProvider, addressProvider, child) {

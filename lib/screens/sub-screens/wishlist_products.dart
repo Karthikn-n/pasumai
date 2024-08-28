@@ -25,7 +25,11 @@ class WishlistProducts extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         child: Consumer2<ApiProvider, CartProvider>(
           builder: (context, wishlistProvider, cartProvider, child) {
-            return ListView.builder(
+            return wishlistProvider.wishlistProducts.isEmpty
+            ? const Center(
+              child: AppTextWidget(text: "No Products", fontSize: 15, fontWeight: FontWeight.w500),
+            )
+            : ListView.builder(
               itemCount: wishlistProvider.wishlistProducts.length,
               itemBuilder: (context, index) {
                 WishlistProductsModel product = wishlistProvider.wishlistProducts[index];

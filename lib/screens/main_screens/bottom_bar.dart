@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:app_3/data/encrypt_ids.dart';
+import 'package:app_3/providers/api_provider.dart';
 import 'package:app_3/providers/cart_items_provider.dart';
 import 'package:app_3/helper/shared_preference_helper.dart';
 import 'package:app_3/repository/app_repository.dart';
@@ -60,8 +61,8 @@ class _BottomBarState extends State<BottomBar> {
       const NewProfileScreen(),
       // ProfilePage()
     ];
-    return Consumer<ConnectivityService>(
-      builder: (context, provider, child) {
+    return Consumer2<ConnectivityService, ApiProvider>(
+      builder: (context, provider, apiProvider, child) {
         return !provider.isConnected 
         ? Scaffold(
             body: Stack(
@@ -179,6 +180,9 @@ class _BottomBarState extends State<BottomBar> {
                       selectedFontSize: 12.0,
                       unselectedFontSize: 12.0,
                       onTap: (value) async {
+                        if (value == 0) {
+                          apiProvider.setQuick(false);
+                        }
                         setState(() {
                           widget.selectedIndex = value;
                         });

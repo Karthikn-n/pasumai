@@ -24,7 +24,9 @@ class ApiProvider extends ChangeNotifier{
   AppRepository apiRepository = AppRepository(ApiService("https://maduraimarket.in/api"));
   // AppRepository apiRepository = AppRepository(ApiService("http://192.168.1.5/pasumaibhoomi/public/api"));
   SharedPreferences prefs = SharedPreferencesHelper.getSharedPreferences();
-  
+
+  bool isQuick = false;
+
   // Data For Home screen
   List<String> banners = [];
   List<Products> featuredproductData = [];
@@ -72,6 +74,12 @@ class ApiProvider extends ChangeNotifier{
   String discountAmount = "";
   String newTotal = "";
 
+
+  // Provider for quick order back
+  void setQuick(bool quick){
+    isQuick = quick;
+    notifyListeners();
+  }
   // User Register API
   Future<void> registerUser(Map<String, dynamic> registerData, BuildContext context, Size size) async {
     try{

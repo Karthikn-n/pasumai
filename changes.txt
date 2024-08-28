@@ -1,0 +1,11 @@
+Otp page -> Completed
+wihslist -> Completed
+price Striking -> Pending
+logout session -> Completed
+edit subscription -> Completed
+renew -> Completed
+
+vacation add -> Completed
+renew button hide on cancel -> Completed
+profile edit -> Completed
+vacation 3pm condition -> Completed

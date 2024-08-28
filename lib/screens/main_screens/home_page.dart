@@ -1,0 +1,655 @@
+
+import 'dart:async';
+
+import 'package:app_3/helper/shared_preference_helper.dart';
+import 'package:app_3/providers/address_provider.dart';
+import 'package:app_3/helper/page_transition_helper.dart';
+import 'package:app_3/providers/api_provider.dart';
+import 'package:app_3/providers/locale_provider.dart';
+import 'package:app_3/providers/subscription_provider.dart';
+import 'package:app_3/screens/main_screens/bottom_bar.dart';
+import 'package:app_3/screens/main_screens/search_screen.dart';
+import 'package:app_3/screens/sub-screens/address_selection_screen.dart';
+import 'package:app_3/screens/sub-screens/wishlist_products.dart';
+import 'package:app_3/service/connectivity_helper.dart';
+import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
+import 'package:app_3/widgets/common_widgets.dart/input_field_widget.dart';
+import 'package:app_3/widgets/common_widgets.dart/snackbar_widget.dart';
+import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
+import 'package:app_3/widgets/main_screen_widgets/category_products_list_widget.dart';
+import 'package:app_3/widgets/main_screen_widgets/home_screen_products_widgets.dart';
+import 'package:app_3/widgets/main_screen_widgets/quick_order_widget.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+
+import '../../model/cart_products_model.dart';
+
+class CustomScrollPhysics extends ScrollPhysics{
+  const CustomScrollPhysics({ScrollPhysics? scrollPhysics}):super(parent: scrollPhysics);
+
+  @override
+  CustomScrollPhysics applyTo(ScrollPhysics? ancestor){
+    return CustomScrollPhysics(scrollPhysics: buildParent(ancestor)!);
+  }
+
+  @override
+  SpringDescription get spring => const SpringDescription(
+    mass: 50 , 
+    stiffness: 200, 
+    damping: 0.2
+  );
+}
+class HomePage extends StatefulWidget {
+  const HomePage({super.key,});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+
+  PageController bannerController = PageController();
+  double minRatingFilter = 0;
+  SharedPreferences prefs = SharedPreferencesHelper.getSharedPreferences();
+  List<String> appliedFilters = [];
+  late PageController _pageController;
+
+  int _currentPage = 0;
+  Timer? _timer;
+  DateTime? currentPress;
+  
+  bool isQuick = false;
+  List<CartProducts> cartItemsData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: 0);
+  }
+ 
+  
+  
+  // Remove all the activity from memory to avoid memory leaks
+  @override
+  void dispose() {
+    bannerController.dispose();
+    _pageController.dispose();
+    _timer?.cancel();
+    super.dispose();
+  }
+  
+
+  @override
+  Widget build(BuildContext context) {
+    final connectivityService = Provider.of<ConnectivityService>(context);
+    // load the content based on internet connection
+    if (connectivityService.isConnected) {
+      return homePage(context);
+    } else {
+      return Scaffold(
+        appBar: const AppBarWidget(title: 'Home'),
+        body: Center(
+          child: Image.asset('assets/category/nointernet.png'),
+        ),
+      );
+    }
+  }
+
+
+  Widget homePage(BuildContext context){
+    final addressProvider = Provider.of<AddressProvider>(context);
+    final localeProvider = Provider.of<LocaleProvider>(context);
+    Size size = MediaQuery.sizeOf(context);
+    return PopScope(
+      canPop: isQuick ? false : true,
+      onPopInvoked: (didPop) {
+        if (isQuick) {
+          setState(() {
+            isQuick = false;
+          });
+        }else{
+          final now = DateTime.now();
+          if(currentPress == null || now.difference(currentPress!) > const Duration(seconds: 2)){
+            currentPress = now;
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                elevation: 1,
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                backgroundColor:  const Color(0xFF60B47B),
+                content: const Text('Press back again to exit', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
+                duration: const Duration(seconds: 1),
+              ),
+            );
+            return;
+          } else {
+            SystemNavigator.pop();
+          }
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: isQuick ? null
+        : AppBar(
+          surfaceTintColor: Colors.transparent.withOpacity(0.0),
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.white,
+          title: addressProvider.addresses.isEmpty
+            ? GestureDetector(
+              onTap: () async {
+                await Navigator.push(context, downToTop(screen: const AddressSelectionScreen()));
+              },
+              child: SizedBox(
+                width: size.width * 0.4,
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      children: [
+                        AppTextWidget(text: 'Locating...', fontSize: 14, fontWeight: FontWeight.w500),
+                        AppTextWidget(text: 'Tamilnadu, India', fontSize: 12, fontWeight: FontWeight.w500)
+                      ],
+                    ),
+                    Icon(CupertinoIcons.chevron_down, size: 18,)
+                  ],
+                ),
+              ),
+            )
+            : GestureDetector(
+                onTap: () async {
+                  await addressProvider.getRegionLocation();
+                  Navigator.push(context, downToTop(screen: const AddressSelectionScreen()));
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: size.width * 0.65,
+                          child: AppTextWidget(
+                            text: '${addressProvider.currentAddress!.flatNo}, ${addressProvider.currentAddress!.floorNo}', 
+                            fontSize: 15, 
+                            maxLines: 1,
+                            textOverflow: TextOverflow.ellipsis,
+                            fontWeight: FontWeight.w600,
+                            fontColor: Colors.black.withOpacity(0.8),
+                          ),
+                        ),
+                        SizedBox(
+                          width:size.width * 0.65,
+                          child: AppTextWidget(
+                            text: '${addressProvider.currentAddress!.address} ${addressProvider.currentAddress!.location.toString()}, ${addressProvider.currentAddress!.region.toString()}, ${addressProvider.currentAddress!.landmark}, ${addressProvider.currentAddress!.pincode}', 
+                            fontSize: 14, 
+                            maxLines: 1,
+                            textOverflow: TextOverflow.ellipsis,
+                            fontColor: Colors.black.withOpacity(0.5),
+                            fontWeight: FontWeight.w400
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Icon(CupertinoIcons.chevron_down, size: 18,)
+                  ],
+                ),
+              ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 15, top: 10),
+              child: Consumer<ApiProvider>(
+                builder: (context, wishlistProductProvider, child) {
+                  return IconButton(
+                    style: ElevatedButton.styleFrom(
+                      overlayColor: Colors.grey.shade400
+                    ),
+                    onPressed: () async {
+                      await wishlistProductProvider.wishlistProductsAPI();
+                      
+                      if (wishlistProductProvider.wishlistProducts.isEmpty) {
+                        SnackBar? wishlistMessage = snackBarMessage(
+                          context: context, 
+                          message: wishlistProductProvider.message!, 
+                          backgroundColor: Theme.of(context).primaryColor, 
+                          sidePadding: size.width * 0.1, 
+                          bottomPadding: size.height * 0.85
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(wishlistMessage);
+                      }else {
+                        Navigator.push(context, downToTop(screen: const WishlistProducts()));
+                      }
+                    },
+                    icon:  Icon(
+                      CupertinoIcons.heart_fill, 
+                      size: 28,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  );
+                }
+              )
+            )
+          ],
+        ),
+        body: isQuick 
+        // ? const QuickOrderProductsWidget()
+        ? const QuickOrderWidget()
+        : Consumer<ApiProvider>(
+          builder: (context, provider, child) {
+            return CustomScrollView(
+                physics: const BouncingScrollPhysics(),
+                slivers: [
+                  // banners
+                  SliverAppBar(
+                    expandedHeight: size.width > 600?  size.height * 0.4 : size.height * 0.150,
+                    floating: false,
+                    automaticallyImplyLeading: false,
+                    // pinned: true,
+                    backgroundColor: Colors.white,
+                    surfaceTintColor: Colors.transparent.withOpacity(0.0),
+                    flexibleSpace: FlexibleSpaceBar(
+                      background: Stack(
+                        children: [
+                          // Banner Images
+                          PageView.builder(
+                            controller: bannerController,
+                            itemCount: provider.banners.length,
+                            itemBuilder: (context, index) {
+                              // List<String> storedBanners = prefs.getStringList('banners') ?? banners;
+                              String imageUrl = 'https://maduraimarket.in/public/image/banner/${provider.banners[index]}';
+                              // String imageUrl = 'http://192.168.1.5/pasumaibhoomi/public/image/banner/${provider.banners[index]}';
+                              return SizedBox(
+                                width: size.width,
+                                height: size.height * 0.1,
+                                child: CachedNetworkImage(
+                                  imageUrl: imageUrl,
+                                  fit: BoxFit.cover,
+                                )
+                              );
+                            },
+                            onPageChanged: (int page) {
+                              setState(() {
+                                _currentPage = page;
+                              });
+                            },
+                          ),
+                          // Page indicator
+                          Padding(
+                            padding: EdgeInsets.only(top: size.width > 600 ? size.height * 0.3 : size.height * 0.12),
+                            child: _buildDotIndicator(provider.banners),
+                          ),
+                        ],
+                      )
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: Container(
+                      margin: EdgeInsets.only(bottom: size.width > 600 ? size.height * 0.2 : size.height * 0.04),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 20),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: TextFields(
+                              hintText: 'Search Product', 
+                              isObseure: false, 
+                              textInputAction: TextInputAction.done,
+                              readOnly: true,
+                              suffixIcon: const Icon(CupertinoIcons.search),
+                              onTap: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen(focusNode: FocusNode(),)));
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          // Category Heading
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: GestureDetector(
+                              onTap: (){
+                                localeProvider.changeLocaleToTamil();
+                              },
+                              child: AppTextWidget(
+                                text:  localeProvider.of(context).category,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 12,),
+                          // Category list
+                          SizedBox(
+                            height: 130,
+                            width: size.width,
+                            child: ListView.builder(
+                              itemCount: provider.categories.length,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                String imageUrl = 'https://maduraimarket.in/public/image/category/${provider.categories[index].categoryImage}';   
+                                // String imageUrl = 'http://192.168.1.5/pasumaibhoomi/public/image/category/${provider.categories[index].categoryImage}';   
+                                return Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    index - 1 == -1
+                                    ? GestureDetector(
+                                        onTap: () async {
+                                          // provider.clearOrder();
+                                          await provider.allProducts(1);
+                                          setState(() {
+                                            isQuick = !isQuick;
+                                          });
+                                        },
+                                        child: Container(
+                                          height: 140,
+                                          width: 110,
+                                          padding: const EdgeInsets.only(left: 10,),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              SizedBox(
+                                                height: 100,
+                                                child: ClipRRect(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  child: CachedNetworkImage(
+                                                    imageUrl: 'https://www.magedelight.com/media/catalog/product/cache/2bfc27e6407691aea80773cb7926e368/q/u/quick-order-m2.png',
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                              ),
+                                              const AppTextWidget(
+                                                text: 'Quick Order', 
+                                                fontSize: 13, 
+                                                maxLines: 1,
+                                                fontWeight: FontWeight.w600,
+                                                textOverflow: TextOverflow.ellipsis,
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      )
+                                    : Container(),
+                                    GestureDetector(
+                                      onTap: () async {
+                                        await provider.allProducts(provider.categories[index].categoryId).then((value){
+                                          Navigator.of(context).push(MaterialPageRoute(
+                                            builder: (context) => CategoryProductsListWidget(categoryName: provider.categories[index].categoryName)
+                                          ));
+                                        });
+                                      },
+                                      child: Container(
+                                        height: 130,
+                                        width: 110,
+                                        margin: EdgeInsets.only(right: index == provider.categories.length -1 ? 10 : 0),
+                                        padding: const EdgeInsets.only(left: 10),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(
+                                              height: 100,
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(10),
+                                                child: CachedNetworkImage(
+                                                  imageUrl: imageUrl,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                            AppTextWidget(
+                                              text: provider.categories[index].categoryName, 
+                                              fontSize: 13, 
+                                              maxLines: 1,
+                                              fontWeight: FontWeight.w600,
+                                              textOverflow: TextOverflow.ellipsis,
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }
+                            ),
+                          ),
+                          const SizedBox(height: 12,),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                AppTextWidget(
+                                  text: localeProvider.of(context).featuredProducts, 
+                                  fontSize: 18, 
+                                  fontWeight: FontWeight.w600
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    // Move to Featured List Page
+                                    Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => const CategoryProductsListWidget(categoryName: "Featured Products", isFeaturedProduct: true,)
+                                    ));
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        'View all',
+                                        style: TextStyle(
+                                          fontSize: size.width > 600 ?  size.height * 0.034: size.height * 0.018,
+                                          fontWeight: FontWeight.bold
+                                        ),
+                                      ),
+                                      // SizedBox(width: size.width * 0.003,),
+                                      Icon(
+                                        Icons.arrow_forward_ios_sharp,
+                                        size:  size.width > 600 ?  size.height * 0.034: size.height * 0.014,
+                                      )
+                                    ],
+                                  ),
+                              
+                                )
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 12,),
+                          // Featured Products list
+                          Container(
+                            margin: EdgeInsets.only(left: size.width * 0.004),
+                            child: HomeScreenProducts(products: provider.featuredproductData)
+                          ),
+                          const SizedBox(height: 12,),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              // crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                  width: size.width * 0.7,
+                                  child: AppTextWidget(
+                                    text: localeProvider.of(context).bestseller, 
+                                    fontSize: 18, 
+                                    textOverflow: TextOverflow.fade,
+                                    fontWeight: FontWeight.w600
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    print("Best Seller: ${provider.bestSellerProducts.length}");
+                                     Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => const CategoryProductsListWidget(categoryName: "Best Seller", isBestSellerProduct: true,)
+                                    ));
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text(
+                                        'View all',
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.arrow_forward_ios_sharp,
+                                        size:  size.width > 600 ?  size.height * 0.034: size.height * 0.014,
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 12,),
+                          // Best Seller Products List
+                          Container(
+                            margin: EdgeInsets.only(left: size.width * 0.004),
+                            child: HomeScreenProducts(products: provider.bestSellerProducts)
+                          ),
+                          const SizedBox(height: 12,),
+                          // Subscribe products Heading
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                AppTextWidget(
+                                  text: localeProvider.of(context).subscriptionProducts, 
+                                  fontSize: 18, 
+                                  fontWeight: FontWeight.w600
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).push(PageRouteBuilder(
+                                      pageBuilder: (context, animation, secondaryAnimation) =>  BottomBar(selectedIndex: 2,),
+                                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                        return child;
+                                      },
+                                      transitionDuration: Duration.zero,
+                                    ));
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        'View all',
+                                        style: TextStyle(
+                                          fontSize: size.width > 600 ?  size.height * 0.034: size.height * 0.018,
+                                          fontWeight: FontWeight.bold
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.arrow_forward_ios_sharp,
+                                        size:  size.width > 600 ?  size.height * 0.034: size.height * 0.014,
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 12,),
+                          GestureDetector(
+                            onTap: (){
+                              
+                            },
+                            child: Consumer<SubscriptionProvider>(
+                              builder: (context, value, child) {
+                                
+                                return  value.subscribeProducts.isEmpty
+                                ? FutureBuilder(
+                                  future: value.getSubscribProducts(), 
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                      return SizedBox(
+                                        height: size.height * 0.06,
+                                        child: ListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: 5,
+                                          itemBuilder: (context, index) {
+                                            return Container(
+                                              height: size.height * 0.05,
+                                              width: size.width * 0.3,
+                                              decoration: BoxDecoration(
+                                                color: Colors.grey.shade300
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    }else{
+                                      return HomeScreenProducts(
+                                        products: value.subscribeProducts, 
+                                        icon: Container(
+                                          padding: const EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(8),
+                                            color: Theme.of(context).primaryColor,
+                                          ),
+                                          child: const AppTextWidget(
+                                            text: "Subscribe", fontSize: 13, 
+                                            fontWeight: FontWeight.w500,
+                                            fontColor: Colors.white,
+                                          )
+                                        ),
+                                      );
+                                    }
+                                  } ,
+                                )
+                                  // Subscribe product list
+                                : HomeScreenProducts(
+                                  products: value.subscribeProducts, 
+                                  icon: Container(
+                                    padding: const EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                    child: const AppTextWidget(
+                                      text: "Subscribe", fontSize: 13, 
+                                      fontWeight: FontWeight.w500,
+                                      fontColor: Colors.white,
+                                    )
+                                  ),
+                                );
+                              },
+                            )
+                          ),
+                          const SizedBox(height: 20,)
+                        ],
+                      ),
+                    ),
+                  )
+                ]
+              );
+          }
+        ),
+      ),
+    ); 
+  }
+
+  Widget _buildDotIndicator(List<String> banners) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: banners.map((banner) {
+        int index = banners.indexOf(banner);
+        return Container(
+          width: 8,
+          height: 8,
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: _currentPage == index ? Colors.white : Colors.grey,
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+
+}
+

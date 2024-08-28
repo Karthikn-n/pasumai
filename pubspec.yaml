@@ -16,9 +16,20 @@ dependencies:
   connectivity_plus: ^5.0.2
   carousel_slider: ^4.2.1
   flutter_cache_manager: ^3.3.1
-  intl: ^0.19.0
+  # intl: ^0.19.0
+  intl: any
   http: ^1.1.2
   encrypt: ^5.0.3
+  path_provider: ^2.1.2
+  open_file: ^3.3.2
+  provider: ^6.1.2
+  flutter_otp_text_field: ^1.2.0
+  google_maps_flutter: ^2.7.1
+  geolocator: ^11.1.0
+  permission_handler: ^11.3.1
+  url_launcher: ^6.3.0
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:
@@ -27,7 +38,10 @@ dev_dependencies:
   # devtools: '>=0.9.4 <0.10.0'
 
 flutter:
-  
+  generate: true
   uses-material-design: true
   assets:
     - assets/category/
+    - assets/animations/
+    - assets/icons/profile/
+    - assets/icons/checkout/

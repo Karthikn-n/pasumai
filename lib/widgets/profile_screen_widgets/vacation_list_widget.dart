@@ -2,6 +2,7 @@ import 'package:app_3/helper/shared_preference_helper.dart';
 import 'package:app_3/providers/profile_provider.dart';
 import 'package:app_3/providers/vacation_provider.dart';
 import 'package:app_3/widgets/common_widgets.dart/button_widget.dart';
+import 'package:app_3/widgets/common_widgets.dart/shimmer_profile_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/snackbar_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,30 +17,28 @@ class VacationListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
-    return Consumer2<ProfileProvider, VacationProvider>(
-      builder: (context, provider, vacation, child) {
+    return Consumer<ProfileProvider>(
+      builder: (context, provider, child) {
         return provider.vacations.isEmpty
           ? FutureBuilder(
               future: provider.vacationList(), 
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const AppTextWidget(
-                        text: "Vacation Mode", 
-                        fontSize: 16, 
-                        fontWeight: FontWeight.w500
-                      ),
-                      const SizedBox(height: 15,),
-                      LinearProgressIndicator(
-                        // minHeight: 1,
-                        color: Theme.of(context).primaryColor,
-                        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                      ),
-                    ],
+                  return const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AppTextWidget(
+                          text: "Vacation Mode", 
+                          fontSize: 16, 
+                          fontWeight: FontWeight.w500
+                        ),
+                        SizedBox(height: 15,),
+                        Expanded(child: ShimmerProfileWidget())
+                      ],
+                    ),
                   );
-                }else if(!snapshot.hasData || snapshot.data!["status"] =="not_found"){
+                }else if(!snapshot.hasData || snapshot.hasError){
                   return Center(
                     child: Column(
                       children: [
@@ -49,28 +48,32 @@ class VacationListWidget extends StatelessWidget {
                           fontWeight: FontWeight.w500,
                         ),
                         const SizedBox(height: 40,),
-                        TextButton(
-                          onPressed: () async {
-                            print(DateTime.now().hour);
-                          if (DateTime.now().hour >= 15 ) {
-                            final alertMessage = snackBarMessage(
-                              context: context, 
-                              message: "You can't add vacation after 3PM", 
-                              backgroundColor: Theme.of(context).primaryColor, 
-                              sidePadding: size.width * 0.1, bottomPadding: size.height * 0.85);
-                            ScaffoldMessenger.of(context).showSnackBar(alertMessage);
-                          }else{
-                            vacation.validate(false);
-                            vacation.clearAddDates();
-                            addVacation(context: context, size: size, isUpdating: false);
+                        Consumer<VacationProvider>(
+                          builder: (context, vacation, child) {
+                            return TextButton(
+                              onPressed: () async {
+                                print(DateTime.now().hour);
+                              if (DateTime.now().hour >= 15 ) {
+                                final alertMessage = snackBarMessage(
+                                  context: context, 
+                                  message: "You can't add vacation after 3PM", 
+                                  backgroundColor: Theme.of(context).primaryColor, 
+                                  sidePadding: size.width * 0.1, bottomPadding: size.height * 0.05);
+                                ScaffoldMessenger.of(context).showSnackBar(alertMessage);
+                              }else{
+                                vacation.validate(false);
+                                vacation.clearAddDates();
+                                addVacation(context: context, size: size, isUpdating: false);
+                              }
+                              },
+                              child: AppTextWidget(
+                                text: "Add vacation", 
+                                fontSize: 14, 
+                                fontColor: Theme.of(context).primaryColor,
+                                fontWeight: FontWeight.w500
+                              ), 
+                            );
                           }
-                          },
-                          child: AppTextWidget(
-                            text: "Add vacation", 
-                            fontSize: 14, 
-                            fontColor: Theme.of(context).primaryColor,
-                            fontWeight: FontWeight.w500
-                          ), 
                         )
                       ],
                     ),
@@ -87,20 +90,24 @@ class VacationListWidget extends StatelessWidget {
                               fontSize: 16, 
                               fontWeight: FontWeight.w500
                             ),
-                            IconButton(
-                              onPressed: (){
-                                if (DateTime.now().hour >= 15 ) {
-                                  final alertMessage = snackBarMessage(
-                                    context: context, 
-                                    message: "You can't add vacation after 3PM", 
-                                    backgroundColor: Theme.of(context).primaryColor, 
-                                    sidePadding: size.width * 0.1, bottomPadding: size.height * 0.85);
-                                  ScaffoldMessenger.of(context).showSnackBar(alertMessage);
-                                }else{
-                                  addVacation(context: context, size: size, isUpdating: false);
-                                }
-                              }, 
-                              icon: Icon(CupertinoIcons.plus, size: 20, color: Theme.of(context).primaryColor,)
+                            Builder(
+                              builder: (context) {
+                                return IconButton(
+                                  onPressed: (){
+                                    if (DateTime.now().hour >= 15 ) {
+                                      final alertMessage = snackBarMessage(
+                                        context: context, 
+                                        message: "You can't add vacation after 3PM", 
+                                        backgroundColor: Theme.of(context).primaryColor, 
+                                        sidePadding: size.width * 0.1, bottomPadding: size.height * 0.05);
+                                      ScaffoldMessenger.of(context).showSnackBar(alertMessage);
+                                    }else{
+                                      addVacation(context: context, size: size, isUpdating: false);
+                                    }
+                                  }, 
+                                  icon: Icon(CupertinoIcons.plus, size: 20, color: Theme.of(context).primaryColor,)
+                                );
+                              }
                             )
                           ],
                         ),
@@ -113,78 +120,46 @@ class VacationListWidget extends StatelessWidget {
                 }
               },
             )
-          : provider.vacations.isEmpty
-            ? Center(
-                child: Column(
-                  children: [
-                    const AppTextWidget(
-                      text: "You have no vacations",
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    const SizedBox(height: 40,),
-                    TextButton(
-                      onPressed: () async {
-                          print(DateTime.now().hour);
-                          if (DateTime.now().hour >= 15 ) {
-                          final alertMessage = snackBarMessage(
-                            context: context, 
-                            message: "You can't add vacation after 3PM", 
-                            backgroundColor: Theme.of(context).primaryColor, 
-                            sidePadding: size.width * 0.1, bottomPadding: size.height * 0.85);
-                          ScaffoldMessenger.of(context).showSnackBar(alertMessage);
-                        }else{
-                          vacation.validate(false);
-                          vacation.clearAddDates();
-                          addVacation(context: context, size: size, isUpdating: false);
-                        }
-                      },
-                      child: AppTextWidget(
-                        text: "Add vacation", 
-                        fontSize: 14, 
-                        fontColor: Theme.of(context).primaryColor,
+          : Expanded(
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const AppTextWidget(
+                        text: "Vacation Mode", 
+                        fontSize: 16, 
                         fontWeight: FontWeight.w500
-                      ), 
-                    )
-                  ],
-                ),
-              )
-            : Expanded(
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const AppTextWidget(
-                          text: "Vacation Mode", 
-                          fontSize: 16, 
-                          fontWeight: FontWeight.w500
-                        ),
-                        IconButton(
-                          onPressed: (){
-                            if (DateTime.now().hour >= 15 ) {
-                              final alertMessage = snackBarMessage(
-                                context: context, 
-                                message: "You can't add vacation after 3PM", 
-                                backgroundColor: Theme.of(context).primaryColor, 
-                                sidePadding: size.width * 0.1, bottomPadding: size.height * 0.85);
-                              ScaffoldMessenger.of(context).showSnackBar(alertMessage);
-                            }else{
-                              vacation.validate(false);
-                              vacation.clearAddDates();
-                              addVacation(context: context, size: size, isUpdating: false);
-                            }
-                          }, 
-                          icon: Icon(CupertinoIcons.plus, size: 20, color: Theme.of(context).primaryColor,)
-                        )
-                      ],
-                    ),
-                    Expanded(
-                      child: vacationList(size)
-                    )
-                  ],
-                ),
-              );
+                      ),
+                      Consumer<VacationProvider>(
+                        builder: (context, vacation, child) {
+                          return IconButton(
+                            onPressed: (){
+                              if (DateTime.now().hour >= 15 ) {
+                                final alertMessage = snackBarMessage(
+                                  context: context, 
+                                  message: "You can't add vacation after 3PM", 
+                                  backgroundColor: Theme.of(context).primaryColor, 
+                                  sidePadding: size.width * 0.1, bottomPadding: size.height * 0.05);
+                                ScaffoldMessenger.of(context).showSnackBar(alertMessage);
+                              }else{
+                                vacation.validate(false);
+                                vacation.clearAddDates();
+                                addVacation(context: context, size: size, isUpdating: false);
+                              }
+                            }, 
+                            icon: Icon(CupertinoIcons.plus, size: 20, color: Theme.of(context).primaryColor,)
+                          );
+                        }
+                      )
+                    ],
+                  ),
+                  Expanded(
+                    child: vacationList(size)
+                  )
+                ],
+              ),
+            );
               
       },
     );
@@ -227,7 +202,7 @@ class VacationListWidget extends StatelessWidget {
                                       context: context, 
                                       message: "You can't update vacation after 3PM", 
                                       backgroundColor: Theme.of(context).primaryColor, 
-                                      sidePadding: size.width * 0.1, bottomPadding: size.height * 0.85);
+                                      sidePadding: size.width * 0.1, bottomPadding: size.height * 0.05);
                                     ScaffoldMessenger.of(context).showSnackBar(alertMessage);
                                   }else{
                                     vacation.validate(false);
@@ -253,7 +228,7 @@ class VacationListWidget extends StatelessWidget {
                                       context: context, 
                                       message: "You can't delete vacation after 3PM", 
                                       backgroundColor: Theme.of(context).primaryColor, 
-                                      sidePadding: size.width * 0.1, bottomPadding: size.height * 0.85);
+                                      sidePadding: size.width * 0.1, bottomPadding: size.height * 0.05);
                                     ScaffoldMessenger.of(context).showSnackBar(alertMessage);
                                   }else{
                                      provider.confirmDeleteVacation(provider.vacations[index].id, context, size);
@@ -331,8 +306,8 @@ class VacationListWidget extends StatelessWidget {
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setState) {
-            return Consumer2<VacationProvider, ProfileProvider>(
-              builder: (context, provider, profileProvider,child) {
+            return Consumer<ProfileProvider>(
+              builder: (context, profileProvider,child) {
                 return Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   height: size.height * 0.35,
@@ -350,52 +325,56 @@ class VacationListWidget extends StatelessWidget {
                               children: [
                                 const AppTextWidget(text: "Start date", fontSize: 15, fontWeight: FontWeight.w500),
                                 const SizedBox(height: 10,),
-                                ElevatedButton(
-                                  iconAlignment: IconAlignment.end,
-                                  onPressed: () async {
-                                    DateTime? startDate = await showDatePicker(
-                                      context: context, 
-                                      firstDate: DateTime.now(), 
-                                      helpText: "Start date",
-                                      lastDate: DateTime(2100),
-                                      initialDate: isUpdating ? updatedStartDate : DateTime.now()
-                                    );
-                                    if (isUpdating) {
-                                      provider.updateTime(isStart: true, updatedDate: startDate);
-                                    }else{
-                                      provider.setTime(isStart: true, pickedDate: startDate);
-                                    }
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                                    maximumSize: Size(size.width * 0.415, 40),
-                                    minimumSize: Size(size.width * 0.415, 40),
-                                    backgroundColor: Colors.transparent.withOpacity(0.0),
-                                    shadowColor: Colors.transparent.withOpacity(0.0),
-                                    overlayColor: Colors.transparent.withOpacity(0.1),
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(color: provider.notSet && provider.startDate == null ? Colors.red : Colors.grey.shade300),
-                                      borderRadius: BorderRadius.circular(8)
-                                    )
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      AppTextWidget(
-                                        text: isUpdating! 
-                                        ? provider.updatedStartDate != null ? DateFormat("dd MMM yyyy").format(provider.updatedStartDate!) : DateFormat("dd MMM yyyy").format(updatedStartDate!)
-                                        : provider.startDate != null ? DateFormat("dd MMM yyyy").format(provider.startDate!) : "Select date", 
-                                        fontSize: 13, 
-                                        fontColor: Colors.black,
-                                        fontWeight: FontWeight.w400
+                                Consumer<VacationProvider>(
+                                    builder: (context, provider, child) {
+                                    return ElevatedButton(
+                                      iconAlignment: IconAlignment.end,
+                                      onPressed: () async {
+                                        DateTime? startDate = await showDatePicker(
+                                          context: context, 
+                                          firstDate: DateTime.now(), 
+                                          helpText: "Start date",
+                                          lastDate: DateTime(2100),
+                                          initialDate: isUpdating ? updatedStartDate : DateTime.now(),
+                                        );
+                                        if (isUpdating) {
+                                          provider.updateTime(isStart: true, updatedDate: startDate);
+                                        }else{
+                                          provider.setTime(isStart: true, pickedDate: startDate);
+                                        }
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                                        maximumSize: Size(size.width * 0.415, 40),
+                                        minimumSize: Size(size.width * 0.415, 40),
+                                        backgroundColor: Colors.transparent.withOpacity(0.0),
+                                        shadowColor: Colors.transparent.withOpacity(0.0),
+                                        overlayColor: Colors.transparent.withOpacity(0.1),
+                                        shape: RoundedRectangleBorder(
+                                          side: BorderSide(color: provider.notSet && provider.startDate == null ? Colors.red : Colors.grey.shade300),
+                                          borderRadius: BorderRadius.circular(8)
+                                        )
                                       ),
-                                      Icon(
-                                        CupertinoIcons.calendar,
-                                        size: 20,
-                                        color: Theme.of(context).primaryColor,
-                                      )
-                                    ],
-                                  ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          AppTextWidget(
+                                            text: isUpdating! 
+                                            ? provider.updatedStartDate != null ? DateFormat("dd MMM yyyy").format(provider.updatedStartDate!) : DateFormat("dd MMM yyyy").format(updatedStartDate!)
+                                            : provider.startDate != null ? DateFormat("dd MMM yyyy").format(provider.startDate!) : "Select date", 
+                                            fontSize: 13, 
+                                            fontColor: Colors.black,
+                                            fontWeight: FontWeight.w400
+                                          ),
+                                          Icon(
+                                            CupertinoIcons.calendar,
+                                            size: 20,
+                                            color: Theme.of(context).primaryColor,
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                  }
                                 )
                               ],
                             ),
@@ -408,53 +387,57 @@ class VacationListWidget extends StatelessWidget {
                               children: [
                                 const AppTextWidget(text: "End date", fontSize: 15, fontWeight: FontWeight.w500),
                                 const SizedBox(height: 10,),
-                                 ElevatedButton(
-                                  iconAlignment: IconAlignment.end,
-                                  onPressed: () async {
-                                    DateTime? endDate = await showDatePicker(
-                                      context: context, 
-                                      firstDate: isUpdating ? updatedStartDate! : provider.startDate!, 
-                                      helpText: "End date",
-                                      lastDate: DateTime(2100),
-                                      initialDate: isUpdating ? updatedStartDate! : provider.startDate!
-                                    );
-                                    if (isUpdating) {
-                                      provider.updateTime(isStart: false, updatedDate: endDate);
-                                    }else{
-                                      provider.setTime(isStart: false, pickedDate: endDate);
-                                    }
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                                    maximumSize: Size(size.width * 0.415, 40),
-                                    minimumSize: Size(size.width * 0.415, 40),
-                                    backgroundColor: Colors.transparent.withOpacity(0.0),
-                                    shadowColor: Colors.transparent.withOpacity(0.0),
-                                    overlayColor: Colors.transparent.withOpacity(0.1),
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(color: provider.notSet && provider.endDate == null ? Colors.red :  Colors.grey.shade300),
-                                      borderRadius: BorderRadius.circular(8)
-                                    )
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      AppTextWidget(
-                                        text: isUpdating
-                                        ? provider.updatedEndDate != null ? DateFormat("dd MMM yyyy").format(provider.updatedEndDate!) : DateFormat("dd MMM yyyy").format(updatedEndDate!)
-                                        : provider.endDate != null ? DateFormat("dd MMM yyyy").format(provider.endDate!) : "Select date", 
-                                        fontSize: 13, 
-                                        fontColor: Colors.black,
-                                        fontWeight: FontWeight.w400
+                                 Consumer<VacationProvider>(
+                                    builder: (context, provider, child) {
+                                     return ElevatedButton(
+                                      iconAlignment: IconAlignment.end,
+                                      onPressed: () async {
+                                        DateTime? endDate = await showDatePicker(
+                                          context: context, 
+                                          firstDate: isUpdating ? updatedStartDate! : provider.startDate!, 
+                                          helpText: "End date",
+                                          lastDate: DateTime(2100),
+                                          initialDate: isUpdating ? updatedStartDate! : provider.startDate!,
+                                        );
+                                        if (isUpdating) {
+                                          provider.updateTime(isStart: false, updatedDate: endDate);
+                                        }else{
+                                          provider.setTime(isStart: false, pickedDate: endDate);
+                                        }
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                                        maximumSize: Size(size.width * 0.415, 40),
+                                        minimumSize: Size(size.width * 0.415, 40),
+                                        backgroundColor: Colors.transparent.withOpacity(0.0),
+                                        shadowColor: Colors.transparent.withOpacity(0.0),
+                                        overlayColor: Colors.transparent.withOpacity(0.1),
+                                        shape: RoundedRectangleBorder(
+                                          side: BorderSide(color: provider.notSet && provider.endDate == null ? Colors.red :  Colors.grey.shade300),
+                                          borderRadius: BorderRadius.circular(8)
+                                        )
                                       ),
-                                      Icon(
-                                        CupertinoIcons.calendar,
-                                        size: 20,
-                                        color: Theme.of(context).primaryColor,
-                                      )
-                                    ],
-                                  ),
-                                )
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          AppTextWidget(
+                                            text: isUpdating!
+                                            ? provider.updatedEndDate != null ? DateFormat("dd MMM yyyy").format(provider.updatedEndDate!) : DateFormat("dd MMM yyyy").format(updatedEndDate!)
+                                            : provider.endDate != null ? DateFormat("dd MMM yyyy").format(provider.endDate!) : "Select date", 
+                                            fontSize: 13, 
+                                            fontColor: Colors.black,
+                                            fontWeight: FontWeight.w400
+                                          ),
+                                          Icon(
+                                            CupertinoIcons.calendar,
+                                            size: 20,
+                                            color: Theme.of(context).primaryColor,
+                                          )
+                                        ],
+                                      ),
+                                      );
+                                   }
+                                 )
                               ],
                             ),
                           ),
@@ -463,81 +446,93 @@ class VacationListWidget extends StatelessWidget {
                       // Reasons for Vacation
                       const AppTextWidget(text: "Reason", fontSize: 15, fontWeight: FontWeight.w500),
                       const SizedBox(height: 10,),
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: provider.notSet && provider.selectedReason.isEmpty ? Colors.red : Colors.grey.shade300
-                          )
-                        ),
-                        width: double.infinity,
-                        child: DropdownButton(
-                          borderRadius: BorderRadius.circular(8),
-                          isExpanded: true,
-                          icon: const Icon(CupertinoIcons.chevron_down, size: 20,),
-                          elevation: 3,
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          underline: Container(),
-                          hint: AppTextWidget(text: isUpdating ? reason! :"Select your Reason", fontSize: 14, fontWeight: FontWeight.w500),
-                          value:  provider.selectedReason.isNotEmpty ? provider.selectedReason : null,
-                          items: provider.reasons.map((reason) {
-                            return DropdownMenuItem(
-                              value: reason,
-                              child: AppTextWidget(
-                                text: reason, 
-                                fontSize: 14, 
-                                fontWeight: FontWeight.w500
+                      Consumer<VacationProvider>(
+                        builder: (context, provider, child) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: provider.notSet && provider.selectedReason.isEmpty ? Colors.red : Colors.grey.shade300
                               )
-                            );
-                          },).toList(), 
-                          onChanged: (value) {
-                            setState(() {
-                              provider.setSelectedReason(value!);
-                            });
-                          },
-                        ),
+                            ),
+                            width: double.infinity,
+                            child: Consumer<VacationProvider>(
+                              builder: (context, provider, child) {
+                                return DropdownButton(
+                                  borderRadius: BorderRadius.circular(8),
+                                  isExpanded: true,
+                                  icon: const Icon(CupertinoIcons.chevron_down, size: 20,),
+                                  elevation: 3,
+                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                  underline: Container(),
+                                  hint: AppTextWidget(text: isUpdating! ? reason! :"Select your Reason", fontSize: 14, fontWeight: FontWeight.w500),
+                                  value:  provider.selectedReason.isNotEmpty ? provider.selectedReason : null,
+                                  items: provider.reasons.map((reason) {
+                                    return DropdownMenuItem(
+                                      value: reason,
+                                      child: AppTextWidget(
+                                        text: reason, 
+                                        fontSize: 14, 
+                                        fontWeight: FontWeight.w500
+                                      )
+                                    );
+                                  },).toList(), 
+                                  onChanged: (value) {
+                                    setState(() {
+                                      provider.setSelectedReason(value!);
+                                    });
+                                  },
+                                );
+                              }
+                            ),
+                          );
+                        }
                       ),
                       const SizedBox(height: 15,),
                       // Submit Button
                       SizedBox(
                         width: double.infinity,
-                        child: ButtonWidget(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                          buttonName: isUpdating ? "Update" : "Submit", 
-                          onPressed: () async {
-                            if (isUpdating) {
-                                await profileProvider.updateVacation(
-                                {
-                                "customer_id":prefs.getString('customerId'),
-                                "vacation_id": id,
-                                "start_date": DateFormat('yyyy-MM-dd').format(provider.updatedStartDate ?? updatedStartDate!),
-                                "end_date": DateFormat('yyyy-MM-dd').format(provider.updatedEndDate ?? updatedEndDate!),
-                                "comments": reason ?? provider.selectedReason
-                                }, 
-                                size, context
-                              );
-                              provider.cleatupdateDates();
-                              Navigator.pop(context);
-                            }else{
-                              if (provider.startDate == null || provider.endDate == null || provider.selectedReason.isEmpty) {
-                                provider.validate(true);
-                              }else{
-                                print('Reason: ${provider.selectedReason}');
-                                await profileProvider.addVacation(
-                                  {
-                                  "customer_id":prefs.getString('customerId'),
-                                  "start_date": DateFormat('yyyy-MM-dd').format(provider.startDate ?? DateTime.now()),
-                                  "end_date": DateFormat('yyyy-MM-dd').format(provider.endDate ?? DateTime.now()),
-                                  "comments": provider.selectedReason
-                                  }, 
-                                  size, context
-                                );
-                                provider.clearAddDates();
-                                Navigator.pop(context);
-                              }
-                            }
-                          },
+                        child: Consumer<VacationProvider>(
+                          builder: (context, provider, child) {
+                            return ButtonWidget(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                              buttonName: isUpdating! ? "Update" : "Submit", 
+                              onPressed: () async {
+                                if (isUpdating) {
+                                    await profileProvider.updateVacation(
+                                    {
+                                    "customer_id":prefs.getString('customerId'),
+                                    "vacation_id": id,
+                                    "start_date": DateFormat('yyyy-MM-dd').format(provider.updatedStartDate ?? updatedStartDate!),
+                                    "end_date": DateFormat('yyyy-MM-dd').format(provider.updatedEndDate ?? updatedEndDate!),
+                                    "comments": reason ?? provider.selectedReason
+                                    }, 
+                                    size, context
+                                  );
+                                  provider.cleatupdateDates();
+                                  Navigator.pop(context);
+                                }else{
+                                  if (provider.startDate == null || provider.endDate == null || provider.selectedReason.isEmpty) {
+                                    provider.validate(true);
+                                  }else{
+                                    print('Reason: ${provider.selectedReason}');
+                                    await profileProvider.addVacation(
+                                      {
+                                      "customer_id":prefs.getString('customerId'),
+                                      "start_date": DateFormat('yyyy-MM-dd').format(provider.startDate ?? DateTime.now()),
+                                      "end_date": DateFormat('yyyy-MM-dd').format(provider.endDate ?? DateTime.now()),
+                                      "comments": provider.selectedReason
+                                      }, 
+                                      size, context
+                                    );
+                                    provider.clearAddDates();
+                                    Navigator.pop(context);
+                                  }
+                                }
+                              },
+                            );
+                          }
                         ),
                       )
                     ],

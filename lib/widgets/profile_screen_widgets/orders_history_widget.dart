@@ -381,7 +381,7 @@ class OrdersHistoryWidget extends StatelessWidget {
                               onPressed: () async {
                                 if (orders[index].status == "Cancelled") {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    snackBarMessage(context: context, message: "Already Product Cancelled", backgroundColor: Theme.of(context).primaryColor, sidePadding: size.width * 0.1, bottomPadding: size.height * 0.85)
+                                    snackBarMessage(context: context, message: "Already Product Cancelled", backgroundColor: Theme.of(context).primaryColor, sidePadding: size.width * 0.1, bottomPadding: size.height * 0.05)
                                   );
                                 }else{
                                   orderProvider.confirmCancelOrder(orders[index].orderId, context, size);

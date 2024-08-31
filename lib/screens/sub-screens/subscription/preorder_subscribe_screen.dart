@@ -60,7 +60,7 @@ class _PreOrderProductScreen extends State<PreOrderProductsScreen>{
                     '${provider.regionLocationsList.firstWhere((element) => element.regionId == int.parse(preOrderData.customerAddress.region),).locationData.firstWhere((element) => element.locationId == int.parse(preOrderData.customerAddress.location),).locationName}, '
                     '${preOrderData.customerAddress.pincode}, ', 
                     fontSize: 14, 
-                    fontWeight: FontWeight.w500
+                    fontWeight: FontWeight.w400
                   );
                 }
               ),

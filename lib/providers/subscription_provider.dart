@@ -1,11 +1,15 @@
 import 'dart:convert';
 
 import 'package:app_3/data/encrypt_ids.dart';
+import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/helper/shared_preference_helper.dart';
+import 'package:app_3/model/active_subscription_model.dart';
+import 'package:app_3/model/pre_order_model.dart';
 import 'package:app_3/model/products_model.dart';
 import 'package:app_3/model/renew_subscription_model.dart';
 import 'package:app_3/providers/profile_provider.dart';
 import 'package:app_3/repository/app_repository.dart';
+import 'package:app_3/screens/sub-screens/subscription/preorder_subscribe_screen.dart';
 import 'package:app_3/service/api_service.dart';
 import 'package:app_3/widgets/common_widgets.dart/snackbar_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
@@ -20,7 +24,10 @@ class SubscriptionProvider extends ChangeNotifier{
   List<Products> subscribeProducts = [];
   List<RenewSubscriptionModel?>? renewSubscriptionResponse;
   List<DateTime?>? renewStartDate;
-
+// Subscription Section Data
+  List<ActiveSubscriptionModel> activeSubscriptions = [];
+  List<ActiveSubscriptionModel> historyProducts = [];
+  List<List<String>> options = [];
   // Get all the Subscribe Product in Login Page
   Future<void> getSubscribProducts() async {
      // Call SubScribe Product API
@@ -38,7 +45,44 @@ class SubscriptionProvider extends ChangeNotifier{
     notifyListeners();
   }
 
+ // Active Subscription list for the User
+  Future<void> activeSubscription() async {
+    Map<String, dynamic> activeSubData = {
+      'customer_id': prefs.getString('customerId')
+    };
+    final response = await subscribeRepository.activeSubscription(activeSubData);
+    String decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
+    final decodedResponse = json.decode(decryptedResponse);
+    debugPrint('Active Subscritpion List Response: $decodedResponse, Status Code: ${response.statusCode}', wrapWidth: 1064);
+    if (response.statusCode == 200) {
+      List<dynamic> activeSubscriptionsList = decodedResponse['results'] as List;
+      activeSubscriptions.clear();
+      activeSubscriptions = activeSubscriptionsList.map((subscription) => ActiveSubscriptionModel.fromJson(subscription) ,).toList();
+      options = List.generate(activeSubscriptions.length, (index) => ["Edit", "Cancel", "Renew"],);
+    } else {
+      print('Failed to fetch data: ${response.statusCode}');
+    }
+    notifyListeners();
+  }
 
+  // Subscription history
+  Future<void> subscriptionHistoryAPI() async {
+    Map<String, dynamic> subHistoryData = {
+      'customer_id': prefs.getString('customerId')
+    };
+    final response = await subscribeRepository.subscriptionHistory(subHistoryData);
+    String decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
+    final decodedResponse = json.decode(decryptedResponse);
+    print('Subscritpion history Response: $decodedResponse, Status Code: ${response.statusCode}');
+    if (response.statusCode == 200) {
+      List<dynamic> activeSubscriptionsList = decodedResponse['results'] as List;
+      historyProducts = activeSubscriptionsList.map((subscription) => ActiveSubscriptionModel.fromJson(subscription) ,).toList();
+    } else {
+      print('Failed to fetch data: ${response.statusCode}');
+    }
+    notifyListeners();
+  }
+  
   // Re-new Subscription
   Future<void> renewSubscriptionApi(Map<String, dynamic> data, BuildContext context, Size size, int index) async {
     final response = await subscribeRepository.renewsubscription(data);
@@ -79,7 +123,7 @@ class SubscriptionProvider extends ChangeNotifier{
       backgroundColor: Theme.of(context).primaryColor, 
       sidePadding: size.width * 0.1, 
       duration: const Duration(seconds: 2),
-      bottomPadding: size.height * 0.85
+      bottomPadding: size.height * 0.05
     );
     if (response.statusCode == 200 && decodedResponse["status"] == "success") {
       ScaffoldMessenger.of(context).showSnackBar(renewsubscriptionMessage).closed.then((value) {
@@ -91,7 +135,53 @@ class SubscriptionProvider extends ChangeNotifier{
     }
     notifyListeners();
   }
-  
+
+  // Add Subscription
+  Future<void> addSubscription(BuildContext context, Size size, Map<String, dynamic> addSubscriptionData) async {
+    final response = await subscribeRepository.addSubscription(addSubscriptionData);
+    String decrptedData = decryptAES(response.body);
+    final decodedResponse = json.decode(decrptedData.replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), ''));
+    debugPrint('Add Subscription Response: $decodedResponse, Code: ${response.statusCode}');
+    if(response.statusCode == 200 && decodedResponse['status'] == "success"){
+      Navigator.pop(context);
+      await activeSubscription().then((value) {
+        final preOrderData = PreOrderModel.fromJson(decodedResponse["data"]);
+        Navigator.push(context, SideTransistionRoute(
+          screen: const PreOrderProductsScreen(),
+          args: {'preOrderData': preOrderData}
+        ));
+      },);
+    }else{
+      print('Success: ${response.body}');
+    }
+  }
+
+  // Edit Subscription Products
+  Future<void> editSubscription(BuildContext context, Size size, Map<String, dynamic> editSubscriptionData) async {
+    final response = await subscribeRepository.editSubscription(editSubscriptionData);
+    String decrptedData = decryptAES(response.body);
+    final decodedResponse = json.decode(decrptedData.replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), ''));
+    debugPrint('Edit Subscription Response: $decodedResponse, Code: ${response.statusCode}');
+    final editSubscriptinoMessage = snackBarMessage(
+      context: context, 
+      message: decodedResponse['message'], 
+      backgroundColor: Theme.of(context).primaryColor, 
+      sidePadding: size.width * 0.1,
+      bottomPadding: size.height * 0.05
+    );
+    if(response.statusCode == 200 && decodedResponse['status'] == "success"){
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(editSubscriptinoMessage).closed.then((value) async {
+        await activeSubscription().then((value) {
+          Navigator.pop(context);
+        },);
+     },);
+    }else{
+      print('Success: ${response.body}');
+    }
+    notifyListeners();
+  }
+
   // Cancel Subscription
   Future<void> cancelSubscription(int id, Size size, BuildContext context,) async {
     Map<String, dynamic> cancelData =  {
@@ -107,10 +197,15 @@ class SubscriptionProvider extends ChangeNotifier{
       message: decodedResponse['message'], 
       backgroundColor: Theme.of(context).primaryColor, 
       sidePadding: size.width * 0.1,
-      bottomPadding: size.height * 0.7
+      bottomPadding: size.height * 0.05
     );
-    if(response.statusCode == 200 && decodedResponse['status'] == "Success"){
-     ScaffoldMessenger.of(context).showSnackBar(cancelSubscriptinoMessage);
+    if(response.statusCode == 200 && decodedResponse['status'] == "success"){
+      Navigator.pop(context);
+     ScaffoldMessenger.of(context).showSnackBar(cancelSubscriptinoMessage).closed.then((value) async {
+       await activeSubscription().then((value) async {
+        await subscriptionHistoryAPI();
+      },);
+     },);
     }else{
       print('Success: ${response.body}');
     }
@@ -132,10 +227,14 @@ class SubscriptionProvider extends ChangeNotifier{
       message: decodedResponse['message'], 
       backgroundColor: Theme.of(context).primaryColor, 
       sidePadding: size.width * 0.1, 
-      bottomPadding: size.height * 0.7
+      bottomPadding: size.height * 0.05
     );
-    if(response.statusCode == 200 && decodedResponse['status'] == "Success"){
-     ScaffoldMessenger.of(context).showSnackBar(resumeSubscriptinoMessage);
+    if(response.statusCode == 200 && decodedResponse['status'] == "success"){
+     ScaffoldMessenger.of(context).showSnackBar(resumeSubscriptinoMessage).closed.then((value) async {
+       await activeSubscription().then((value) async {
+          await subscriptionHistoryAPI();
+        },);
+      },);
      print("Called");
     }else{
       print('Success: ${response.body}');
@@ -154,7 +253,7 @@ class SubscriptionProvider extends ChangeNotifier{
       message: decodedResponse['message'], 
       backgroundColor: Theme.of(context).primaryColor, 
       sidePadding: size.width * 0.1, 
-      bottomPadding: size.height * 0.85
+      bottomPadding: size.height * 0.05
     );
     if (response.statusCode == 200) {
       ScaffoldMessenger.of(context).showSnackBar(renewsubscriptionMessage);
@@ -237,13 +336,7 @@ class SubscriptionProvider extends ChangeNotifier{
                           overlayColor: Colors.transparent.withOpacity(0.1)
                         ),
                         onPressed: () async{
-                          await cancelSubscription(id, size, context).then((value) async{
-                            await profile.activeSubscription().then((value) async {
-                              await profile.subscriptionHistoryAPI().then((value) {
-                                Navigator.pop(context);
-                              },);
-                            },);
-                          },);
+                          await cancelSubscription(id, size, context);
                         }, 
                         child: const AppTextWidget(
                           text: "Yes", 

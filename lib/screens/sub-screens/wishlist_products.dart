@@ -1,9 +1,8 @@
-import 'package:app_3/providers/cart_items_provider.dart';
 import 'package:app_3/model/products_model.dart';
 import 'package:app_3/model/wishlist_products_model.dart';
 import 'package:app_3/providers/api_provider.dart';
+import 'package:app_3/providers/cart_items_provider.dart';
 import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
-import 'package:app_3/widgets/common_widgets.dart/snackbar_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -134,18 +133,12 @@ class WishlistProducts extends StatelessWidget {
                                   wishlistProvider.removeWishlistMessage(
                                     product.productId , 
                                     product.title,
-                                    product.quantity, context
+                                    product.quantity, context, size
                                   );
-                                  if (wishlistProvider.removedMessage != null) {
-                                    SnackBar? wishlistMessage = snackBarMessage(
-                                      context: context, 
-                                      message: wishlistProvider.removedMessage!, 
-                                      backgroundColor: Theme.of(context).primaryColor, 
-                                      sidePadding: size.width * 0.1, 
-                                      bottomPadding: size.height * 0.85
-                                    );
-                                    ScaffoldMessenger.of(context).showSnackBar(wishlistMessage);
-                                  }
+                                  // if (wishlistProvider.removedMessage != null) {
+                                   
+                                    
+                                  // }
                                 },
                                 child: const Icon(
                                   CupertinoIcons.delete,

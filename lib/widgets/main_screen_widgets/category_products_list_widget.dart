@@ -55,7 +55,11 @@ class CategoryProductsListWidget extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
-        child: ListView.builder(
+        child: products.isEmpty
+        ? const Center(
+          child: AppTextWidget(text: "No Products", fontSize: 15, fontWeight: FontWeight.w500),
+        )
+        : ListView.builder(
           itemCount: products.length,
           itemBuilder: (context, index) {
             return Column(
@@ -92,12 +96,33 @@ class CategoryProductsListWidget extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             // Product Name and Quantity
-                            AppTextWidget(
-                              text: "${products[index].name}/${products[index].quantity}", 
-                              fontSize: 16, 
-                              maxLines: 2,
-                              textOverflow: TextOverflow.ellipsis,
-                              fontWeight: FontWeight.w500
+                            Consumer<CartProvider>(
+                                builder: (context, productProvider, child) {
+                                return RichText(
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  text: TextSpan(
+                                    text: productProvider.cartQuantities[products[index].id] != null
+                                    ? "${productProvider.cartQuantities[products[index].id]}x "
+                                    : "", 
+                                    style: TextStyle(
+                                      fontSize: 16, 
+                                      fontWeight: FontWeight.w500,
+                                      color: Theme.of(context).primaryColor
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                        text: "${products[index].name}/${products[index].quantity}", 
+                                        style: const TextStyle(
+                                          fontSize: 16, 
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w500
+                                        )
+                                      )
+                                    ]
+                                  ),
+                                );
+                              }
                             ),
                             const SizedBox(height: 5,),
                             // Product Description
@@ -141,30 +166,119 @@ class CategoryProductsListWidget extends StatelessWidget {
                       Consumer<CartProvider>(
                         builder: (context, cartProvider, child) {
                           return SizedBox(
-                            width: 45,
                             height: 105,
-                            child: ElevatedButton(
-                              onPressed: () async => await cartProvider.addCart(products[index].id, size, context, products[index]), 
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.transparent.withOpacity(0.0),
-                                elevation: 0,
-                                alignment: Alignment.center,
-                                padding: const EdgeInsets.fromLTRB(13, 0, 0, 0),
-                                shadowColor: Colors.transparent.withOpacity(0.0),
-                                overlayColor: Colors.transparent.withOpacity(0.1),
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(color: Colors.grey.shade300),
-                                  borderRadius: BorderRadius.circular(5)
-                                )
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                                child: Icon(
-                                  CupertinoIcons.cart_badge_plus,
-                                  color: Theme.of(context).primaryColor,
-                                  size: 20,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 40,
+                                  height: cartProvider.cartQuantities[products[index].id] != null ? 50: 105,
+                                  child: AnimatedSize(
+                                    duration: const Duration(milliseconds: 500),
+                                    curve: Curves.easeInOut,
+                                    child: ElevatedButton(
+                                      onPressed: () async {
+                                        // print("prod ")
+                                        if(cartProvider.cartQuantities[products[index].id] == null){
+                                          await cartProvider.addCart(products[index].id, size, context, products[index]);
+                                        }else{
+                                          cartProvider.incrementQuantity(productId: products[index].id, isIncrement: true);
+                                          List<Map<String, dynamic>> cartProductData = [];
+                                          // print(cartProvider.cartItems[index].id);
+                                          cartProvider.cartQuantities.forEach((key, value) {
+                                          
+                                            cartProductData.add({
+                                              "prdt_id": key,
+                                              "prdt_qty": value,
+                                              "prdt_total": value * products[index].finalPrice
+                                            });
+                                            
+                                          },);
+                                          await cartProvider.updateCart(size, context, cartProductData, false);
+                                        }
+                                      }, 
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: cartProvider.cartQuantities[products[index].id] != null 
+                                          ? Theme.of(context).primaryColor
+                                          : Colors.transparent.withOpacity(0.0),
+                                        elevation: 0,
+                                        alignment: Alignment.centerLeft,
+                                        padding: EdgeInsets.fromLTRB(cartProvider.cartQuantities[products[index].id] != null ? 13 : 10, 0, 0, 0),
+                                        shadowColor: Colors.transparent.withOpacity(0.0),
+                                        overlayColor: cartProvider.cartQuantities[products[index].id] != null 
+                                          ? Colors.white12
+                                          : Colors.transparent.withOpacity(0.1),
+                                        shape: RoundedRectangleBorder(
+                                          side: cartProvider.cartQuantities[products[index].id] != null
+                                          ? BorderSide.none 
+                                          : BorderSide(color: Colors.grey.shade300),
+                                          borderRadius: BorderRadius.circular(5)
+                                        )
+                                      ),
+                                      child: Icon(
+                                        cartProvider.cartQuantities[products[index].id] != null 
+                                        ? CupertinoIcons.plus
+                                        : CupertinoIcons.cart_badge_plus,
+                                        color: cartProvider.cartQuantities[products[index].id] != null 
+                                        ? Colors.white
+                                        : Theme.of(context).primaryColor,
+                                        size: cartProvider.cartQuantities[products[index].id] != null ? 13 : 20,
+                                      ) 
+                                    ),
+                                  ),
                                 ),
-                              )
+                                cartProvider.cartQuantities[products[index].id] != null
+                                ? SizedBox(
+                                    width: 40,
+                                    height: 50,
+                                    child: AnimatedSize(
+                                      duration: const Duration(milliseconds: 500),
+                                      curve: Curves.easeInOut,
+                                      child: ElevatedButton(
+                                        onPressed: () async {
+                                          // Decrease the quantity of the product
+                                          if (cartProvider.cartQuantities[products[index].id]  != null && cartProvider.cartQuantities[products[index].id]  == 1) {
+                                            cartProvider.confirmDelete(products[index].id, size, index, context);
+                                          } else {
+                                            cartProvider.incrementQuantity(productId: products[index].id);
+                                            List<Map<String, dynamic>> cartProductData = [];
+                                            cartProvider.cartQuantities.forEach((key, value) {
+                                              cartProductData.add({
+                                                "prdt_id": key,
+                                                "prdt_qty": value,
+                                                "prdt_total": value * products[index].finalPrice
+                                              });
+                                            },);
+                                            await cartProvider.updateCart(size, context, cartProductData, false);
+                                          }
+                                        }, 
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.transparent.withOpacity(0.0),
+                                          elevation: 0,
+                                          alignment: Alignment.centerLeft,
+                                          padding: const EdgeInsets.fromLTRB(12, 0, 0, 0),
+                                          shadowColor: Colors.transparent.withOpacity(0.0),
+                                          overlayColor: Colors.transparent.withOpacity(0.1),
+                                          shape: RoundedRectangleBorder(
+                                            side: BorderSide(color: Colors.grey.shade300),
+                                            borderRadius: BorderRadius.circular(5)
+                                          )
+                                        ),
+                                        child: Icon(
+                                          cartProvider.cartQuantities[products[index].id]  != null && cartProvider.cartQuantities[products[index].id]  == 1
+                                          ? CupertinoIcons.delete
+                                          : CupertinoIcons.minus,
+                                          color: cartProvider.cartQuantities[products[index].id]  != null && cartProvider.cartQuantities[products[index].id]  == 1
+                                          ? Colors.red
+                                          : Theme.of(context).primaryColor,
+                                          size: 15,
+                                        )
+                                      ),
+                                    ),
+                                  )
+                                : Container()
+                              ],
                             ),
                           );
                         },

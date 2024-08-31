@@ -1,7 +1,6 @@
 import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/helper/shared_preference_helper.dart';
 import 'package:app_3/model/active_subscription_model.dart';
-import 'package:app_3/providers/profile_provider.dart';
 import 'package:app_3/providers/subscription_provider.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:app_3/widgets/profile_screen_widgets/renew_subscription_widget.dart';
@@ -19,7 +18,7 @@ class ActiveSubscriptionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
-    return Consumer<ProfileProvider>(
+    return Consumer<SubscriptionProvider>(
       builder: (context, provider, child) {
         return provider.activeSubscriptions.isEmpty
           ? FutureBuilder(
@@ -91,8 +90,8 @@ class ActiveSubscriptionWidget extends StatelessWidget {
 
   // Active subscription Widget
   Widget activeSubscriptionList(Size size, List<ActiveSubscriptionModel> subscritionProducts){
-    return Consumer2<SubscriptionProvider, ProfileProvider>(
-      builder: (context, activeSub, profile, child) {
+    return Consumer<SubscriptionProvider>(
+      builder: (context, activeSub,  child) {
         List<ActiveSubscriptionModel> subscripedProducts = subscritionProducts.reversed.toList();
         return ListView.builder(
           itemCount: subscripedProducts.length,
@@ -146,16 +145,19 @@ class ActiveSubscriptionWidget extends StatelessWidget {
                                     PopupMenuButton(
                                       color: Colors.white,
                                       child: const Icon(CupertinoIcons.ellipsis_vertical, size: 20,),
-                                      itemBuilder: (context) {
+                                      itemBuilder: (popUpcontext) {
                                         return options.map((option) {
                                          return PopupMenuItem(
                                           onTap: () async {
                                             if (option == "Cancel") {
-                                              await activeSub.confirmCancelSubscription(subscripedProducts[index].subId, size, context);
+                                              activeSub.confirmCancelSubscription(subscripedProducts[index].subId, size, context);
                                             }else if(option == "Resume"){
                                               await activeSub.resumeSub(subscripedProducts[index].subId, size, context).then((value) async {
+                                                await activeSub.activeSubscription().then((value) async {
+                                                  await activeSub.subscriptionHistoryAPI();
+                                                },);
                                               },);
-                                                await profile.activeSubscription();
+                                               
                                             }else if(option == "Renew") {
                                               if (activeSub.renewStartDate == null || activeSub.renewStartDate!.isEmpty) {
                                                 // if (activeSub.renewStartDate!.isEmpty) {
@@ -175,11 +177,11 @@ class ActiveSubscriptionWidget extends StatelessWidget {
                                                 }
                                             }else{
                                               if (subscripedProducts[index].frequency == 'custom') {
-                                                customChange(context, subscripedProducts[index], size.height, size.width);
+                                                customChange(context, subscripedProducts[index], size);
                                               }else if (subscripedProducts[index].frequency== 'weekday') {
-                                                weekDayChange(context, subscripedProducts[index], size.height, size.width);
+                                                weekDayChange(context, subscripedProducts[index], size);
                                               }else if (subscripedProducts[index].frequency == 'everyday') {
-                                                everyDayChange(context, subscripedProducts[index], size.height,  size.width);
+                                                everyDayChange(context, subscripedProducts[index], size);
                                               }
                                             }
                                           },

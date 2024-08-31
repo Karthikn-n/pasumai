@@ -26,18 +26,22 @@ class ApiProvider extends ChangeNotifier{
   SharedPreferences prefs = SharedPreferencesHelper.getSharedPreferences();
 
   bool isQuick = false;
+  int bottomIndex = 0;
 
   // Data For Home screen
   List<String> banners = [];
   List<Products> featuredproductData = [];
   List<Products> bestSellerProducts = [];
   List<CategoryModel> categories = [];
+
   // Data for wishlist 
   List<WishlistProductsModel> wishlistProducts = [];
   String? message;
   String? removedMessage;
+
   // Category list
   List<Products> categoryProducts = [];
+  List<Products> quickOrderProductsList = [];
   List<Products> filteredProducts = [];
   List<Attributes> attributesList = [
     Attributes(
@@ -65,9 +69,10 @@ class ApiProvider extends ChangeNotifier{
 
   // Quick Order data
   List<SelectedProductModel> selectedProducts = [];
-  List<int> quantities = []; 
-  int totalAmount = 0;
-  int totalProduct = 0;
+  // List<int> quantities = []; 
+  Map<int, int> quickOrderQuantites = {};
+  int totalQuickOrderAmount = 0;
+  int totalQuickOrderProduct = 0;
 
   // Coupon Data
   bool isCouponApplied = false;
@@ -78,8 +83,17 @@ class ApiProvider extends ChangeNotifier{
   // Provider for quick order back
   void setQuick(bool quick){
     isQuick = quick;
+    print("Quick: $isQuick");
     notifyListeners();
   }
+
+  void setIndex(int index){
+    bottomIndex = index;
+    print("Index: $bottomIndex");
+    notifyListeners();
+  }
+
+
   // User Register API
   Future<void> registerUser(Map<String, dynamic> registerData, BuildContext context, Size size) async {
     try{
@@ -92,15 +106,15 @@ class ApiProvider extends ChangeNotifier{
       message: decodedResponse['message'], 
       backgroundColor: Theme.of(context).primaryColor, 
       sidePadding: size.width * 0.1, 
-      bottomPadding: size.height * 0.85
+      bottomPadding: size.height * 0.05
     );
-    if (response.statusCode == 200 && decodedResponse['message'] == "Registered successfully")  {
+    if (response.statusCode == 200 && decodedResponse['status'] == "success")  {
       prefs.setString('customerId', decodedResponse["customer_id"].toString());
       try {
-        ScaffoldMessenger.of(context).showSnackBar(registrationMessage).closed.then((value){
-          prefs.setBool("registered", true);
-          prefs.setString("mobile", registerData["mobile_no"]);
-          Navigator.push(context, SideTransistionRoute(screen: const OtpPage(),));
+        ScaffoldMessenger.of(context).showSnackBar(registrationMessage).closed.then((value) async {
+          await userProfileAPI();
+          prefs.setString("mobile", decodedResponse["mobile_no"]);
+          Navigator.push(context, SideTransistionRoute(screen: const OtpPage(fromRegister: true,),));
         });
       } catch (e) {
         print('Error decoding JSON: $e');
@@ -130,18 +144,19 @@ class ApiProvider extends ChangeNotifier{
       message: decodedResponse['message'], 
       backgroundColor: const Color(0xFF60B47B), 
       sidePadding: size.width * 0.1, 
-      bottomPadding: size.height * 0.85
+      bottomPadding: size.height * 0.05
     );
     debugPrint('Login Response: $decodedResponse, Status Code: ${response.statusCode}', wrapWidth: 1064);
     if (response.statusCode == 200 && decodedResponse['status'] == 'success') {
       ScaffoldMessenger.of(context).showSnackBar(loginMessage).closed.then(
         (value) async {
+          await userProfileAPI();
           // Save User id In Cache
           prefs.setString('customerId', decodedResponse["customer_id"].toString());
           print("Customer ID: ${prefs.getString("customerId")}");
           prefs.setString("mobile", mobileNo);
           Navigator.push(context, SideTransistionRoute(
-            screen: const OtpPage(), 
+            screen: const OtpPage(fromRegister: false,), 
           ));
         },
       );
@@ -152,7 +167,28 @@ class ApiProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  
+  Future<void> userProfileAPI() async {
+    Map<String, dynamic> userData = {
+      'customer_id': prefs.getString('customerId')
+    };
+
+    final response = await apiRepository.userprofile(userData);
+    String decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
+    final decodedResponse = json.decode(decryptedResponse);
+    print('Profile Response: $decodedResponse, Status Code: ${response.statusCode}');
+
+    if (response.statusCode == 200 && decodedResponse['status'] == 'success') {
+
+      prefs.setString('firstname', '${decodedResponse['results']['first_name'] ?? ''}');
+      prefs.setString('lastname', '${decodedResponse['results']['last_name'] ?? ''}');
+      prefs.setString('mail', '${decodedResponse['results']['email'] ?? ''}');
+      prefs.setString('mobile', '${decodedResponse['results']['mobile_no'] ?? ''}');
+    } else {
+      print('Error: ${response.body}');
+    }
+  }
+
+
   // Resend OTP api
   Future<void> resendOTP(BuildContext context, Size size, String mobileNo) async {
     Map<String, dynamic> resendOtpData = {
@@ -168,7 +204,7 @@ class ApiProvider extends ChangeNotifier{
       message: decodedResponse['message'], 
       backgroundColor: const Color(0xFF60B47B), 
       sidePadding: size.width * 0.1, 
-      bottomPadding: size.height * 0.85
+      bottomPadding: size.height * 0.05
     );
     if (response.statusCode == 200) {
      ScaffoldMessenger.of(context).showSnackBar(resendOtpMessage);
@@ -181,6 +217,7 @@ class ApiProvider extends ChangeNotifier{
   // All Products List API
   Future<void> allProducts(int catId) async {
     Map<String, dynamic> productData = {'cat_id': catId};
+    print("Category ID: $productData");
     final response = await apiRepository.allProducts(productData);
     String decrptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
     final decodedResponse = json.decode(decrptedResponse);
@@ -190,43 +227,98 @@ class ApiProvider extends ChangeNotifier{
       List<Products> productsList = productJson.map((json) => Products.fromJson(json)).toList();
       categoryProducts.clear();
       categoryProducts = productsList;
-      if (catId == 1) {
-        createQuantities();
-      }
+      // if (catId == 1) {
+      //   createQuantities();
+      // }
+      
       attributesList = decodedResponse['attributes'].map<Attributes>((attr) => Attributes.fromJson(attr)).toList();
     } else {
       print('Error: ${response.body}');
     }
   }
 
-  // Create A inital quantites for the quick order
-  void createQuantities(){
-    if (quantities.isEmpty) {
-      quantities = List.generate(categoryProducts.length, (index) => 0,);
+  // All Products List API
+  Future<void> quickOrderProducts() async {
+    Map<String, dynamic> productData = {'cat_id': "1"};
+    print("Category ID: $productData");
+    final response = await apiRepository.allProducts(productData);
+    String decrptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
+    final decodedResponse = json.decode(decrptedResponse);
+    debugPrint('Quick Order Products Response: $decodedResponse, Status Code: ${response.statusCode}');
+    if (response.statusCode == 200) {
+      final List<dynamic> productJson = decodedResponse['products'];
+      List<Products> productsList = productJson.map((json) => Products.fromJson(json)).toList();
+      quickOrderProductsList.clear();
+      quickOrderProductsList = productsList;
+      createQuickorderQuantities();
+      attributesList = decodedResponse['attributes'].map<Attributes>((attr) => Attributes.fromJson(attr)).toList();
+    } else {
+      print('Error: ${response.body}');
     }
-    print("Quantities: $quantities");
+  }
+
+  // Add Product to wishlist
+  Future<void> addWishlist(int productId, Size size, String name, String quantity, BuildContext context) async {
+    Map<String, dynamic> wishlistData = {
+      'customer_id': prefs.getString('customerId'),
+      'product_id': productId
+    };
+    print('product Data: $wishlistData');
+    final response = await apiRepository.addWishList(wishlistData);
+    final decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), "");
+    final decodedReponse = json.decode(decryptedResponse);
+    print('Wishlist added Message: $decodedReponse, Stauts code: ${response.statusCode}');
+    SnackBar wishlistAddedMessage = snackBarMessage(
+      context: context, 
+      message: decodedReponse['message'],
+      backgroundColor: Theme.of(context).primaryColor, 
+      sidePadding: size.width * 0.1, bottomPadding: size.height * 0.05);
+    if (response.statusCode == 200 && decodedReponse['status'] == 'success') {
+      ScaffoldMessenger.of(context).showSnackBar(wishlistAddedMessage);
+      prefs.setBool('$productId$name$quantity', decodedReponse['message'] == "Wishlist added successfully" ? true : decodedReponse['message'] == "Wishlist removed successfully" ? false : false);
+      notifyListeners();
+    }else{
+      ScaffoldMessenger.of(context).showSnackBar(wishlistAddedMessage);
+      prefs.remove('$productId$name$quantity');
+    }
+    notifyListeners();
+  }
+
+
+  // Create A inital quantites for the quick order
+  void createQuickorderQuantities(){
+    for (var i = 0; i < quickOrderProductsList.length; i++) {
+      quickOrderQuantites[quickOrderProductsList[i].id] = 0;
+    }
+    print("Qucik order Quantities: $quickOrderQuantites");
     notifyListeners();
   }
 
   // Increment and decrement in quick order
-  void incrementQuickOrderQuantity({bool? isIncreament, required int productPrice, required int index}){
-    if (isIncreament ?? false) {
-     quantities[index]++;
-     
-     totalProduct++;
-     totalAmount +=  productPrice;
-      print("Quantities: $quantities, Total: $totalAmount, Product: $totalProduct");
+  void incrementQuickOrderQuantity({bool? isIncrement, required int productPrice, required int productId}){
+    if (isIncrement ?? false) {
+      quickOrderQuantites[productId] = quickOrderQuantites[productId]! + 1;
+      totalQuickOrderProduct++;
+      // totalAmount
+      totalQuickOrderAmount += productPrice; 
+      print("Quicke order Quantites: $quickOrderQuantites, Total Product: $totalQuickOrderProduct, Ttoal Amoubnt: $totalQuickOrderAmount");
     }else{
-      if (quantities[index] > 0) {
-        quantities[index]--;
-        totalAmount -= productPrice; 
-      }
-      totalProduct--;
-      print("Quantities: $quantities, Total: $totalAmount, Product: $totalProduct");
+      quickOrderQuantites[productId] = quickOrderQuantites[productId]! - 1;
+      totalQuickOrderProduct--;
+      totalQuickOrderAmount -= productPrice;
+      print("Quicke order Quantites: $quickOrderQuantites, Total Product: $totalQuickOrderProduct, Ttoal Amoubnt: $totalQuickOrderAmount");
     }
     notifyListeners();
   }
   
+   void clearQuickOrder(){
+    createQuickorderQuantities();
+    totalQuickOrderAmount = 0;
+    totalQuickOrderProduct =0;
+    selectedProducts.clear();
+    print("Previous order is cleared");
+    notifyListeners();
+  }
   
   // Store selected quick order 
   void addSelectedProducts(SelectedProductModel product){
@@ -238,44 +330,6 @@ class ApiProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  void clearOrder(){
-    quantities.clear();
-    totalAmount = 0;
-    totalProduct =0;
-    selectedProducts.clear();
-    print("Previous order is cleared");
-    notifyListeners();
-  }
-  // // Filter Function
-  // void filterProducts(bool? isFeaturedProduct, bool? isBestSeller) {
-  //   if (clearFilter) {
-  //       filteredProducts.clear(); 
-  //   } else {
-  //     if (isFeaturedProduct ?? false) {
-  //       filteredProducts.clear(); 
-  //       filteredProducts = featuredproductData.where((product) {
-  //         return product.quantity == selectedOption;
-  //       }).toList();
-  //     }
-  //   }
-  //   notifyListeners();
-  // }
-
-  // // clear Filter
-  // void clearFilters() {
-  //   clearFilter = true;
-  //   notifyListeners();
-  // }
-
-  // // Select Filtes
-  // void setFilters({String? attribute, String? option, bool? isAttribute}){
-  //   if (isAttribute ?? false) {
-  //     selectedAttribute = attribute;
-  //   }else{
-  //     selectedOption = option;
-  //   }
-  //   notifyListeners();
-  // }
 
   // Get Banners List from the API
   Future<void> getFeturedProducts() async {
@@ -370,7 +424,7 @@ class ApiProvider extends ChangeNotifier{
   }
 
   // Delete Product From wishlist
-  Future<void> removeWishlist(int productId, String name, String quantity) async {
+  Future<void> removeWishlist(int productId, String name, String quantity, BuildContext context, Size size) async {
     Map<String, dynamic> removeWishlistProductData = {
       "customer_id": prefs.getString("customerId"),
       "product_id": productId
@@ -380,7 +434,15 @@ class ApiProvider extends ChangeNotifier{
     final decodedReponse = json.decode(decryptedResponse);
     print('Wishlist Remove response: $decodedReponse, Stauts code: ${response.statusCode}');
     if (response.statusCode == 200) {
-      removedMessage = "Product Removed from Wishlist";
+       SnackBar wishlistMessage = snackBarMessage(
+        context: context, 
+        message: "Product Removed from Wishlist", 
+        backgroundColor: Theme.of(context).primaryColor, 
+        sidePadding: size.width * 0.1, 
+        bottomPadding: size.height * 0.05
+      );
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(wishlistMessage);
       wishlistProducts.removeWhere((element) => element.productId == productId,);
       prefs.remove('$productId$name$quantity');
     }
@@ -405,13 +467,13 @@ class ApiProvider extends ChangeNotifier{
       message: decodedResponse['message'], 
       backgroundColor: Theme.of(context).primaryColor, 
       sidePadding: size.width * 0.1, 
-      bottomPadding: size.height * 0.85
+      bottomPadding: size.height * 0.05
     );
     if (response.statusCode == 200 && decodedResponse["status"] == "success") {
       // ScaffoldMessenger.of(context).showSnackBar(quickOrderMessage).closed.then((value) {
         Navigator.push(context, SideTransistionRoute(
           screen: const CheckoutScreen(), 
-          args: {'items': totalProduct, 'amount': totalAmount, 'fromQuick': true}
+          args: {'items': totalQuickOrderProduct, 'amount': totalQuickOrderAmount, 'fromQuick': true}
         ));
       // },);
     } else {
@@ -428,7 +490,7 @@ class ApiProvider extends ChangeNotifier{
         message: 'Coupon Already applied', 
         backgroundColor: Theme.of(context).primaryColor, 
         sidePadding: size.width * 0.1, 
-        bottomPadding: size.height * 0.75
+        bottomPadding: size.height * 0.05
       );
       ScaffoldMessenger.of(context).showSnackBar(appliedMessage);
    }else{
@@ -451,7 +513,7 @@ class ApiProvider extends ChangeNotifier{
           message: 'Coupon applied Successfully', 
           backgroundColor: Theme.of(context).primaryColor, 
           sidePadding: size.width * 0.1, 
-          bottomPadding: size.height * 0.75
+          bottomPadding: size.height * 0.05
         );
         ScaffoldMessenger.of(context).showSnackBar(couponMessage);
         isCouponApplied = true;
@@ -474,7 +536,7 @@ class ApiProvider extends ChangeNotifier{
         message: 'Coupon Already applied', 
         backgroundColor: Theme.of(context).primaryColor, 
         sidePadding: size.width * 0.1, 
-        bottomPadding: size.height * 0.75
+        bottomPadding: size.height * 0.05
       );
       ScaffoldMessenger.of(context).showSnackBar(appliedMessage);
     }else{
@@ -499,7 +561,7 @@ class ApiProvider extends ChangeNotifier{
           message: 'Coupon applied Successfully', 
           backgroundColor: Theme.of(context).primaryColor, 
           sidePadding: size.width * 0.1, 
-          bottomPadding: size.height * 0.75
+          bottomPadding: size.height * 0.05
         );
         ScaffoldMessenger.of(context).showSnackBar(couponMessage);
         isCouponApplied = true;
@@ -532,13 +594,14 @@ class ApiProvider extends ChangeNotifier{
       message: decodedResponse['message'], 
       backgroundColor: Theme.of(context).primaryColor, 
       sidePadding: size.width * 0.1, 
-      bottomPadding: size.height * 0.75
+      bottomPadding: size.height * 0.05
     );
     if (response.statusCode == 200 && decodedResponse["status"] == "success") {
-      clearOrder();
+      clearQuickOrder();
       ScaffoldMessenger.of(context).showSnackBar(quickOrderMessage).closed.then((value){
+        bottomIndex = 0;
         Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => BottomBar(selectedIndex: 0),),
+          MaterialPageRoute(builder: (context) => const BottomBar(),),
           (route) => false
         );
       });
@@ -549,7 +612,7 @@ class ApiProvider extends ChangeNotifier{
 
   
   // Remove wishlist Message
-  void removeWishlistMessage(int productId, String name, String quantity, BuildContext context){
+  void removeWishlistMessage(int productId, String name, String quantity, BuildContext context, Size size){
     showDialog(
       context: context,
       builder: (context) {
@@ -603,7 +666,7 @@ class ApiProvider extends ChangeNotifier{
                       overlayColor: Colors.transparent.withOpacity(0.1)
                     ),
                     onPressed: () async{
-                      await removeWishlist(productId, name, quantity).then((value) => Navigator.pop(context),);
+                      await removeWishlist(productId, name, quantity, context, size);
                     }, 
                     child: const AppTextWidget(
                       text: "Yes", 
@@ -640,4 +703,7 @@ class ApiProvider extends ChangeNotifier{
   
   }
 
+
+
+  
 }

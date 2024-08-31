@@ -83,12 +83,13 @@ class _AddressSelectionScreenState extends State<AddressSelectionScreen> {
                         itemCount: addressProvider.addresses.length,
                         itemBuilder: (context, index) {
                           List<AddressModel> address =  addressProvider.addresses;
-                          return Container(
-                            decoration: BoxDecoration(
-                              border: Border(bottom: address.length -1 == index ? BorderSide(color: Colors.grey.shade200) : BorderSide.none)
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                addressProvider.setCurrentAddress(address: address[index], addressId: address[index].id);
+                                Navigator.pop(context);
+                              },
                               child: Container(
                                 height: size.height * 0.21,
                                 padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
@@ -96,8 +97,8 @@ class _AddressSelectionScreenState extends State<AddressSelectionScreen> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
                                   border: Border.all(
-                                    width: address[index].defaultAddress == "1" ? 2 : 1,
-                                    color: address[index].defaultAddress  == "1"
+                                    width: address[index].id == addressProvider.currentAddress!.id ? 2 : 1,
+                                    color: address[index].id == addressProvider.currentAddress!.id
                                     ? Theme.of(context).primaryColor
                                     : Colors.grey.shade300 
                                   )
@@ -164,7 +165,7 @@ class _AddressSelectionScreenState extends State<AddressSelectionScreen> {
                                   ],
                                 ),
                               ),
-                            )
+                            ),
                           );
                         },
                       );

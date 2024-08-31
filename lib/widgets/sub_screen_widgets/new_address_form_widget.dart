@@ -338,7 +338,10 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
                                     : locations.firstWhere((element) => element.locationName == selectedLocation,).locationId,
                                   'pincode': pincodeController.text,
                                 };
-                               
+                                print("Region: ${regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).regionName}");
+                                print("Region: ${regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).locationData.firstWhere((element) => element.locationName == element.locationName,).locationName}");
+                                print("Selected Region: $selectedRegion");
+                                print("Selected Location: $selectedLocation");
                                 print("Update Address Data: $updateAddressData");
                                 await  provider.updateAddressAPI(context, size, updateAddressData).then((value) {
                                   provider.clearMapAddress();
@@ -375,7 +378,7 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
                                       prefs.remove("registered");
                                       prefs.remove("newUserVerified");
                                       prefs.remove("phoneNo");
-                                      Navigator.push(context, SideTransistionRoute(screen: BottomBar(selectedIndex: 0)));
+                                      Navigator.push(context, SideTransistionRoute(screen: const BottomBar()));
                                     }else{
                                       Navigator.pop(context);
                                     } 

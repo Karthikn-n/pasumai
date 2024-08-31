@@ -16,7 +16,7 @@ class SubscriptionPageWidget extends StatelessWidget {
     return Consumer<SubscriptionProvider>(
       builder: (context, provider, child) {
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           child: ListView.builder(
             itemCount: provider.subscribeProducts.length,
             itemBuilder: (context, index) {
@@ -101,21 +101,12 @@ class SubscriptionPageWidget extends StatelessWidget {
                         ),
                         // Add to Cart Button
                         SizedBox(
-                          width: 45,
+                          width: 40,
                           height: 105,
                           child: ElevatedButton(
-                            onLongPress: () {
-                              
-                            },
                             onPressed: () async => Navigator.push(context, SideTransistionRoute(
-                              screen:  const ProductSubScription(),
-                              args: {
-                                'name': provider.subscribeProducts[index].name,
-                                'image': provider.subscribeProducts[index].image,
-                                'final': provider.subscribeProducts[index].finalPrice.toString(),
-                                'price': provider.subscribeProducts[index].price,
-                                'id': provider.subscribeProducts[index].id
-                              },
+                              screen: ProductSubScription(product: provider.subscribeProducts[index],),
+                              
                             )), 
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.transparent.withOpacity(0.0),

@@ -1,7 +1,6 @@
 import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/model/active_subscription_model.dart';
 import 'package:app_3/providers/address_provider.dart';
-import 'package:app_3/providers/profile_provider.dart';
 import 'package:app_3/providers/subscription_provider.dart';
 import 'package:app_3/screens/sub-screens/address_selection_screen.dart';
 import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
@@ -27,10 +26,10 @@ class RenewSubscriptionWidget extends StatelessWidget {
       appBar: AppBarWidget(
         title: 'Renew Subscription', 
         needBack: true, 
-        onBack: () => Navigator.pop,
+        onBack: () => Navigator.pop(context),
       ),
-      body: Consumer3<SubscriptionProvider, AddressProvider, ProfileProvider>(
-        builder: (context, renewProvider, addressProvider, actibeSub, child) {
+      body: Consumer2<SubscriptionProvider, AddressProvider>(
+        builder: (context, renewProvider, addressProvider,  child) {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: SingleChildScrollView(
@@ -167,7 +166,7 @@ class RenewSubscriptionWidget extends StatelessWidget {
                                         firstDate: DateTime.now(), 
                                         lastDate: DateTime(2100),
                                         helpText: "Renew Date",
-                                        initialDate: DateTime.now()
+                                        initialDate: DateTime.now(),
                                       );
                                       if (renewDate != null) {
                                         renewProvider.setStartDate(renewDate, index);
@@ -404,7 +403,7 @@ class RenewSubscriptionWidget extends StatelessWidget {
                             "renewal_date": DateFormat("yyyy-MM-dd").format(renewProvider.renewStartDate![index]!),
                             "address": addressProvider.currentAddress!.id,
                             }, context, size).then((value) async {
-                              await actibeSub.activeSubscription();
+                              await renewProvider.activeSubscription();
                               Navigator.pop(context);
                             },);
                         }

@@ -30,7 +30,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   // Delivery detail data
   DateTime? expectedDeliverydate;
   String? expectedDeliveryTime;
-  List<String> deliveryTimes = ['06:00 - 11:59 PM','12:00 - 06:00 PM','06:00 - 09:00 PM'];
+  List<String> deliveryTimes = ['06:00 - 11:59 AM','12:00 - 06:00 PM','06:00 - 09:00 PM'];
   // Payment Detail
   String? selectedPaymentOption;
   List<String> paymentOptions = ['Cash on delivery','Pay using UPI','Pay using credit/debit card'];
@@ -129,7 +129,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                               AppTextWidget(
                                                 text: widget.fromCart ?? true 
                                                   ? "${provider.selectedProducts[index].quantity}x "
-                                                  : "${cartProvider.cartItems[index].quantity}x ", 
+                                                  : "${cartProvider.cartQuantities[cartProvider.cartItems[index].id]}x ", 
                                                 fontSize: 15, 
                                                 fontWeight: FontWeight.w500,
                                                 fontColor: Theme.of(context).primaryColor,
@@ -196,7 +196,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                         AppTextWidget(
                                           text: widget.fromCart ?? true 
                                           ? "₹${provider.selectedProducts[index].finalPrice * provider.selectedProducts[index].quantity}"
-                                          : "₹${cartProvider.cartItems[index].quantity * int.parse(cartProvider.cartItems[index].price)}", 
+                                          : "₹${cartProvider.cartQuantities[cartProvider.cartItems[index].id]! * int.parse(cartProvider.cartItems[index].price)}", 
                                           fontSize: 14, 
                                           fontWeight: FontWeight.w500
                                         ),
@@ -204,7 +204,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                         Text(
                                           widget.fromCart ?? true 
                                           ? "₹${provider.selectedProducts[index].listPrice * provider.selectedProducts[index].quantity}"
-                                          : "₹${cartProvider.cartItems[index].quantity * int.parse(cartProvider.cartItems[index].listPrice)}",
+                                          : "₹${cartProvider.cartQuantities[cartProvider.cartItems[index].id]! * int.parse(cartProvider.cartItems[index].listPrice)}",
                                           style: const TextStyle(
                                             fontSize: 12,
                                             fontWeight: FontWeight.w400,
@@ -257,9 +257,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ScaffoldMessenger.of(context).showSnackBar(appliedMessage);
                           }else{
                             if (widget.fromCart ?? true) {
-                              await provider.applyCouponQuickOrder(couponController.text, size, provider.totalAmount.toString(), context);
+                              await provider.applyCouponQuickOrder(couponController.text, size, provider.totalQuickOrderAmount.toString(), context);
                             }else{
-                              await provider.applyCoupon(couponController.text, size, cartProvider.total.toString(), context);
+                              await provider.applyCoupon(couponController.text, size, cartProvider.totalCartAmount.toString(), context);
                             }
                           }
                         }, 
@@ -313,7 +313,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     context: context, 
                                     firstDate: DateTime.now().add(const Duration(days: 1)), 
                                     lastDate: DateTime(2100),
-                                    initialDate: expectedDeliverydate ?? DateTime.now().add(const Duration(days: 1))
+                                    initialDate: expectedDeliverydate ?? DateTime.now().add(const Duration(days: 1)),
                                   );
                                   setState(() {
                                     expectedDeliverydate = pickedDate;
@@ -476,12 +476,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               ),
                               AppTextWidget(
                                 text: widget.fromCart ?? true
-                                ? provider.totalProduct > 1 
-                                  ? "${provider.totalProduct} items"
-                                  : "${provider.totalProduct} item"
-                                : cartProvider.totalProduct > 1
-                                  ? "${cartProvider.totalProduct} items"
-                                  : "${cartProvider.totalProduct} item", 
+                                ? provider.totalQuickOrderProduct > 1 
+                                  ? "${provider.totalQuickOrderProduct} items"
+                                  : "${provider.totalQuickOrderProduct} item"
+                                : cartProvider.totalCartProduct > 1
+                                  ? "${cartProvider.totalCartProduct} items"
+                                  : "${cartProvider.totalCartProduct} item", 
                                 fontSize: 15, 
                                 fontWeight: FontWeight.w400
                               )
@@ -507,17 +507,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               ),
                               AppTextWidget(text: 
                                 widget.fromCart ?? true
-                                ? "₹${provider.totalAmount.toString()}"
-                                : "₹${cartProvider.total}", 
+                                ? "₹${provider.totalQuickOrderAmount.toString()}"
+                                : "₹${cartProvider.totalCartAmount}", 
                                 fontSize: 15, 
                                 fontWeight: FontWeight.w700
                               ),
                             ],
                           ),
-                          const SizedBox(height: 10,),
                           provider.isCouponApplied
                           ? Column(
                             children: [
+                              const SizedBox(height: 10,),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
@@ -650,8 +650,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           child: SizedBox(
             width: double.infinity,
             height: 50,
-            child: Consumer4<AddressProvider, ApiProvider, CartProvider, ProfileProvider>(
-              builder: (context, addressProvider, provider, cartProvider, profileProvider, child) {
+            child: Consumer4<AddressProvider, ApiProvider, ProfileProvider, CartProvider>(
+              builder: (context, addressProvider, provider,  profileProvider, cartProvider, child) {
                 return FloatingActionButton(
                   // elevation: 1,
                   onPressed: () async {

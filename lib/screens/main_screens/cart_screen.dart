@@ -26,8 +26,8 @@ class CartScreen extends StatelessWidget {
     } else {
       return Scaffold(
         appBar: const AppBarWidget( title: 'Cart',),
-        body: Consumer3<CartProvider, AddressProvider, ApiProvider>(
-          builder: (context, cartProvider, addressProvider, apiProvider, child) {
+        body: Consumer3<AddressProvider, ApiProvider, CartProvider>(
+          builder: (context,addressProvider, apiProvider, cartProvider, child) {
             return  cartProvider.cartItems.isEmpty
             ? const Center(
               child: AppTextWidget(text: "No products", fontSize: 15, fontWeight: FontWeight.w500),
@@ -75,10 +75,10 @@ class CartScreen extends StatelessWidget {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         // Product Name and Quantity
-                                        cartProvider.cartItems[index].quantity >= 1 
+                                        cartProvider.cartQuantities[cartProvider.cartItems[index].id] != null 
                                         ? RichText(
                                           text: TextSpan(
-                                            text: "${cartProvider.cartItems[index].quantity}x ",
+                                            text: "${cartProvider.cartQuantities[cartProvider.cartItems[index].id]}x ",
                                             style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w600,
@@ -106,16 +106,6 @@ class CartScreen extends StatelessWidget {
                                           fontWeight: FontWeight.w500
                                         ),
                                         const SizedBox(height: 5,),
-                                        // // Product Description
-                                        // AppTextWidget(
-                                        //   text: cartProvider.cartItems[index].description.replaceAll("<p>", ""), 
-                                        //   fontSize: 12, 
-                                        //   maxLines: 2,
-                                        //   fontColor: Colors.black54,
-                                        //   textOverflow: TextOverflow.ellipsis,
-                                        //   fontWeight: FontWeight.w400
-                                        // ),
-                                        // const SizedBox(height: 5,),
                                         Row(
                                           crossAxisAlignment: CrossAxisAlignment.end,
                                           children: [
@@ -158,7 +148,25 @@ class CartScreen extends StatelessWidget {
                                             curve: Curves.easeInOut,
                                             child: ElevatedButton(
                                               // increment the quantity
-                                              onPressed: () => cartProvider.incrementQuantity(index: index, isIncrement: true), 
+                                              onPressed: () async {
+                                                cartProvider.incrementQuantity(productId: cartProvider.cartItems[index].id, isIncrement: true);
+                                                List<Map<String, dynamic>> cartProductData = [];
+                                                // print(cartProvider.cartItems[index].id);
+                                                cartProvider.cartQuantities.forEach((key, value) {
+                                                  print("quantity: $value");
+                                                  print("value: ${cartProvider.cartItems.firstWhere((element) => element.id == key,).price}");
+                                                  cartProductData.add({
+                                                    "prdt_id": key,
+                                                    "prdt_qty": value,
+                                                    "prdt_total": value * int.parse(cartProvider.cartItems.firstWhere((element) => element.id == key,).price)
+                                                  });
+                                                  
+                                                },);
+                                                // for (var i = 0; i < apiProvider.cartItems.length; i++) {
+                                                // }
+                                                apiProvider.clearCoupon();
+                                                await cartProvider.updateCart(size, context, cartProductData, false);
+                                              },
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor: cartProvider.cartItems[index].quantity >= 1 
                                                   ? Theme.of(context).primaryColor
@@ -182,7 +190,7 @@ class CartScreen extends StatelessWidget {
                                                 color: cartProvider.cartItems[index].quantity >= 1 
                                                 ? Colors.white
                                                 : Theme.of(context).primaryColor,
-                                                size: cartProvider.cartItems[index].quantity >= 1 ? 13 : 20,
+                                                size: cartProvider.cartQuantities[cartProvider.cartItems[index].id] != null ? 13 : 20,
                                               ) 
                                             ),
                                           ),
@@ -195,12 +203,22 @@ class CartScreen extends StatelessWidget {
                                               duration: const Duration(milliseconds: 500),
                                               curve: Curves.easeInOut,
                                               child: ElevatedButton(
-                                                onPressed: () {
+                                                onPressed: () async {
                                                   // Decrease the quantity of the product
-                                                  if (cartProvider.cartItems[index].quantity  == 1) {
+                                                  if (cartProvider.cartQuantities[cartProvider.cartItems[index].id]  == 1) {
                                                     confirmDelete(cartProvider.cartItems[index].id, size, index, context);
                                                     } else {
-                                                    cartProvider.incrementQuantity(index: index);
+                                                    cartProvider.incrementQuantity(productId: cartProvider.cartItems[index].id);
+                                                    List<Map<String, dynamic>> cartProductData = [];
+                                                    cartProvider.cartQuantities.forEach((key, value) {
+                                                      cartProductData.add({
+                                                        "prdt_id": key,
+                                                        "prdt_qty": value,
+                                                        "prdt_total": value * int.parse(cartProvider.cartItems.firstWhere((element) => element.id == key,).price)
+                                                      });
+                                                    },);
+                                                    apiProvider.clearCoupon();
+                                                    await cartProvider.updateCart(size, context, cartProductData, false);
                                                   }
                                                 }, 
                                                 style: ElevatedButton.styleFrom(
@@ -216,10 +234,10 @@ class CartScreen extends StatelessWidget {
                                                   )
                                                 ),
                                                 child: Icon(
-                                                  cartProvider.cartItems[index].quantity == 1
+                                                  cartProvider.cartQuantities[cartProvider.cartItems[index].id]== 1
                                                   ? CupertinoIcons.delete
                                                   : CupertinoIcons.minus,
-                                                  color: cartProvider.cartItems[index].quantity == 1
+                                                  color: cartProvider.cartQuantities[cartProvider.cartItems[index].id] == 1
                                                   ? Colors.red
                                                   : Theme.of(context).primaryColor,
                                                   size: 15,
@@ -242,22 +260,22 @@ class CartScreen extends StatelessWidget {
                     ),
                     Positioned(
                       top: size.height * 0.74,
-                      child: cartProvider.totalProduct >= 1 
+                      child: cartProvider.totalCartProduct >= 1 
                       ? GestureDetector(
                         onTap: () async {
                           if (addressProvider.addresses.isEmpty) {
                             addressProvider.addnewAddress(context, size);
                           }else{
                             List<Map<String, dynamic>> cartProductData = [];
-                            for (var i = 0; i < cartProvider.cartItems.length; i++) {
+                            cartProvider.cartQuantities.forEach((key, value) {
                               cartProductData.add({
-                                "prdt_id": cartProvider.cartItems[i].id,
-                                "prdt_qty": cartProvider.cartItems[i].quantity,
-                                "prdt_total": cartProvider.cartItems[i].quantity * int.parse(cartProvider.cartItems[i].price)
+                                "prdt_id": key,
+                                "prdt_qty": value,
+                                "prdt_total": value * int.parse(cartProvider.cartItems.firstWhere((element) => element.id == key,).price)
                               });
-                            }
+                            },);
                             apiProvider.clearCoupon();
-                            await cartProvider.updateCart(size, context, cartProductData);
+                            await cartProvider.updateCart(size, context, cartProductData, true);
                           }
                         },
                         child: Container(
@@ -280,9 +298,9 @@ class CartScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               AppTextWidget(
-                                text: cartProvider.totalProduct > 1
-                                  ? "${cartProvider.totalProduct} items | ₹${cartProvider.total}"
-                                  : "${cartProvider.totalProduct} item | ₹${cartProvider.total}",
+                                text: cartProvider.totalCartProduct > 1
+                                  ? "${cartProvider.totalCartProduct} items | ₹${cartProvider.totalCartAmount}"
+                                  : "${cartProvider.totalCartProduct} item | ₹${cartProvider.totalCartAmount}",
                                 fontSize: 16, 
                                 fontWeight: FontWeight.w600,
                                 fontColor: Colors.white,

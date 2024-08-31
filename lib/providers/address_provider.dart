@@ -27,6 +27,9 @@ class AddressProvider extends ChangeNotifier{
   // AddressModel? currentAddress;
   String mapAddress = "";
   TextEditingController mapAddressController = TextEditingController();
+
+
+
   // Set Current Delivery Address
   void setCurrentAddress({AddressModel? address, int? addressId}) {
     currentAddress = address;
@@ -88,7 +91,7 @@ class AddressProvider extends ChangeNotifier{
       message: decodedResponse['message'], 
       backgroundColor: Theme.of(context).primaryColor, 
       sidePadding: size.width * 0.1, 
-      bottomPadding: size.height * 0.85
+      bottomPadding: size.height * 0.05
     );
     if (response.statusCode == 200 && decodedResponse['status'] == 'success') {
       ScaffoldMessenger.of(context).showSnackBar(responseMessage).closed.then((value) async {
@@ -112,7 +115,7 @@ class AddressProvider extends ChangeNotifier{
       message: decodedResponse['message'], 
       backgroundColor: Theme.of(context).primaryColor, 
       sidePadding: size.width * 0.1, 
-      bottomPadding: size.height * 0.85
+      bottomPadding: size.height * 0.05
     );
     if (response.statusCode == 200 && decodedResponse['status'] == 'success') {
       ScaffoldMessenger.of(context).showSnackBar(responseMessage).closed.then((value) async {
@@ -141,7 +144,7 @@ class AddressProvider extends ChangeNotifier{
       message: decodedResponse['message'], 
       backgroundColor: Theme.of(context).primaryColor, 
       sidePadding: size.width * 0.1, 
-      bottomPadding: size.height * 0.85
+      bottomPadding: size.height * 0.05
     );
     if (response.statusCode == 200 && decodedResponse['status'] == 'success') {
       ScaffoldMessenger.of(context).showSnackBar(responseMessage).closed.then((value) async {
@@ -164,10 +167,11 @@ class AddressProvider extends ChangeNotifier{
     debugPrint('Delete Address Response: $decodedResponse, Status Code: ${response.statusCode}');
     final deleteAddressMessage = snackBarMessage(
       context: context, 
+      // duration: const Duration(seconds: 2),
       message: decodedResponse["message"], 
       backgroundColor: Theme.of(context).primaryColor, 
       sidePadding: size.width * 0.1, 
-      bottomPadding: size.height * 0.85
+      bottomPadding: size.height * 0.05
     );
     if (response.statusCode == 200 && decodedResponse["status"] == "success") {
       ScaffoldMessenger.of(context).showSnackBar(deleteAddressMessage).closed.then((value) async {
@@ -208,7 +212,7 @@ class AddressProvider extends ChangeNotifier{
       sidePadding: 12, 
       showCloseIcon: false,
       duration: const Duration(seconds: 40),
-      bottomPadding: size.height * 0.18,
+      bottomPadding: size.height * 0.07,
       snackBarAction: SnackBarAction(
         label: "Add", 
         textColor: Colors.white,
@@ -311,6 +315,8 @@ class AddressProvider extends ChangeNotifier{
     );
   }
 
+ 
+
   // Set As Default Message
   void setAddressDefault(BuildContext context, Size size, int id,){
     showDialog(
@@ -409,19 +415,24 @@ class AddressProvider extends ChangeNotifier{
       snackBarMessage(
         context: context,
         duration: const Duration(seconds: 5),
-        message: "File Downloaded",
+        message: "Add address to Subscribe Product",
         showCloseIcon: false,
         snackBarAction: SnackBarAction(
           label: "Add",
-          onPressed: () async {
-            Navigator.push(context, downToTop(screen: const NewAddressFormWidget()));
+          onPressed: () {
+           try {
+              Navigator.push(context, downToTop(screen: const NewAddressFormWidget()));
+           } catch (e) {
+             print("error $e");
+           }
           },
           textColor: Colors.white,
         ),
         backgroundColor: Theme.of(context).primaryColor,
-        sidePadding: size.width * 0.1,
-        bottomPadding: size.height * 0.8,
+        sidePadding: size.width * 0.05,
+        bottomPadding: size.height * 0.05,
       ),
     );
+  
   }
 }

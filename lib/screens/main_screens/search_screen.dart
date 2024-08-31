@@ -89,31 +89,33 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
               suffixIcon: IconButton(
                 onPressed: () {
-                  setState(() {
-                    getProducts(searchController.text);
-                  });
+                  if (searchController.text.isNotEmpty) {
+                    setState(() {
+                      getProducts(searchController.text);
+                    });
+                  }
                 },
                 icon: const Icon(
                  CupertinoIcons.search, 
                  size: 18,
                 ) 
               ),
-              enabledBorder: const OutlineInputBorder(
+              enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.zero,
-                borderSide: BorderSide(color: Colors.white)
+                borderSide: BorderSide(color: Colors.transparent.withOpacity(0))
               ),
-              disabledBorder: const OutlineInputBorder(
+              disabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.zero,
-                borderSide: BorderSide(color: Colors.white)
+                borderSide: BorderSide(color: Colors.transparent.withOpacity(0))
               ),
-              border: const OutlineInputBorder(
+              border: OutlineInputBorder(
                 borderRadius: BorderRadius.zero,
-                borderSide: BorderSide(color: Colors.white)
+                borderSide: BorderSide(color: Colors.transparent.withOpacity(0))
               ),
-              focusedBorder: const OutlineInputBorder(
+              focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.zero,
                 borderSide: BorderSide(
-                  color: Colors.white
+                  color: Colors.transparent.withOpacity(0)
                 )
               )
             ),
@@ -168,7 +170,8 @@ class _SearchScreenState extends State<SearchScreen> {
     if (response.statusCode == 200) {
       String decryptedData = decryptAES(response.body);
       final responseJson = json.decode(decryptedData.replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), ''));
-      print('Response Body: $responseJson');
+      debugPrint('Response Body: $responseJson', wrapWidth: 1064);
+      searchedProducts.clear();
       final List<dynamic> productJson = responseJson['results'];
       List<Products> productsList = productJson.map((json) => Products.fromJson(json)).toList();
       return productsList;
@@ -229,7 +232,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             const SizedBox(height: 5,),
                             // Product Description
                             AppTextWidget(
-                              text: searchedProducts[index].description.replaceAll("<p>", ""), 
+                              text: searchedProducts[index].description.replaceAll("<p>", "").replaceAll("</p>", ""), 
                               fontSize: 12, 
                               maxLines: 2,
                               fontColor: Colors.black54,

@@ -56,8 +56,6 @@ class ButtonWidget extends StatelessWidget {
               fontWeight: fontWeight ?? FontWeight.w400,
               fontColor: fontColor ?? Colors.white,
             ),
-            // const SizedBox(width: 5,),
-            // Icon(icon, size: 20, color: Colors.white,),
           ],
         )
       ),

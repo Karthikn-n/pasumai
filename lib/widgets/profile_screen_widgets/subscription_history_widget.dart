@@ -1,5 +1,4 @@
 import 'package:app_3/model/active_subscription_model.dart';
-import 'package:app_3/providers/profile_provider.dart';
 import 'package:app_3/providers/subscription_provider.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -12,7 +11,7 @@ class SubscriptionHistoryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
-    return Consumer<ProfileProvider>(
+    return Consumer<SubscriptionProvider>(
       builder: (context, provider, child) {
         return provider.historyProducts.isEmpty
           ? FutureBuilder(

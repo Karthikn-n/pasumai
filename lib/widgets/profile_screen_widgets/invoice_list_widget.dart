@@ -14,7 +14,7 @@ class InvoiceListWidget extends StatelessWidget {
     return Consumer<ProfileProvider>(
       builder: (context, provider, child) {
         return provider.invoices.isEmpty
-          ? FutureBuilder(
+          ? FutureBuilder<String?>(
             future: provider.getInvoice(), 
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -34,7 +34,7 @@ class InvoiceListWidget extends StatelessWidget {
                     ),
                   ],
                 );
-              }else if(!snapshot.hasData){
+              }else if(snapshot.hasError || snapshot.data == null){
                 return const Center(
                   child: AppTextWidget(
                     text: "No invoices found",

@@ -1,13 +1,11 @@
-import 'dart:convert';
-
-import 'package:app_3/data/encrypt_ids.dart';
-import 'package:app_3/providers/cart_items_provider.dart';
+import 'package:app_3/providers/api_provider.dart';
 import 'package:app_3/helper/shared_preference_helper.dart';
 import 'package:app_3/helper/page_transition_helper.dart';
+import 'package:app_3/providers/cart_items_provider.dart';
 import 'package:app_3/repository/app_repository.dart';
 import 'package:app_3/screens/sub-screens/subscription/product_subscribe.dart';
 import 'package:app_3/service/api_service.dart';
-import 'package:app_3/widgets/common_widgets.dart/snackbar_widget.dart';
+import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
@@ -48,7 +46,8 @@ class _HomeScreenProductsState extends State<HomeScreenProducts> with TickerProv
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
-    final addtoCartHelper = Provider.of<CartProvider>(context);
+    final addtoWishlistHelper = Provider.of<ApiProvider>(context);
+    final cartProvider = Provider.of<CartProvider>(context);
     return  Container(
       margin: EdgeInsets.only(left: size.width * 0.008, right: size.width * 0.008),
       height: size.height * 0.45,
@@ -77,9 +76,14 @@ class _HomeScreenProductsState extends State<HomeScreenProducts> with TickerProv
                     margin: EdgeInsets.only(left: size.width * 0.03, right: size.width * 0.03),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: CachedNetworkImage(
-                        imageUrl: imageUrl,
-                        fit: BoxFit.cover,
+                      child: GestureDetector(
+                        onTap: ()async{
+                          cartProvider.cartItemsAPI();
+                        },
+                        child: CachedNetworkImage(
+                          imageUrl: imageUrl,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),
@@ -88,7 +92,8 @@ class _HomeScreenProductsState extends State<HomeScreenProducts> with TickerProv
                     left:  size.width * 0.58,
                     child: GestureDetector(
                       onTap: () async {
-                        await addWishlist(product.id, size, product.name, product.quantity);
+                        // await addWishlist(product.id, size, product.name, product.quantity);
+                        await addtoWishlistHelper.addWishlist(product.id, size, product.name, product.quantity, context);
                       },
                       child: CircleAvatar(
                         radius: 25,
@@ -118,16 +123,29 @@ class _HomeScreenProductsState extends State<HomeScreenProducts> with TickerProv
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          width: size.width > 600 ? size.width * 0.18 : size.width * 0.64,
+                          width: size.width > 600 
+                            ? size.width * 0.18 
+                            : widget.icon != null ? size.width * 0.5 
+                            : cartProvider.cartQuantities.isNotEmpty && cartProvider.cartQuantities[product.id] != null
+                              ? size.width * 0.53
+                              : size.width * 0.6,
                           margin: EdgeInsets.only(left: size.width > 600 ? size.height * 0.08 : size.width * 0.035, top: 5),
-                          child: Text(
-                            product.name,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600
-                            ),
+                          child: Row(
+                            children: [
+                             cartProvider.cartQuantities[product.id] != null
+                             ? AppTextWidget(
+                                text: "${cartProvider.cartQuantities[product.id]}x ", fontSize: 15, fontWeight: FontWeight.w500, fontColor: Theme.of(context).primaryColor,)
+                              : Container(),
+                              Expanded(
+                                child: AppTextWidget(
+                                  text: product.name, 
+                                  fontSize: 15, 
+                                  fontWeight: FontWeight.w600,
+                                  maxLines: 1, 
+                                  textOverflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
                           )
                         ),
                         Row(
@@ -136,8 +154,9 @@ class _HomeScreenProductsState extends State<HomeScreenProducts> with TickerProv
                             const SizedBox(width: 15,),
                             Row(
                               children: [
+                                AppTextWidget(text: "${product.quantity} - ", fontSize: 14, fontWeight: FontWeight.w500),
                                 Text(
-                                  'Price: ₹${product.finalPrice}/',
+                                  '₹${product.finalPrice}/',
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
                                   style: const TextStyle(
@@ -158,33 +177,100 @@ class _HomeScreenProductsState extends State<HomeScreenProducts> with TickerProv
                                 )
                               ],
                             ),
-                            const SizedBox(width: 90,),
-                            widget.icon != null
-                            ? GestureDetector(
-                                onTap: (){
-                                  Navigator.push(context, SideTransistionRoute(
-                                    screen: const ProductSubScription(),
-                                    args: {
-                                      'name': product.name,
-                                      'image': product.image,
-                                      'final': product.finalPrice.toString(),
-                                      'price': product.price,
-                                      'id': product.id
-                                    }
-                                  ));
-                                },
-                                child: widget.icon 
-                              )
-                            : Container()
                           ],
                         ),
                       ],
                     ),
                     // Add a Product to Cart 
-                    GestureDetector(
-                      onTap: () async => await addtoCartHelper.addCart(product.id, size, context, product),
-                      child: widget.icon != null ? Container() : const Icon(Icons.add_shopping_cart_rounded)
-                    )
+                    cartProvider.cartQuantities[product.id] != null
+                    ? Container(
+                        // height: ,
+                        // width: size.width * 0.12,
+                        margin: const EdgeInsets.only(top: 8),
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.grey.shade300)
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            GestureDetector(
+                              onTap: () async {
+                                print("ProductId: ${product.id}");
+                                print("ProductId: ${cartProvider.cartQuantities}");
+                                 if (cartProvider.cartQuantities[product.id]  != null && cartProvider.cartQuantities[product.id]  == 1) {
+                                  cartProvider.confirmDelete(product.id, size, index, context);
+                                } else {
+                                  cartProvider.incrementQuantity(productId: product.id);
+                                  List<Map<String, dynamic>> cartProductData = [];
+                                  cartProvider.cartQuantities.forEach((key, value) {
+                                    cartProductData.add({
+                                      "prdt_id": key,
+                                      "prdt_qty": value,
+                                      "prdt_total": value * product.finalPrice
+                                    });
+                                  },);
+                                  addtoWishlistHelper.clearCoupon();
+                                  await cartProvider.updateCart(size, context, cartProductData, false);
+                                }
+                              },
+                              child: Icon(
+                                cartProvider.cartQuantities[product.id] != null && cartProvider.cartQuantities[product.id] == 1 
+                                ? CupertinoIcons.delete
+                                : CupertinoIcons.minus, 
+                                size: 14, 
+                                color: cartProvider.cartQuantities[product.id] != null && cartProvider.cartQuantities[product.id] == 1
+                                ? Colors.red
+                                : null,
+                              )
+                            ),
+                            const SizedBox(width: 8,),
+                            AppTextWidget(
+                              text: cartProvider.cartQuantities[product.id] != null && cartProvider.cartQuantities[product.id]! > 99 
+                              ? "99+"
+                              : "${cartProvider.cartQuantities[product.id]}", fontSize: 13, 
+                              fontWeight: FontWeight.w500,
+                              fontColor: Colors.black45,
+                            ),
+                            const SizedBox(width: 8,),
+                            GestureDetector(
+                              onTap: () async {
+                                cartProvider.incrementQuantity(productId: product.id, isIncrement: true);
+                                List<Map<String, dynamic>> cartProductData = [];
+                                cartProvider.cartQuantities.forEach((key, value) {
+                                  cartProductData.add({
+                                    "prdt_id": key,
+                                    "prdt_qty": value,
+                                    "prdt_total": value * product.finalPrice
+                                  });
+                                },);
+                                addtoWishlistHelper.clearCoupon();
+                                await cartProvider.updateCart(size, context, cartProductData, false);
+                              },
+                              child: Icon(
+                                CupertinoIcons.plus, 
+                                size: 14,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : IconButton(
+                      onPressed: () async {
+                        if (widget.icon != null) {
+                          Navigator.push(context, SideTransistionRoute(
+                            screen: ProductSubScription(product: product,),
+                          ));
+                        }else{
+                          await cartProvider.addCart(product.id, size, context, product);
+                        }
+                      },
+                       icon: widget.icon != null 
+                          ? widget.icon! 
+                          : const Icon(CupertinoIcons.cart_badge_plus, size: 30,)
+                      )
                   ],
                 ),
               ),
@@ -196,77 +282,7 @@ class _HomeScreenProductsState extends State<HomeScreenProducts> with TickerProv
   }
 
   
-  // Add A product to wishlist
-  Future<void> addWishlist(int productId, Size size, String name, String quantity) async {
-    Map<String, dynamic> wishlistData = {
-      'customer_id': prefs.getString('customerId'),
-      'product_id': productId
-    };
-    print('product Data: $wishlistData');
-    final response = await wishlistRepository.addWishList(wishlistData);
-    final decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), "");
-    final decodedReponse = json.decode(decryptedResponse);
-    print('Wishlist added Message: $decodedReponse, Stauts code: ${response.statusCode}');
-    SnackBar wishlistAddedMessage = snackBarMessage(
-      context: context, 
-      message: decodedReponse['message'],
-      backgroundColor: Theme.of(context).primaryColor, 
-      sidePadding: size.width * 0.1, bottomPadding: size.height * 0.85);
-    if (response.statusCode == 200 && decodedReponse['status'] == 'success') {
-      ScaffoldMessenger.of(context).showSnackBar(wishlistAddedMessage);
-      setState(() {
-        prefs.setBool('$productId$name$quantity', decodedReponse['message'] == "Wishlist added successfully" ? true : decodedReponse['message'] == "Wishlist removed successfully" ? false : false);
-      });
-    }else{
-      ScaffoldMessenger.of(context).showSnackBar(wishlistAddedMessage);
-      setState(() {
-        prefs.remove('$productId$name$quantity');
-      });
-    }
-  }
-
-  // // Add A product to wishlist
-  // Future<void> removeWishlist(int productId, Size size) async {
-  //   Map<String, dynamic> wishlistData = {
-  //     'customer_id': prefs.getString('customerId'),
-  //     'product_id': productId
-  //   };
-  //   print(wishlistData);
-
-  //   final response = await wishlistRepository.removeWishlist(wishlistData);
-  //   final decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), "");
-  //   final decodedReponse = json.decode(decryptedResponse);
-  //   print('Wishlist removed response: $decodedReponse, Stauts code: ${response.statusCode}');
-  //   SnackBar wishlistRemovedMessage = snackBarMessage(
-  //     context: context, 
-  //     message: "Removed from Wishlist",
-  //     backgroundColor: Theme.of(context).primaryColor, 
-  //     sidePadding: size.width * 0.1, bottomPadding: size.height * 0.85);
-  //   if (response.statusCode == 200) {
-  //     print("Wishlist removed");
-  //     ScaffoldMessenger.of(context).showSnackBar(wishlistRemovedMessage);
-  //   }else{
-  //     print('Something wrong: $decodedReponse');
-  //   }
-  // }
 
 }
 
 
-//  prefs.getBool("wishlist${product.id}") ?? false
-  //                       ? CircleAvatar(
-  //                           radius: 25,
-  //                           backgroundColor: Theme.of(context).primaryColor,
-  //                           child: LottieBuilder.asset(
-  //                             'assets/animations/like2.json',
-  //                             controller: _controller[index],
-  //                             fit: BoxFit.cover,
-  //                             height: size.height * 0.1,
-  //                             width: size.width  * 0.3,
-  //                             onLoaded: (composition) {
-  //                               _controller[index].duration = composition.duration;
-  //                               _controller[index].reverseDuration = composition.duration;
-  //                             },
-  //                           ),
-  //                         )   
-  //                       :

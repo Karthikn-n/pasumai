@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:app_3/data/encrypt_ids.dart';
 import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/helper/shared_preference_helper.dart';
-import 'package:app_3/model/active_subscription_model.dart';
 import 'package:app_3/model/invoice_model.dart';
 import 'package:app_3/model/ordered_product_model.dart';
 import 'package:app_3/model/orders_model.dart';
@@ -12,6 +11,7 @@ import 'package:app_3/model/vacation_model.dart';
 import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/providers/api_provider.dart';
 import 'package:app_3/providers/cart_items_provider.dart';
+import 'package:app_3/providers/subscription_provider.dart';
 import 'package:app_3/repository/app_repository.dart';
 import 'package:app_3/screens/on_boarding/otp_page.dart';
 import 'package:app_3/screens/on_boarding/signin_page.dart';
@@ -39,10 +39,7 @@ class ProfileProvider extends ChangeNotifier{
   String selectedFilter = "";
   List<String> filterOption = ['3 months', '6 months', '9 months', ];
 
-  // Subscription Section Data
-  List<ActiveSubscriptionModel> activeSubscriptions = [];
-  List<ActiveSubscriptionModel> historyProducts = [];
-  List<List<String>> options = [];
+  
 
   // invoice Data
   List<InvoiceModel> invoices = [];
@@ -61,7 +58,7 @@ class ProfileProvider extends ChangeNotifier{
   }
 
 // Update Profile
-  Future<void> updateProfile(Map<String, dynamic> profileData, Size size, BuildContext context) async {
+  Future<void> updateProfile(Map<String, dynamic> profileData, Size size, BuildContext context, bool isMobileEdited) async {
     final response = await profileRepository.updateProfile(profileData);
     String decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
     final decodedResponse = json.decode(decryptedResponse);
@@ -71,14 +68,28 @@ class ProfileProvider extends ChangeNotifier{
       message: decodedResponse['message'], 
       backgroundColor: Theme.of(context).primaryColor, 
       sidePadding: size.width * 0.1, 
-      bottomPadding: size.height * 0.85
+      bottomPadding: size.height * 0.05
     );
     if (response.statusCode == 200) {
-      prefs.setString('firstname', profileData["first_name"]);
-      prefs.setString("lastname", profileData["last_name"]);
-      prefs.setString("mail", profileData["email"]);
-      prefs.setString("mobile", profileData["mobile_no"]);
-      ScaffoldMessenger.of(context).showSnackBar(updateProfileMessage);
+      await prefs.setString('firstname', profileData["first_name"]);
+      await prefs.setString("lastname", profileData["last_name"]);
+      await prefs.setString("mail", profileData["email"]);
+      await prefs.setString("mobile", profileData["mobile_no"]);
+      if (isMobileEdited) {
+        Navigator.pop(context);
+        try {
+          print("Mobile Edited: $isMobileEdited");
+          ScaffoldMessenger.of(context).showSnackBar(updateProfileMessage);
+          Navigator.pushReplacement(context, SideTransistionRoute(screen: const OtpPage(fromRegister: false,),),);
+        } catch (e) {
+          print("Something erong $e");
+        }
+      }else{
+        ScaffoldMessenger.of(context).showSnackBar(updateProfileMessage).closed.then((value) {
+          Navigator.pop(context);
+          Navigator.pop(context);
+        },);
+      }
     } else {
       print('Error: ${response.body}');
     }
@@ -143,6 +154,7 @@ class ProfileProvider extends ChangeNotifier{
     discountAmount = 0;
     notifyListeners();
   }
+
   // Re-order Product
   Future<void> reOrder(int orderId, BuildContext context, Size size) async {
     Map<String, dynamic> reorderData = {'customer_id': prefs.getString("customerId"), 'order_id': orderId};
@@ -155,7 +167,7 @@ class ProfileProvider extends ChangeNotifier{
       message: decodedResponse['message'], 
       backgroundColor: Theme.of(context).primaryColor, 
       sidePadding: size.width * 0.1, 
-      bottomPadding: size.height * 0.85
+      bottomPadding: size.height * 0.05
     );
     if (response.statusCode == 200) {
       ScaffoldMessenger.of(context).showSnackBar(reOrderedMessage).closed.then((event) async {
@@ -180,9 +192,10 @@ class ProfileProvider extends ChangeNotifier{
       message: decodedResponse['message'], 
       backgroundColor: Theme.of(context).primaryColor, 
       sidePadding: size.width * 0.1, 
-      bottomPadding: size.height * 0.85
+      bottomPadding: size.height * 0.05
     );
     if (response.statusCode == 200) {
+      Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(cancelOrderedMessage);
       // orderInfoData.removeWhere((element) => element.orderId == orderId,);,
       await orderList();
@@ -193,48 +206,9 @@ class ProfileProvider extends ChangeNotifier{
   }
 
 
-  // Active Subscription list for the User
-  Future<void> activeSubscription() async {
-    Map<String, dynamic> activeSubData = {
-      'customer_id': prefs.getString('customerId')
-    };
-    final response = await profileRepository.activeSubscription(activeSubData);
-    String decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
-    final decodedResponse = json.decode(decryptedResponse);
-    debugPrint('Active Subscritpion List Response: $decodedResponse, Status Code: ${response.statusCode}', wrapWidth: 1064);
-    if (response.statusCode == 200) {
-      List<dynamic> activeSubscriptionsList = decodedResponse['results'] as List;
-      activeSubscriptions.clear();
-      activeSubscriptions = activeSubscriptionsList.map((subscription) => ActiveSubscriptionModel.fromJson(subscription) ,).toList();
-      options = List.generate(activeSubscriptions.length, (index) => ["Edit", "Cancel", "Renew"],);
-    } else {
-      print('Failed to fetch data: ${response.statusCode}');
-    }
-    notifyListeners();
-  }
-
-
-
-  // Subscription history
-  Future<void> subscriptionHistoryAPI() async {
-    Map<String, dynamic> subHistoryData = {
-      'customer_id': prefs.getString('customerId')
-    };
-    final response = await profileRepository.subscriptionHistory(subHistoryData);
-    String decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
-    final decodedResponse = json.decode(decryptedResponse);
-    print('Subscritpion history Response: $decodedResponse, Status Code: ${response.statusCode}');
-    if (response.statusCode == 200) {
-      List<dynamic> activeSubscriptionsList = decodedResponse['results'] as List;
-      historyProducts = activeSubscriptionsList.map((subscription) => ActiveSubscriptionModel.fromJson(subscription) ,).toList();
-    } else {
-      print('Failed to fetch data: ${response.statusCode}');
-    }
-    notifyListeners();
-  }
-  
+ 
   // Invoices API
-  Future<void> getInvoice() async {
+  Future<String?> getInvoice() async {
     Map<String, dynamic> invoiceData = {
       'customer_id': prefs.getString('customerId')
     };
@@ -243,12 +217,21 @@ class ProfileProvider extends ChangeNotifier{
     final decodedResponse = json.decode(decryptedResponse);
     print('Invoice List Response: $decodedResponse, Status Code: ${response.statusCode}');
     if (response.statusCode == 200) {
-      List<dynamic> invoiceList = decodedResponse['results'] as List;
-      invoices = invoiceList.map((invoice) => InvoiceModel.fromJson(invoice) ,).toList();
+      if (decodedResponse["status"] == "not_found") {
+        invoices = [];
+        notifyListeners();
+        return null;
+      }else{
+        List<dynamic> invoiceList = decodedResponse['results'] as List;
+        invoices = invoiceList.map((invoice) => InvoiceModel.fromJson(invoice) ,).toList();
+        notifyListeners();
+        return "success";
+      }
     } else {
       print('Failed to fetch data: ${response.statusCode}');
     }
     notifyListeners();
+    return null;
   }
 
   Future<void> downloadInvoice(String fileName, BuildContext context, Size size) async {
@@ -283,7 +266,7 @@ class ProfileProvider extends ChangeNotifier{
               ),
               backgroundColor: Theme.of(context).primaryColor,
               sidePadding: size.width * 0.1,
-              bottomPadding: size.height * 0.1,
+              bottomPadding: size.height * 0.05,
             ));
           } else {
             if (response.contentLength != null && response.contentLength! > 0) {
@@ -303,7 +286,7 @@ class ProfileProvider extends ChangeNotifier{
                   ),
                   backgroundColor: Theme.of(context).primaryColor,
                   sidePadding: size.width * 0.1,
-                  bottomPadding: size.height * 0.1,
+                  bottomPadding: size.height * 0.05,
                 ),
               );
             }
@@ -327,7 +310,7 @@ class ProfileProvider extends ChangeNotifier{
           ),
           backgroundColor: Theme.of(context).primaryColor,
           sidePadding: size.width * 0.1,
-          bottomPadding: size.height * 0.1,
+          bottomPadding: size.height * 0.05,
         ),
       );
     } else if (storagePermission.isPermanentlyDenied) {
@@ -345,7 +328,7 @@ class ProfileProvider extends ChangeNotifier{
           ),
           backgroundColor: Theme.of(context).primaryColor,
           sidePadding: size.width * 0.1,
-          bottomPadding: size.height * 0.1,
+          bottomPadding: size.height * 0.05,
         ),
       );
     } else {
@@ -355,7 +338,7 @@ class ProfileProvider extends ChangeNotifier{
  
 
   // Vacation List
-  Future<Map<String, dynamic>> vacationList() async {
+  Future<void> vacationList() async {
     Map<String, dynamic> vacationData = {
       "customer_id": prefs.getString('customerId')
     };
@@ -367,16 +350,15 @@ class ProfileProvider extends ChangeNotifier{
       final results = decodedResponse["results"];
       vacations.clear();
       if (decodedResponse["message"] == "No Vacation") {
-        notifyListeners();
-        return decodedResponse;
+        throw Exception(decodedResponse["message"]);
+        // notifyListeners();
       }
       vacations = results.map<VacationsModel>((result) => VacationsModel.fromJson(result)).toList();
       print('Vacatioons length: ${vacations.length}');
       notifyListeners();
-      return decodedResponse;
     } else {
       print('Something went wrong ${response.body}');
-      throw "${decodedResponse["message"]} && Something went wrong ${response.statusCode}";
+      // throw "${decodedResponse["message"]} && Something went wrong ${response.statusCode}";
     }
     
   }
@@ -392,7 +374,7 @@ class ProfileProvider extends ChangeNotifier{
       message: decodedResponse['message'], 
       backgroundColor: Theme.of(context).primaryColor, 
       sidePadding: size.width * 0.1, 
-      bottomPadding: size.height * 0.85
+      bottomPadding: size.height * 0.05
     );
     if (response.statusCode == 200) {
       ScaffoldMessenger.of(context).showSnackBar(addVacationMessage).closed.then((value) async {
@@ -420,13 +402,19 @@ class ProfileProvider extends ChangeNotifier{
       message: decodedResponse['message'], 
       backgroundColor: Theme.of(context).primaryColor, 
       sidePadding: size.width * 0.1, 
-      bottomPadding: size.height * 0.85
+      bottomPadding: size.height * 0.05
     );
     if (response.statusCode == 200) {
+      Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(deleteVacationMessage).closed.then((value) async {
+        if (vacations.isEmpty) {
+          notifyListeners();
+        }
         await vacationList();
       },);
+      notifyListeners();
     } else {
+      Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(deleteVacationMessage);
       print('Failed: ${response.body}');
     }
@@ -444,7 +432,7 @@ class ProfileProvider extends ChangeNotifier{
       message: decodedResponse['message'], 
       backgroundColor: Theme.of(context).primaryColor, 
       sidePadding: size.width * 0.1, 
-      bottomPadding: size.height * 0.85
+      bottomPadding: size.height * 0.05
     );
     if (response.statusCode == 200) {
       ScaffoldMessenger.of(context).showSnackBar(updateVacationMessage).closed.then((value) async {
@@ -512,7 +500,7 @@ class ProfileProvider extends ChangeNotifier{
                       overlayColor: Colors.transparent.withOpacity(0.1)
                     ),
                     onPressed: () async{
-                      await cancelOrder(orderId, context, size).then((value) => Navigator.pop(context),);
+                      await cancelOrder(orderId, context, size);
                     }, 
                     child: const AppTextWidget(
                       text: "Yes", 
@@ -605,7 +593,6 @@ class ProfileProvider extends ChangeNotifier{
                     ),
                     onPressed: () async{
                       await deleteVacation(id, context, size);
-                      Navigator.pop(context);
                     }, 
                     child: const AppTextWidget(
                       text: "Confirm", 
@@ -719,17 +706,7 @@ class ProfileProvider extends ChangeNotifier{
                       overlayColor: Colors.transparent.withOpacity(0.1)
                     ),
                     onPressed: () async{
-                      if (isMobileEdited) {
-                        await updateProfile(profileData, size, context).then((value) {
-                          Navigator.pop(context);
-                          Navigator.pushAndRemoveUntil(context, SideTransistionRoute(screen: const OtpPage(), args: {"mobileNo": profileData["mobile_no"]}), (route) => false,);
-                        },);
-                      }else{
-                        await updateProfile(profileData, size, context).then((value) {
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                        },);
-                      }
+                      await updateProfile(profileData, size, context, isMobileEdited);
                     }, 
                     child: const AppTextWidget(
                       text: "Confirm", 
@@ -810,8 +787,8 @@ class ProfileProvider extends ChangeNotifier{
                 SizedBox(
                   height: 40,
                   width: double.infinity,
-                  child: Consumer3<ApiProvider, CartProvider, AddressProvider>(
-                    builder: (context, apiProvider, cartProvider, addressProvider, child) {
+                  child: Consumer4<ApiProvider,  AddressProvider, SubscriptionProvider, CartProvider>(
+                    builder: (context, apiProvider,  addressProvider, subscription, cartProvider, child) {
                       return ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           shape: const RoundedRectangleBorder(
@@ -830,13 +807,16 @@ class ProfileProvider extends ChangeNotifier{
                           // Clear Orders and Subscription of current user
                           orderInfoData.clear();
                           orderedProducts.clear();
-                          activeSubscriptions.clear();
-                          historyProducts.clear();
+                          subscription.activeSubscriptions.clear();
+                          subscription.historyProducts.clear();
                           invoices.clear();
                           vacations.clear();
+                          // Go to Home after logout and re login
+                          apiProvider.setIndex(0);
+                          apiProvider.setQuick(false);
                           // Remove Wishlist Products
                           apiProvider.clearCoupon();
-                          apiProvider.clearOrder();
+                          apiProvider.clearQuickOrder();
                           // Remove Cart Items
                           cartProvider.clearCartItems();
                           // Remove Addresses

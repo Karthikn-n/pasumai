@@ -6,6 +6,7 @@ import 'package:app_3/helper/shared_preference_helper.dart';
 import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/providers/api_provider.dart';
+import 'package:app_3/providers/subscription_provider.dart';
 import 'package:app_3/repository/app_repository.dart';
 import 'package:app_3/screens/main_screens/bottom_bar.dart';
 import 'package:app_3/service/api_service.dart';
@@ -21,7 +22,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
 class OtpPage extends StatefulWidget {
-  const OtpPage({super.key});
+  final bool fromRegister;
+  const OtpPage({super.key, required this.fromRegister});
 
   @override
   State<OtpPage> createState() => _OtpPageState();
@@ -46,11 +48,12 @@ class _OtpPageState extends State<OtpPage> {
   void initState() {
     super.initState();
     showResendButton = false;
+    
     // initialise the controllers and foucs nodes
     controllers = List.generate(4, (index) => TextEditingController());
     focusNodes = List.generate(4, (index) => FocusNode());
     keyboardType = List.generate(4, (index) => TextInputType.number,);
-
+    // preload();
     for (int i = 0; i < controllers.length; i++) {
       controllers[i].addListener(() {
         if (controllers[i].text.isNotEmpty && i < controllers.length - 1) {
@@ -86,6 +89,10 @@ class _OtpPageState extends State<OtpPage> {
   }
 
 
+  void preload() async {
+    final subscriptionProvider = Provider.of<SubscriptionProvider>(context);
+    await subscriptionProvider.getSubscribProducts();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +104,9 @@ class _OtpPageState extends State<OtpPage> {
         appBar: AppBarWidget(
           title: "OTP",
           needBack: true,
-          onBack: () => Navigator.pop(context),
+          onBack: () {
+              Navigator.pop(context);
+          },
         ),
         body: Container(
           height: size.height,
@@ -172,16 +181,14 @@ class _OtpPageState extends State<OtpPage> {
                           buttonName: 'Verify',
                           onPressed: () async {
                             // await addressProvider.getRegionLocation();
-                            // if(prefs.getBool("registered") ?? false){
-                            //           prefs.remove("registered");
-                            //           prefs.setBool("newUserVerified", true);
-                            //           Navigator.pushReplacement(context, SideTransistionRoute(screen: const NewAddressFormWidget(fromOnboarding: true,)));
-                            //         }else{
-                            //           addressProvider.getAddressesAPI();
-                            //           Navigator.pushReplacement(context, SideTransistionRoute(screen: BottomBar(selectedIndex: 0)),).then((value) {
-                            //             prefs.remove("phoneNo");
-                            //           },);
-                            //         }
+                            // if(widget.fromRegister){
+                            //   Navigator.pushReplacement(context, SideTransistionRoute(screen: const NewAddressFormWidget(fromOnboarding: true,)));
+                            // }else{
+                            //   addressProvider.getAddressesAPI();
+                            //   Navigator.pushReplacement(context, SideTransistionRoute(screen: const BottomBar()),).then((value) {
+                            //     // prefs.remove("phoneNo");
+                            //   },);
+                            // }
                             //  Navigator.pushReplacement(context, SideTransistionRoute(screen: const NewAddressFormWidget(fromOnboarding: true,)));
                             FocusScope.of(context).unfocus();
                             String otp = '';
@@ -195,7 +202,7 @@ class _OtpPageState extends State<OtpPage> {
                                 message: 'Please Enter a Valid OTP', 
                                 backgroundColor: Theme.of(context).primaryColor, 
                                 sidePadding: size.width * 0.1, 
-                                bottomPadding: size.height * 0.85
+                                bottomPadding: size.height * 0.05
                               );
                               ScaffoldMessenger.of(context).showSnackBar(emptyOtp);
                             }else if(otp.length == 4){
@@ -211,19 +218,17 @@ class _OtpPageState extends State<OtpPage> {
                                 message: decodedResponse['message'], 
                                 backgroundColor: const Color(0xFF60B47B), 
                                 sidePadding: size.width * 0.1, 
-                                bottomPadding: size.height * 0.85
+                                bottomPadding: size.height * 0.05
                               );
                               if (response.statusCode == 200 && decodedResponse['status'] == 'success') {
                                 ScaffoldMessenger.of(context).showSnackBar(otpMessage).closed.then(
                                   (value) async {
                                     await addressProvider.getRegionLocation();
-                                    if(prefs.getBool("registered") ?? false){
-                                      prefs.remove("registered");
-                                      prefs.setBool("newUserVerified", true);
+                                    if(widget.fromRegister){
                                       Navigator.pushAndRemoveUntil(context, SideTransistionRoute(screen: const NewAddressFormWidget(fromOnboarding: true,)), (route) => false,);
                                     }else{
                                       addressProvider.getAddressesAPI();
-                                      Navigator.pushAndRemoveUntil(context,  SideTransistionRoute(screen: BottomBar(selectedIndex: 0)), (route) => false);
+                                      Navigator.pushAndRemoveUntil(context,  SideTransistionRoute(screen: const BottomBar()), (route) => false);
                                     }
                                   },
                                 );

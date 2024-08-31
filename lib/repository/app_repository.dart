@@ -131,8 +131,8 @@ class AppRepository{
     => await apiService.post('/wishlistremove', body);
 
   // Subscribe Product
-  Future<http.Response> subscribeProduct(Map<String, dynamic> body) async 
-    => await apiService.post('/addsubscription', body); 
+  // Future<http.Response> subscribeProduct(Map<String, dynamic> body) async 
+  //   => await apiService.post('/addsubscription', body); 
   
   // Order List 
   Future<http.Response> orderList(Map<String, dynamic> body) async
@@ -167,6 +167,13 @@ class AppRepository{
   Future<http.Response> resumeSubscription(Map<String, dynamic> body) async
     => apiService.post('/resumesubscription', body);
 
+  // Edit subscription
+  Future<http.Response> editSubscription(Map<String, dynamic> body) async
+    => apiService.post('/updatesubscription', body);
+
+  // Add Subscription
+  Future<http.Response> addSubscription(Map<String, dynamic> body) async
+    => apiService.post('/addsubscription', body);
 
   // Receipt for pre-order
   Future<http.Response> preOrderReceipts(Map<String, dynamic> body) async

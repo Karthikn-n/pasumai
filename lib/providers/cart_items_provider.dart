@@ -10,6 +10,7 @@ import 'package:app_3/screens/main_screens/bottom_bar.dart';
 import 'package:app_3/screens/sub-screens/cart/checkout_screen.dart';
 import 'package:app_3/service/api_service.dart';
 import 'package:app_3/widgets/common_widgets.dart/snackbar_widget.dart';
+import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,35 +18,48 @@ class CartProvider extends ChangeNotifier{
   static final SharedPreferences prefs = SharedPreferencesHelper.getSharedPreferences();
   static final cartRepository = AppRepository(ApiService("https://maduraimarket.in/api"));
   // static final cartRepository = AppRepository(ApiService("http://192.168.1.5/pasumaibhoomi/public/api"));
-  int totalProduct = 0;
-  int total = 0;
+
+  int totalCartProduct = 0;
+  int totalCartAmount = 0;
   List<CartProducts> cartItems = [];
+  Map<int, int> cartQuantities = {};
 
-
-
-  void incrementQuantity({bool? isIncrement, required int index}){
+  // cart Quantity
+  void incrementQuantity({bool? isIncrement, required int productId}){
     if (isIncrement ?? false) {
-      cartItems[index].quantity++;
-      totalProduct++;
+      cartQuantities[productId] = cartQuantities[productId]! + 1;
+      totalCartProduct++;
       // totalAmount
-      total += int.parse(cartItems[index].price); 
+      totalCartAmount += int.parse(cartItems.firstWhere((element) => element.id == productId,).price); 
+      print("Quantites: $cartQuantities");
     }else{
-      cartItems[index].quantity--;
-      totalProduct--;
-      total -= int.parse(cartItems[index].price);
+      cartQuantities[productId] = cartQuantities[productId]! - 1;
+      totalCartProduct--;
+      totalCartAmount -= int.parse(cartItems.firstWhere((element) => element.id == productId,).price);
+      print("Quantites: $cartQuantities");
     }
     notifyListeners();
   }
 
-
-
+   // Create Quantities
+  void createCartQuantities() {
+    cartQuantities.clear();
+    for (var i = 0; i < cartItems.length; i++) {
+      cartQuantities[cartItems[i].id] = cartItems[i].quantity;
+    }
+    print("Cart Quantities: $cartQuantities");
+    notifyListeners();
+  }
+  
+  // Clear Cart items
   void clearCartItems(){
     cartItems.clear();
-    total = 0;
-    totalProduct = 0;
+    totalCartAmount = 0;
+    totalCartProduct = 0;
     print("Cart Order is remvoed from cart");
     notifyListeners();
   }
+
 
   // Call Cart Item APi if there is already present
   Future<void> cartItemsAPI() async {
@@ -61,9 +75,9 @@ class CartProvider extends ChangeNotifier{
     if (response.statusCode == 200) {
       List<dynamic> results = decodedResponse["results"] as List;
       cartItems = results.map((result) => CartProducts.fromJson(result)).toList();
-  
-      totalProduct = int.parse(decodedResponse['cart_count']);
-      total = decodedResponse["cart_total"];
+      createCartQuantities();
+      totalCartProduct = int.parse(decodedResponse['cart_count'].toString());
+      totalCartAmount = decodedResponse["cart_total"];
     } else {
       print('Something went wrong ${response.body}');
     }
@@ -84,13 +98,15 @@ class CartProvider extends ChangeNotifier{
       message: 'Removed Successfully',
       backgroundColor: Theme.of(context).primaryColor, 
       sidePadding: size.width * 0.1, 
-      bottomPadding: size.height * 0.8
+      bottomPadding: size.height * 0.07
     );
     if (response.statusCode == 200 && decodedResponse['status'] == 'success') {
      ScaffoldMessenger.of(context).showSnackBar(removedMessage).closed.then((value) async {
-       totalProduct--;
-       total -= int.parse(cartItems[index].price);
-       cartItems.removeAt(index);
+       totalCartProduct--;
+       print("Total AMount: $totalCartAmount");
+       totalCartAmount -= int.parse(cartItems.firstWhere((element) => element.id == id,).price);
+       cartQuantities.remove(id);
+       cartItems.removeWhere((element) => element.id == id,);
         notifyListeners();
      },);
     } else {
@@ -114,7 +130,7 @@ class CartProvider extends ChangeNotifier{
       message: decodedResponse['message'], 
       backgroundColor: Theme.of(context).primaryColor, 
       sidePadding: size.width * 0.1, 
-      bottomPadding: size.height * 0.85
+      bottomPadding: size.height * 0.05
     );
     if (response.statusCode ==  200 && decodedResponse['status'] == 'success') {
       ScaffoldMessenger.of(context).showSnackBar(addCartMessage).closed.then((value) async {   
@@ -129,8 +145,9 @@ class CartProvider extends ChangeNotifier{
               total: product.finalPrice.toString()
             )
           );
-          totalProduct++;
-          total += product.finalPrice;
+          cartQuantities[productId] = 1;
+          totalCartProduct++;
+          totalCartAmount += product.finalPrice;
           await cartItemsAPI();
           notifyListeners();
       },);
@@ -141,7 +158,7 @@ class CartProvider extends ChangeNotifier{
   }
 
   // Update Cart for Check out
-  Future<void> updateCart(Size size, BuildContext context, List<Map<String, dynamic>> cartProductData) async {
+  Future<void> updateCart(Size size, BuildContext context, List<Map<String, dynamic>> cartProductData, bool isFinal) async {
        Map<String, dynamic> updateCartData = {
       'product_data': cartProductData,
       'customer_id': prefs.getString('customerId'),
@@ -151,11 +168,13 @@ class CartProvider extends ChangeNotifier{
       final decodedResponse = json.decode(decryptedResponse);
       print('Cart Update Response: $decodedResponse, Status Code: ${response.statusCode}');
       if (response.statusCode == 200 && decodedResponse['status'] == 'success') {
-        
-        Navigator.push(context, SideTransistionRoute(screen: const CheckoutScreen(fromCart: false,),));  
+        isFinal
+        ? Navigator.push(context, SideTransistionRoute(screen: const CheckoutScreen(fromCart: false,),))
+        : notifyListeners();  
       }else{
         print("Error: $decodedResponse");
       }
+      notifyListeners();
     }
 
 
@@ -170,13 +189,13 @@ class CartProvider extends ChangeNotifier{
       message: decodedResponse['message'], 
       backgroundColor: Theme.of(context).primaryColor, 
       sidePadding: size.width * 0.1, 
-      bottomPadding: size.height * 0.75
+      bottomPadding: size.height * 0.05
     );
     if (response.statusCode == 200 && decodedResponse["status"] == "success") {
       clearCartItems();
       ScaffoldMessenger.of(context).showSnackBar(quickOrderMessage).closed.then((value){
         Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => BottomBar(selectedIndex: 0),),
+          MaterialPageRoute(builder: (context) => const BottomBar(),),
           (route) => false
         );
       });
@@ -185,6 +204,97 @@ class CartProvider extends ChangeNotifier{
     }
   }
 
+  void confirmDelete( int id, Size size, int index, BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0), // Set your desired border radius
+          ),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          child: Container(
+            // padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            height: 200,
+            child: Column(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Column(
+                    children: [
+                      Center(
+                        child: AppTextWidget(text: "Remove item", fontSize: 20, fontWeight: FontWeight.w600),
+                      ),
+                      SizedBox(height: 16,),
+                      Center(
+                        child: Text(
+                           "Do you want to remove this item from the cart?",
+                           textAlign: TextAlign.center,
+                           style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w400
+                           ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 40,
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero
+                      ),
+                      backgroundColor: Colors.transparent.withOpacity(0.0),
+                      shadowColor: Colors.transparent.withOpacity(0.0),
+                      elevation: 0,
+                      overlayColor: Colors.transparent.withOpacity(0.1)
+                    ),
+                    onPressed: () async{
+                      await removeCart(id, size, context, index).then((value) => Navigator.pop(context),);
+                    }, 
+                    child: const AppTextWidget(
+                      text: "Confirm", 
+                      fontSize: 14, fontWeight: FontWeight.w400, 
+                      fontColor: Colors.red,)
+                  )
+                ),
+                
+                SizedBox(
+                  height: 40,
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent.withOpacity(0.0),
+                      shadowColor: Colors.transparent.withOpacity(0.0),
+                      elevation: 0,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero
+                      ),
+                      overlayColor: Colors.transparent.withOpacity(0.1)
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    }, 
+                    child: const AppTextWidget(text: "Cancel", fontSize: 14, fontWeight: FontWeight.w400, fontColor: Colors.grey,)
+                  ),
+                ),
+                const SizedBox(height: 10,)
+              ],
+            ),
+          )
+        );
+      },
+    );
   
+  }
+
 }
 

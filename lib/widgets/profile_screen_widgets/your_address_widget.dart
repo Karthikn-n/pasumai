@@ -147,86 +147,91 @@ class YourAddressWidget extends StatelessWidget {
           itemBuilder: (context, index) {
             return Column(
               children: [
-                Container(
-                  // height: size.height * 0.22,
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      width: provider.addresses[index].defaultAddress == "1" ? 2 : 1,
-                      color: provider.addresses[index].defaultAddress  == "1"
-                      ? Theme.of(context).primaryColor
-                      : Colors.grey.shade300 
-                    )
-                  ),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: size.width * 0.7,
-                              child: AppTextWidget(
-                                text: addressList[index].location, 
-                                fontSize: 15, 
-                                fontWeight: FontWeight.w500
-                              ),
-                            ),
-                            PopupMenuButton(
-                              color: Colors.white,
-                              itemBuilder: (context) {
-                                return [
-                                  PopupMenuItem(
-                                    onTap: () {
-                                        Navigator.push(context, SideTransistionRoute(
-                                        screen: NewAddressFormWidget(
-                                          needUpdate: true, 
-                                          updateAddress: provider.addresses[index], 
-                                          updateFormKey: GlobalKey<FormState>() 
-                                        ,)
-                                      ));
-                                    },
-                                    child: const AppTextWidget(text: "Edit", fontSize: 14, fontWeight: FontWeight.w500)
-                                  ),
-                                  PopupMenuItem(
-                                    onTap: () {
-                                      provider.confirmDelete(context, size, provider.addresses[index].id, index);
-                                    },
-                                    child: const AppTextWidget(text: "Delete", fontSize: 14, fontWeight: FontWeight.w500)
-                                  ),
-                                  PopupMenuItem(
-                                    onTap: () {
-                                      provider.setAddressDefault(context, size, provider.addresses[index].id);
-                                    },
-                                    child: const AppTextWidget(text: "Set as default", fontSize: 14, fontWeight: FontWeight.w500)
-                                  ),
-                                ];
-                              },
-                            )
-                          
-                          ],
-                        ),
-                        const SizedBox(height: 5,),
-                        AppTextWidget(
-                          text: '${addressList[index].flatNo}, ' 
-                          '${addressList[index].floorNo}, ' 
-                          '${addressList[index].address}, '
-                          '${addressList[index].landmark}, '
-                          '${addressList[index].location}, ' 
-                          '${addressList[index].region}, '
-                          '${addressList[index].pincode}, ',
-                          fontSize: 14, 
-                          maxLines: 5,
-                          fontWeight: FontWeight.w400
-                        ),
-                        const SizedBox(height: 5,),
-                      ],
+                GestureDetector(
+                  onTap: () {
+                    provider.setCurrentAddress(address: provider.addresses[index]);
+                  },
+                  child: Container(
+                    // height: size.height * 0.22,
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        width: provider.addresses[index].id == provider.currentAddress!.id ? 2 : 1,
+                        color: provider.addresses[index].id == provider.currentAddress!.id
+                        ? Theme.of(context).primaryColor
+                        : Colors.grey.shade300 
+                      )
                     ),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: size.width * 0.7,
+                                child: AppTextWidget(
+                                  text: addressList[index].location, 
+                                  fontSize: 15, 
+                                  fontWeight: FontWeight.w500
+                                ),
+                              ),
+                              PopupMenuButton(
+                                color: Colors.white,
+                                itemBuilder: (context) {
+                                  return [
+                                    PopupMenuItem(
+                                      onTap: () {
+                                          Navigator.push(context, SideTransistionRoute(
+                                          screen: NewAddressFormWidget(
+                                            needUpdate: true, 
+                                            updateAddress: provider.addresses[index], 
+                                            updateFormKey: GlobalKey<FormState>() 
+                                          ,)
+                                        ));
+                                      },
+                                      child: const AppTextWidget(text: "Edit", fontSize: 14, fontWeight: FontWeight.w500)
+                                    ),
+                                    PopupMenuItem(
+                                      onTap: () {
+                                        provider.confirmDelete(context, size, provider.addresses[index].id, index);
+                                      },
+                                      child: const AppTextWidget(text: "Delete", fontSize: 14, fontWeight: FontWeight.w500)
+                                    ),
+                                    PopupMenuItem(
+                                      onTap: () {
+                                        provider.setAddressDefault(context, size, provider.addresses[index].id);
+                                      },
+                                      child: const AppTextWidget(text: "Set as default", fontSize: 14, fontWeight: FontWeight.w500)
+                                    ),
+                                  ];
+                                },
+                              )
+                            
+                            ],
+                          ),
+                          const SizedBox(height: 5,),
+                          AppTextWidget(
+                            text: '${addressList[index].flatNo}, ' 
+                            '${addressList[index].floorNo}, ' 
+                            '${addressList[index].address}, '
+                            '${addressList[index].landmark}, '
+                            '${addressList[index].location}, ' 
+                            '${addressList[index].region}, '
+                            '${addressList[index].pincode}, ',
+                            fontSize: 14, 
+                            maxLines: 5,
+                            fontWeight: FontWeight.w400
+                          ),
+                          const SizedBox(height: 5,),
+                        ],
+                      ),
+                    ),
+                  
                   ),
-                
                 ),
                 SizedBox(height: addressList.length -1 == index ? 70 : 10,)
               ],

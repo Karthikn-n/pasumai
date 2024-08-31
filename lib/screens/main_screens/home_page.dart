@@ -1,7 +1,6 @@
 
 import 'dart:async';
 
-import 'package:app_3/helper/shared_preference_helper.dart';
 import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/providers/api_provider.dart';
@@ -14,36 +13,18 @@ import 'package:app_3/screens/sub-screens/wishlist_products.dart';
 import 'package:app_3/service/connectivity_helper.dart';
 import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
 import 'package:app_3/widgets/common_widgets.dart/input_field_widget.dart';
+import 'package:app_3/widgets/common_widgets.dart/shimmer_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/snackbar_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:app_3/widgets/main_screen_widgets/category_products_list_widget.dart';
 import 'package:app_3/widgets/main_screen_widgets/home_screen_products_widgets.dart';
-import 'package:app_3/widgets/main_screen_widgets/quick_order_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 
-import '../../model/cart_products_model.dart';
-
-class CustomScrollPhysics extends ScrollPhysics{
-  const CustomScrollPhysics({ScrollPhysics? scrollPhysics}):super(parent: scrollPhysics);
-
-  @override
-  CustomScrollPhysics applyTo(ScrollPhysics? ancestor){
-    return CustomScrollPhysics(scrollPhysics: buildParent(ancestor)!);
-  }
-
-  @override
-  SpringDescription get spring => const SpringDescription(
-    mass: 50 , 
-    stiffness: 200, 
-    damping: 0.2
-  );
-}
 class HomePage extends StatefulWidget {
   const HomePage({super.key,});
 
@@ -54,31 +35,16 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   PageController bannerController = PageController();
-  double minRatingFilter = 0;
-  SharedPreferences prefs = SharedPreferencesHelper.getSharedPreferences();
-  List<String> appliedFilters = [];
-  late PageController _pageController;
+
 
   int _currentPage = 0;
   Timer? _timer;
   DateTime? currentPress;
-  
-  // bool isQuick = false;
-  List<CartProducts> cartItemsData = [];
 
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController(initialPage: 0);
-  }
- 
-  
-  
   // Remove all the activity from memory to avoid memory leaks
   @override
   void dispose() {
     bannerController.dispose();
-    _pageController.dispose();
     _timer?.cancel();
     super.dispose();
   }
@@ -110,30 +76,24 @@ class _HomePageState extends State<HomePage> {
         return PopScope(
           canPop: provider.isQuick ? false : true,
           onPopInvoked: (didPop) {
-            if (provider.isQuick) {
-              provider.setQuick(false);
-              // setState(() {
-              //   isQuick = false;
-              // });
-            }else{
-              final now = DateTime.now();
-              if(currentPress == null || now.difference(currentPress!) > const Duration(seconds: 2)){
-                currentPress = now;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    elevation: 1,
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-                    backgroundColor:  const Color(0xFF60B47B),
-                    content: const Text('Press back again to exit', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
-                    duration: const Duration(seconds: 1),
-                  ),
-                );
-                return;
-              } else {
-                SystemNavigator.pop();
-              }
+            final now = DateTime.now();
+            if(currentPress == null || now.difference(currentPress!) > const Duration(seconds: 2)){
+              currentPress = now;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  elevation: 1,
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                  backgroundColor:  const Color(0xFF60B47B),
+                  content: const Text('Press back again to exit', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
+                  duration: const Duration(seconds: 1),
+                ),
+              );
+              return;
+            } else {
+              SystemNavigator.pop();
             }
+            
           },
           child: Scaffold(
             backgroundColor: Colors.white,
@@ -151,9 +111,10 @@ class _HomePageState extends State<HomePage> {
                     width: size.width * 0.4,
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             AppTextWidget(text: 'Locating...', fontSize: 14, fontWeight: FontWeight.w500),
                             AppTextWidget(text: 'Tamilnadu, India', fontSize: 12, fontWeight: FontWeight.w500)
@@ -222,7 +183,7 @@ class _HomePageState extends State<HomePage> {
                               message: wishlistProductProvider.message!, 
                               backgroundColor: Theme.of(context).primaryColor, 
                               sidePadding: size.width * 0.1, 
-                              bottomPadding: size.height * 0.85
+                              bottomPadding: size.height * 0.05
                             );
                             ScaffoldMessenger.of(context).showSnackBar(wishlistMessage);
                           }else {
@@ -240,10 +201,7 @@ class _HomePageState extends State<HomePage> {
                 )
               ],
             ),
-            body: provider.isQuick 
-            // ? const QuickOrderProductsWidget()
-            ? const QuickOrderWidget()
-            : Consumer<ApiProvider>(
+            body: Consumer<ApiProvider>(
               builder: (context, provider, child) {
                 return CustomScrollView(
                     physics: const BouncingScrollPhysics(),
@@ -335,45 +293,6 @@ class _HomePageState extends State<HomePage> {
                                     return Row(
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
-                                        index - 1 == -1
-                                        ? GestureDetector(
-                                            onTap: () async {
-                                              // provider.clearOrder();
-                                              await provider.allProducts(1);
-                                              // setState(() {
-                                              //   isQuick = !isQuick;
-                                              // });
-                                              provider.setQuick(true);
-                                            },
-                                            child: Container(
-                                              height: 140,
-                                              width: 110,
-                                              padding: const EdgeInsets.only(left: 10,),
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  SizedBox(
-                                                    height: 100,
-                                                    child: ClipRRect(
-                                                      borderRadius: BorderRadius.circular(10),
-                                                      child: CachedNetworkImage(
-                                                        imageUrl: 'https://www.magedelight.com/media/catalog/product/cache/2bfc27e6407691aea80773cb7926e368/q/u/quick-order-m2.png',
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  const AppTextWidget(
-                                                    text: 'Quick Order', 
-                                                    fontSize: 13, 
-                                                    maxLines: 1,
-                                                    fontWeight: FontWeight.w600,
-                                                    textOverflow: TextOverflow.ellipsis,
-                                                  )
-                                                ],
-                                              ),
-                                            )
-                                          )
-                                        : Container(),
                                         GestureDetector(
                                           onTap: () async {
                                             await provider.allProducts(provider.categories[index].categoryId).then((value){
@@ -417,6 +336,96 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                               const SizedBox(height: 12,),
+                              // Subscribe products Heading
+                              Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    AppTextWidget(
+                                      text: localeProvider.of(context).subscriptionProducts, 
+                                      fontSize: 18, 
+                                      fontWeight: FontWeight.w600
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        provider.setIndex(3);
+                                        Navigator.of(context).push(PageRouteBuilder(
+                                          pageBuilder: (context, animation, secondaryAnimation) =>  const BottomBar(),
+                                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                            return child;
+                                          },
+                                          transitionDuration: Duration.zero,
+                                        ));
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            'View all',
+                                            style: TextStyle(
+                                              fontSize: size.width > 600 ?  size.height * 0.034: size.height * 0.018,
+                                              fontWeight: FontWeight.bold,
+                                              color: Theme.of(context).primaryColor,
+                                            ),
+                                          ),
+                                          Icon(
+                                            Icons.arrow_forward_ios_sharp,
+                                            color: Theme.of(context).primaryColor,
+                                            size:  size.width > 600 ?  size.height * 0.034: size.height * 0.014,
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 12,),
+                              Consumer<SubscriptionProvider>(
+                                builder: (context, value, child) {
+                                  return  value.subscribeProducts.isEmpty
+                                  ? FutureBuilder(
+                                    future: value.getSubscribProducts(), 
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState == ConnectionState.waiting) {
+                                        return const ShimmerCarosouelView();
+                                      }else{
+                                        return HomeScreenProducts(
+                                          products: value.subscribeProducts, 
+                                          icon: Container(
+                                            padding: const EdgeInsets.all(5),
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(8),
+                                              color: Theme.of(context).primaryColor,
+                                            ),
+                                            child: const AppTextWidget(
+                                              text: "Subscribe", fontSize: 13, 
+                                              fontWeight: FontWeight.w500,
+                                              fontColor: Colors.white,
+                                            )
+                                          ),
+                                        );
+                                      }
+                                    } ,
+                                  )
+                                    // Subscribe product list
+                                  : HomeScreenProducts(
+                                    products: value.subscribeProducts, 
+                                    icon: Container(
+                                      padding: const EdgeInsets.all(5),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                      child: const AppTextWidget(
+                                        text: "Subscribe", fontSize: 13, 
+                                        fontWeight: FontWeight.w500,
+                                        fontColor: Colors.white,
+                                      )
+                                    ),
+                                  );
+                                },
+                              ),
+                              const SizedBox(height: 12,),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Row(
@@ -439,6 +448,7 @@ class _HomePageState extends State<HomePage> {
                                           Text(
                                             'View all',
                                             style: TextStyle(
+                                              color: Theme.of(context).primaryColor,
                                               fontSize: size.width > 600 ?  size.height * 0.034: size.height * 0.018,
                                               fontWeight: FontWeight.bold
                                             ),
@@ -487,15 +497,17 @@ class _HomePageState extends State<HomePage> {
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
-                                          const Text(
+                                          Text(
                                             'View all',
                                             style: TextStyle(
                                               fontSize: 13,
+                                              color: Theme.of(context).primaryColor,
                                               fontWeight: FontWeight.bold
                                             ),
                                           ),
                                           Icon(
                                             Icons.arrow_forward_ios_sharp,
+                                            color: Theme.of(context).primaryColor,
                                             size:  size.width > 600 ?  size.height * 0.034: size.height * 0.014,
                                           )
                                         ],
@@ -510,109 +522,8 @@ class _HomePageState extends State<HomePage> {
                                 margin: EdgeInsets.only(left: size.width * 0.004),
                                 child: HomeScreenProducts(products: provider.bestSellerProducts)
                               ),
-                              const SizedBox(height: 12,),
-                              // Subscribe products Heading
-                              Padding(
-                                padding: const EdgeInsets.all(8),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    AppTextWidget(
-                                      text: localeProvider.of(context).subscriptionProducts, 
-                                      fontSize: 18, 
-                                      fontWeight: FontWeight.w600
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        Navigator.of(context).push(PageRouteBuilder(
-                                          pageBuilder: (context, animation, secondaryAnimation) =>  BottomBar(selectedIndex: 2,),
-                                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                            return child;
-                                          },
-                                          transitionDuration: Duration.zero,
-                                        ));
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            'View all',
-                                            style: TextStyle(
-                                              fontSize: size.width > 600 ?  size.height * 0.034: size.height * 0.018,
-                                              fontWeight: FontWeight.bold
-                                            ),
-                                          ),
-                                          Icon(
-                                            Icons.arrow_forward_ios_sharp,
-                                            size:  size.width > 600 ?  size.height * 0.034: size.height * 0.014,
-                                          )
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 12,),
-                              Consumer<SubscriptionProvider>(
-                                builder: (context, value, child) {
-                                  return  value.subscribeProducts.isEmpty
-                                  ? FutureBuilder(
-                                    future: value.getSubscribProducts(), 
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState == ConnectionState.waiting) {
-                                        return SizedBox(
-                                          height: size.height * 0.06,
-                                          child: ListView.builder(
-                                            scrollDirection: Axis.horizontal,
-                                            itemCount: 5,
-                                            itemBuilder: (context, index) {
-                                              return Container(
-                                                height: size.height * 0.05,
-                                                width: size.width * 0.3,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.grey.shade300
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        );
-                                      }else{
-                                        return HomeScreenProducts(
-                                          products: value.subscribeProducts, 
-                                          icon: Container(
-                                            padding: const EdgeInsets.all(5),
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(8),
-                                              color: Theme.of(context).primaryColor,
-                                            ),
-                                            child: const AppTextWidget(
-                                              text: "Subscribe", fontSize: 13, 
-                                              fontWeight: FontWeight.w500,
-                                              fontColor: Colors.white,
-                                            )
-                                          ),
-                                        );
-                                      }
-                                    } ,
-                                  )
-                                    // Subscribe product list
-                                  : HomeScreenProducts(
-                                    products: value.subscribeProducts, 
-                                    icon: Container(
-                                      padding: const EdgeInsets.all(5),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        color: Theme.of(context).primaryColor,
-                                      ),
-                                      child: const AppTextWidget(
-                                        text: "Subscribe", fontSize: 13, 
-                                        fontWeight: FontWeight.w500,
-                                        fontColor: Colors.white,
-                                      )
-                                    ),
-                                  );
-                                },
-                              ),
-                              const SizedBox(height: 20,)
+                              const SizedBox(height: 20,),
+                              
                             ],
                           ),
                         ),

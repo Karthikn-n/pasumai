@@ -2,6 +2,7 @@ plugins {
     id "com.android.application"
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
+    id "com.google.gms.google-services"
 }
 
 def localProperties = new Properties()
@@ -24,10 +25,23 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.example.app_3"
-    compileSdkVersion flutter.compileSdkVersion
+    compileSdkVersion 34
     ndkVersion flutter.ndkVersion
-
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def appName = "Madurai-market" 
+            outputFileName = "${appName}.apk"
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled true   // Enables ProGuard
+            shrinkResources true // Removes unused resources
+            // proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -45,7 +59,7 @@ android {
         applicationId "com.example.app_3"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion 21
+        minSdkVersion 23 // Android 6
         multiDexEnabled true
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
@@ -65,4 +79,9 @@ flutter {
     source '../..'
 }
 
-dependencies {}
+dependencies {
+    implementation(platform("com.google.firebase:firebase-bom:33.2.0"))
+    implementation("com.google.firebase:firebase-auth")
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
+    implementation 'com.google.firebase:firebase-analytics'
+}

@@ -75,7 +75,7 @@ class _HomePageState extends State<HomePage> {
       builder: (context, provider, child) {
         return PopScope(
           canPop: provider.isQuick ? false : true,
-          onPopInvoked: (didPop) {
+          onPopInvokedWithResult: (didPop, result) {
             final now = DateTime.now();
             if(currentPress == null || now.difference(currentPress!) > const Duration(seconds: 2)){
               currentPress = now;
@@ -208,7 +208,7 @@ class _HomePageState extends State<HomePage> {
                     slivers: [
                       // banners
                       SliverAppBar(
-                        expandedHeight: size.width > 600?  size.height * 0.4 : size.height * 0.150,
+                        expandedHeight: size.width > 600?  size.height * 0.4 : size.height * 0.180,
                         floating: false,
                         automaticallyImplyLeading: false,
                         // pinned: true,
@@ -242,7 +242,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               // Page indicator
                               Padding(
-                                padding: EdgeInsets.only(top: size.width > 600 ? size.height * 0.3 : size.height * 0.12),
+                                padding: EdgeInsets.only(top: size.width > 600 ? size.height * 0.3 : size.height * 0.15),
                                 child: _buildDotIndicator(provider.banners),
                               ),
                             ],
@@ -456,6 +456,7 @@ class _HomePageState extends State<HomePage> {
                                           // SizedBox(width: size.width * 0.003,),
                                           Icon(
                                             Icons.arrow_forward_ios_sharp,
+                                            color: Theme.of(context).primaryColor,
                                             size:  size.width > 600 ?  size.height * 0.034: size.height * 0.014,
                                           )
                                         ],

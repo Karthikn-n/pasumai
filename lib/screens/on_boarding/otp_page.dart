@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
+// import 'dart:convert';
 
-import 'package:app_3/data/encrypt_ids.dart';
+// import 'package:app_3/data/encrypt_ids.dart';
 import 'package:app_3/helper/shared_preference_helper.dart';
 import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/helper/page_transition_helper.dart';
@@ -13,7 +13,7 @@ import 'package:app_3/service/api_service.dart';
 import 'package:app_3/service/connectivity_helper.dart';
 import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
 import 'package:app_3/widgets/common_widgets.dart/button_widget.dart';
-import 'package:app_3/widgets/common_widgets.dart/snackbar_widget.dart';
+// import 'package:app_3/widgets/common_widgets.dart/snackbar_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:app_3/widgets/sub_screen_widgets/new_address_form_widget.dart';
 import 'package:flutter/material.dart';
@@ -180,72 +180,69 @@ class _OtpPageState extends State<OtpPage> {
                         child: ButtonWidget(
                           buttonName: 'Verify',
                           onPressed: () async {
-                            // await addressProvider.getRegionLocation();
-                            // if(widget.fromRegister){
-                            //   Navigator.pushReplacement(context, SideTransistionRoute(screen: const NewAddressFormWidget(fromOnboarding: true,)));
-                            // }else{
-                            //   addressProvider.getAddressesAPI();
-                            //   Navigator.pushReplacement(context, SideTransistionRoute(screen: const BottomBar()),).then((value) {
-                            //     // prefs.remove("phoneNo");
-                            //   },);
-                            // }
-                            //  Navigator.pushReplacement(context, SideTransistionRoute(screen: const NewAddressFormWidget(fromOnboarding: true,)));
-                            FocusScope.of(context).unfocus();
-                            String otp = '';
-                            for (var controller in controllers) {
-                              otp += controller.text;
-                            }
-                              
-                            if (otp.isEmpty || otp.length < 4) {
-                              final emptyOtp = snackBarMessage(
-                                context: context, 
-                                message: 'Please Enter a Valid OTP', 
-                                backgroundColor: Theme.of(context).primaryColor, 
-                                sidePadding: size.width * 0.1, 
-                                bottomPadding: size.height * 0.05
-                              );
-                              ScaffoldMessenger.of(context).showSnackBar(emptyOtp);
-                            }else if(otp.length == 4){
-                              
-                              Map<String, dynamic> otpData = {'mobile_no': prefs.getString("mobile"), 'otp': otp};
-                        
-                              final response = await otpRepository.verifyotp(otpData);
-                              String decryptedData = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
-                              final decodedResponse = json.decode(decryptedData);
-                              print('Verify OTP Response: $decodedResponse, Status Code: ${response.statusCode}');
-                              SnackBar otpMessage = snackBarMessage(
-                                context: context, 
-                                message: decodedResponse['message'], 
-                                backgroundColor: const Color(0xFF60B47B), 
-                                sidePadding: size.width * 0.1, 
-                                bottomPadding: size.height * 0.05
-                              );
-                              if (response.statusCode == 200 && decodedResponse['status'] == 'success') {
-                                ScaffoldMessenger.of(context).showSnackBar(otpMessage).closed.then(
-                                  (value) async {
-                                    await addressProvider.getRegionLocation();
-                                    if(widget.fromRegister){
-                                      Navigator.pushAndRemoveUntil(context, SideTransistionRoute(screen: const NewAddressFormWidget(fromOnboarding: true,)), (route) => false,);
-                                    }else{
-                                      addressProvider.getAddressesAPI();
-                                      Navigator.pushAndRemoveUntil(context,  SideTransistionRoute(screen: const BottomBar()), (route) => false);
-                                    }
-                                  },
-                                );
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(otpMessage);
-                                print('Error: ${response.body}');
-                              }
+                            await addressProvider.getRegionLocation();
+                            if(widget.fromRegister){
+                              Navigator.pushAndRemoveUntil(context, SideTransistionRoute(screen: const NewAddressFormWidget(fromOnboarding: true,)), (route) => false,);
                             }else{
-                              final emptyOtp = snackBarMessage(
-                                context: context, 
-                                message: 'Please Enter a OTP', 
-                                backgroundColor: Theme.of(context).primaryColor, 
-                                sidePadding: size.width * 0.1, 
-                                bottomPadding: size.height * 0.85
-                              );
-                              ScaffoldMessenger.of(context).showSnackBar(emptyOtp);
+                              addressProvider.getAddressesAPI();
+                               Navigator.pushAndRemoveUntil(context,  SideTransistionRoute(screen: const BottomBar()), (route) => false);
                             }
+                            // FocusScope.of(context).unfocus();
+                            // String otp = '';
+                            // for (var controller in controllers) {
+                            //   otp += controller.text;
+                            // }
+                              
+                            // if (otp.isEmpty || otp.length < 4) {
+                            //   final emptyOtp = snackBarMessage(
+                            //     context: context, 
+                            //     message: 'Please Enter a Valid OTP', 
+                            //     backgroundColor: Theme.of(context).primaryColor, 
+                            //     sidePadding: size.width * 0.1, 
+                            //     bottomPadding: size.height * 0.05
+                            //   );
+                            //   ScaffoldMessenger.of(context).showSnackBar(emptyOtp);
+                            // }else if(otp.length == 4){
+                              
+                            //   Map<String, dynamic> otpData = {'mobile_no': prefs.getString("mobile"), 'otp': otp};
+                        
+                            //   final response = await otpRepository.verifyotp(otpData);
+                            //   String decryptedData = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
+                            //   final decodedResponse = json.decode(decryptedData);
+                            //   print('Verify OTP Response: $decodedResponse, Status Code: ${response.statusCode}');
+                            //   SnackBar otpMessage = snackBarMessage(
+                            //     context: context, 
+                            //     message: decodedResponse['message'], 
+                            //     backgroundColor: const Color(0xFF60B47B), 
+                            //     sidePadding: size.width * 0.1, 
+                            //     bottomPadding: size.height * 0.05
+                            //   );
+                            //   if (response.statusCode == 200 && decodedResponse['status'] == 'success') {
+                            //     ScaffoldMessenger.of(context).showSnackBar(otpMessage).closed.then(
+                            //       (value) async {
+                            //         await addressProvider.getRegionLocation();
+                            //         if(widget.fromRegister){
+                            //           Navigator.pushAndRemoveUntil(context, SideTransistionRoute(screen: const NewAddressFormWidget(fromOnboarding: true,)), (route) => false,);
+                            //         }else{
+                            //           addressProvider.getAddressesAPI();
+                            //           Navigator.pushAndRemoveUntil(context,  SideTransistionRoute(screen: const BottomBar()), (route) => false);
+                            //         }
+                            //       },
+                            //     );
+                            //   } else {
+                            //     ScaffoldMessenger.of(context).showSnackBar(otpMessage);
+                            //     print('Error: ${response.body}');
+                            //   }
+                            // }else{
+                            //   final emptyOtp = snackBarMessage(
+                            //     context: context, 
+                            //     message: 'Please Enter a OTP', 
+                            //     backgroundColor: Theme.of(context).primaryColor, 
+                            //     sidePadding: size.width * 0.1, 
+                            //     bottomPadding: size.height * 0.85
+                            //   );
+                            //   ScaffoldMessenger.of(context).showSnackBar(emptyOtp);
+                            // }
                           }, 
                         ),
                       ),

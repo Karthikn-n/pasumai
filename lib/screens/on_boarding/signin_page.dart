@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/providers/api_provider.dart';
+// import 'package:app_3/providers/notification_provider.dart';
 import 'package:app_3/screens/on_boarding/registration_page.dart';
 import 'package:app_3/service/connectivity_helper.dart';
 import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
@@ -9,10 +10,11 @@ import 'package:app_3/widgets/common_widgets.dart/input_field_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key,});
+  final bool? fromSplash;
+  const LoginPage({super.key, this.fromSplash});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -28,7 +30,10 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    preLoadAPi();
+    notificationPermission();
+    widget.fromSplash ?? false 
+    ? null
+    : preLoadAPi();
   }
 
   @override
@@ -120,8 +125,10 @@ class _LoginPageState extends State<LoginPage> {
                   return ButtonWidget(
                     buttonName: 'Login',
                     onPressed: () async {
+                      print("Mobile number: +91${mobileController.text}");
                       if (_key.currentState!.validate()) {
                         mobileNoFocus.unfocus();
+                        // FirebaseAuthHelper.verifyUserPhoneNumber("+91${mobileController.text}");
                         await provider.userLogin(mobileController.text, size, context);
                       }
                     }, 
@@ -153,5 +160,11 @@ class _LoginPageState extends State<LoginPage> {
     ]);
   }
 
+  // Get Permission for notification
+  Future<void> notificationPermission() async {
+    await Permission.notification.request();
+    await Permission.sms.request();
+  }
 
+  // Future<void> requestAlertPermission() async => await Permission.accessNotificationPolicy.request();
 }

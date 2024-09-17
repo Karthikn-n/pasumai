@@ -57,7 +57,28 @@ class ProfileProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-// Update Profile
+  // Query options
+  String? selectedQuery;
+  List<String> queryOptions = [
+    "Payment issue",
+    "Refund",
+    "Wrong product delivered",
+    "Late delivery",
+    "Wrong Subscription product",
+    "Other"
+  ];
+
+  // Set selected Query
+  void selectQuery(int? index){
+    if (index != null) {
+      selectedQuery = queryOptions[index];
+    }else{
+      selectedQuery = null;
+    }
+    notifyListeners();
+  } 
+
+  // Update Profile
   Future<void> updateProfile(Map<String, dynamic> profileData, Size size, BuildContext context, bool isMobileEdited) async {
     final response = await profileRepository.updateProfile(profileData);
     String decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
@@ -441,6 +462,37 @@ class ProfileProvider extends ChangeNotifier{
     } else {
       ScaffoldMessenger.of(context).showSnackBar(updateVacationMessage);
       print('Failed: ${response.body}');
+    }
+    notifyListeners();
+  }
+
+  // Raise a Query API
+  Future<void> raiseAQueryAPI(String comment, Size size, BuildContext context) async {
+    Map<String, dynamic> queryData = {
+      "customer_id": prefs.getString("customerId"),
+      "query": selectedQuery ?? "",
+      "comments": comment
+    };
+    print("query Data: $queryData");
+    selectQuery(null);
+    final response = await profileRepository.raiseAQuery(queryData);
+    String decryptedData = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
+    final decodedResponse = json.decode(decryptedData);
+    debugPrint('Query Response: $decodedResponse, Status Code: ${response.statusCode}', wrapWidth: 1064);
+    final queryRaisedMessage = snackBarMessage(
+      context: context, 
+      message: decodedResponse['message'], 
+      backgroundColor: Theme.of(context).primaryColor, 
+      sidePadding: size.width * 0.1, 
+      bottomPadding: size.height * 0.05
+    );
+    if (response.statusCode == 200 && decodedResponse["status"] == "success") {
+      ScaffoldMessenger.of(context).showSnackBar(queryRaisedMessage).closed.then((value) async {
+        selectQuery(null);
+      },);
+    }else{
+       ScaffoldMessenger.of(context).showSnackBar(queryRaisedMessage);
+      print("Error in raise Query: $decodedResponse");
     }
     notifyListeners();
   }

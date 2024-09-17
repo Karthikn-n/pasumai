@@ -211,14 +211,16 @@ class SubscriptionHistoryWidget extends StatelessWidget {
                       : Row(
                           children: [
                             SizedBox(
+                              height: size.height * 0.1,
                               width: size.width * 0.2,
                               child: const Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
                                   AppTextWidget(text: "Day: ", fontSize: 15, fontWeight: FontWeight.w500),
-                                  SizedBox(height: 4,),
+                                  // SizedBox(height: 4,),
                                   AppTextWidget(text: "Morning: ", fontSize: 15, fontWeight: FontWeight.w500),
-                                  SizedBox(height: 4,),
+                                  // SizedBox(height: 4,),
                                   AppTextWidget(text: "Evening: ", fontSize: 15, fontWeight: FontWeight.w500),
                                 ],
                               ),
@@ -233,16 +235,17 @@ class SubscriptionHistoryWidget extends StatelessWidget {
                                   return Row(
                                     children: [
                                       Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                         children: [
                                           AppTextWidget(
                                             text: "${historyProducts[index].frequencyMobData[dayIndex].day[0].toUpperCase()}${historyProducts[index].frequencyMobData[dayIndex].day.substring(1, 3)}", 
                                             fontSize: 15, 
                                             fontWeight: FontWeight.w500
                                           ),
-                                          const SizedBox(height: 7,),
+                                          // const SizedBox(height: 7,),
                                           AppTextWidget(text: historyProducts[index].frequencyMobData[dayIndex].mrgQuantity.toString(), fontSize: 14, fontWeight: FontWeight.w500),
-                                          const SizedBox(height: 7,),
+                                          // const SizedBox(height: 7,),
                                           AppTextWidget(text: historyProducts[index].frequencyMobData[dayIndex].evgQuantity.toString(), fontSize: 14, fontWeight: FontWeight.w500),
                                         ],
                                       ),

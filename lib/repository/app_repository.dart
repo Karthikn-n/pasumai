@@ -214,4 +214,8 @@ class AppRepository{
   // Apply coupon
   Future<http.Response> applyCouponQuickOrder(Map<String, dynamic> body) async
     => await apiService.post('/apply-coupon-quick-order', body);
+  
+  // Raise a Query
+  Future<http.Response> raiseAQuery(Map<String, dynamic> body) async
+    => await apiService.post("/raisequery", body);
 } 

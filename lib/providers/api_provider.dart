@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:app_3/data/encrypt_ids.dart';
-import 'package:app_3/data/profile_data.dart';
+// import 'package:app_3/data/profile_data.dart';
 import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/helper/shared_preference_helper.dart';
 import 'package:app_3/model/category_model.dart';
@@ -43,26 +43,27 @@ class ApiProvider extends ChangeNotifier{
   List<Products> categoryProducts = [];
   List<Products> quickOrderProductsList = [];
   List<Products> filteredProducts = [];
-  List<Attributes> attributesList = [
-    Attributes(
-      id: 1, 
-      name: "Quantity", 
-      optionData: [
-        OptionData(id: 1, name: "500ml"),
-        OptionData(id: 1, name: "1L"),
-        OptionData(id: 1, name: "2L"),
-      ]
-    ),
-    Attributes(
-      id: 2, 
-      name: "Size", 
-      optionData: [
-        OptionData(id: 1, name: "s"),
-        OptionData(id: 1, name: "m"),
-        OptionData(id: 1, name: "l"),
-      ]
-    ),
-  ]; 
+  // List<Attributes> attributesList = [
+  //   Attributes(
+  //     id: 1, 
+  //     name: "Quantity", 
+  //     optionData: [
+  //       OptionData(id: 1, name: "500ml"),
+  //       OptionData(id: 1, name: "1L"),
+  //       OptionData(id: 1, name: "2L"),
+  //     ]
+  //   ),
+  //   Attributes(
+  //     id: 2, 
+  //     name: "Size", 
+  //     optionData: [
+  //       OptionData(id: 1, name: "s"),
+  //       OptionData(id: 1, name: "m"),
+  //       OptionData(id: 1, name: "l"),
+  //     ]
+  //   ),
+  // ]; 
+  
   bool clearFilter = false;
   String? selectedAttribute;
   String? selectedOption;
@@ -148,13 +149,13 @@ class ApiProvider extends ChangeNotifier{
     );
     debugPrint('Login Response: $decodedResponse, Status Code: ${response.statusCode}', wrapWidth: 1064);
     if (response.statusCode == 200 && decodedResponse['status'] == 'success') {
+      prefs.setString('customerId', decodedResponse["customer_id"].toString());
+      prefs.setString("mobile", mobileNo);
       ScaffoldMessenger.of(context).showSnackBar(loginMessage).closed.then(
         (value) async {
-          await userProfileAPI();
           // Save User id In Cache
-          prefs.setString('customerId', decodedResponse["customer_id"].toString());
           print("Customer ID: ${prefs.getString("customerId")}");
-          prefs.setString("mobile", mobileNo);
+          await userProfileAPI();
           Navigator.push(context, SideTransistionRoute(
             screen: const OtpPage(fromRegister: false,), 
           ));
@@ -171,7 +172,6 @@ class ApiProvider extends ChangeNotifier{
     Map<String, dynamic> userData = {
       'customer_id': prefs.getString('customerId')
     };
-
     final response = await apiRepository.userprofile(userData);
     String decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
     final decodedResponse = json.decode(decryptedResponse);
@@ -231,7 +231,7 @@ class ApiProvider extends ChangeNotifier{
       //   createQuantities();
       // }
       
-      attributesList = decodedResponse['attributes'].map<Attributes>((attr) => Attributes.fromJson(attr)).toList();
+      // attributesList = decodedResponse['attributes'].map<Attributes>((attr) => Attributes.fromJson(attr)).toList();
     } else {
       print('Error: ${response.body}');
     }
@@ -251,7 +251,7 @@ class ApiProvider extends ChangeNotifier{
       quickOrderProductsList.clear();
       quickOrderProductsList = productsList;
       createQuickorderQuantities();
-      attributesList = decodedResponse['attributes'].map<Attributes>((attr) => Attributes.fromJson(attr)).toList();
+      // attributesList = decodedResponse['attributes'].map<Attributes>((attr) => Attributes.fromJson(attr)).toList();
     } else {
       print('Error: ${response.body}');
     }
@@ -507,19 +507,20 @@ class ApiProvider extends ChangeNotifier{
       final decryptResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
       final decodedResponse = json.decode(decryptResponse);
       print('Decoded Coupon Response: $decodedResponse, Status code: ${response.statusCode}');
+      final couponMessage = snackBarMessage(
+        context: context, 
+        message: decodedResponse["message"], 
+        backgroundColor: Theme.of(context).primaryColor, 
+        sidePadding: size.width * 0.1, 
+        bottomPadding: size.height * 0.05
+      );
       if (response.statusCode == 200 && decodedResponse["status"] == "success") {
-        final couponMessage = snackBarMessage(
-          context: context, 
-          message: 'Coupon applied Successfully', 
-          backgroundColor: Theme.of(context).primaryColor, 
-          sidePadding: size.width * 0.1, 
-          bottomPadding: size.height * 0.05
-        );
         ScaffoldMessenger.of(context).showSnackBar(couponMessage);
         isCouponApplied = true;
         discountAmount = decodedResponse['discount'].toString();
         newTotal = decodedResponse['new_total'].toString();
       } else {
+        ScaffoldMessenger.of(context).showSnackBar(couponMessage);
         print('Error: $decodedResponse');
       }
    }
@@ -555,20 +556,21 @@ class ApiProvider extends ChangeNotifier{
       final decodedResponse = json.decode(decryptResponse);
       // final decodedResponse = json.decode(response.body);
       print('Decoded Quick order Coupon Response: $decodedResponse, Status code: ${response.statusCode}');
+      final couponMessage = snackBarMessage(
+        context: context, 
+        message: decodedResponse["message"], 
+        backgroundColor: Theme.of(context).primaryColor, 
+        sidePadding: size.width * 0.1, 
+        bottomPadding: size.height * 0.05
+      );
       if (response.statusCode == 200 && decodedResponse["status"] == "success") {
-        final couponMessage = snackBarMessage(
-          context: context, 
-          message: 'Coupon applied Successfully', 
-          backgroundColor: Theme.of(context).primaryColor, 
-          sidePadding: size.width * 0.1, 
-          bottomPadding: size.height * 0.05
-        );
         ScaffoldMessenger.of(context).showSnackBar(couponMessage);
         isCouponApplied = true;
         print("Is coupon applied: $isCouponApplied");
         discountAmount = decodedResponse['discount'].toString();
         newTotal = decodedResponse['new_total'].toString();
       } else {
+        ScaffoldMessenger.of(context).showSnackBar(couponMessage);
         print('Error: $decodedResponse');
       }
     }

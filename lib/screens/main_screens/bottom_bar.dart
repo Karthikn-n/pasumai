@@ -153,6 +153,7 @@ class _BottomBarState extends State<BottomBar> {
               foregroundColor: Colors.transparent.withOpacity(0.0),
               onPressed: () async {
                 apiProvider.setQuick(true);
+                apiProvider.setIndex(2);
                 print(apiProvider.quickOrderProductsList.length);
                 if (apiProvider.quickOrderProductsList.isEmpty) {
                   await apiProvider.quickOrderProducts();
@@ -171,7 +172,7 @@ class _BottomBarState extends State<BottomBar> {
           )
         : PopScope(
           canPop: false,
-          onPopInvoked: (didPop) async {
+          onPopInvokedWithResult: (didPop, result) {
             if (apiProvider.bottomIndex != 0) {
               apiProvider.setQuick(false);
               apiProvider.setIndex(0);
@@ -179,6 +180,7 @@ class _BottomBarState extends State<BottomBar> {
             }
           },
           child: Scaffold(
+            resizeToAvoidBottomInset: false,
             backgroundColor: Colors.white,
             body: Stack(
               children: [
@@ -287,6 +289,7 @@ class _BottomBarState extends State<BottomBar> {
               foregroundColor: Colors.transparent.withOpacity(0.0),
               onPressed: () async {
                 apiProvider.setQuick(true);
+                apiProvider.setIndex(2);
                 print(apiProvider.quickOrderProductsList.length);
                 if (apiProvider.quickOrderProductsList.isEmpty) {
                   await apiProvider.quickOrderProducts();

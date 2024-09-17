@@ -13,10 +13,18 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class RenewSubscriptionWidget extends StatelessWidget {
+class RenewSubscriptionWidget extends StatefulWidget {
   final int index;
   final ActiveSubscriptionModel product;
   const RenewSubscriptionWidget({super.key, required this.index ,required this.product});
+
+  @override
+  State<RenewSubscriptionWidget> createState() => _RenewSubscriptionWidgetState();
+}
+
+class _RenewSubscriptionWidgetState extends State<RenewSubscriptionWidget> {
+
+  bool needStartDate = false;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +65,7 @@ class RenewSubscriptionWidget extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                             child: CachedNetworkImage(
                               fit: BoxFit.cover,
-                              imageUrl: 'https://maduraimarket.in/public/image/product/${product.productImage}'
+                              imageUrl: 'https://maduraimarket.in/public/image/product/${widget.product.productImage}'
                               // imageUrl: 'http://192.168.1.5/pasumaibhoomi/public/image/product/${product.productImage}'
                             ),
                           ),
@@ -70,7 +78,7 @@ class RenewSubscriptionWidget extends StatelessWidget {
                             children: [
                               // Product name
                               AppTextWidget(
-                                text: product.productName,
+                                text: widget.product.productName,
                                 fontSize: 16, fontWeight: FontWeight.w500,
                                 maxLines: 2,
                               ),
@@ -81,7 +89,7 @@ class RenewSubscriptionWidget extends StatelessWidget {
                                     width: size.width * 0.3, 
                                     child: const AppTextWidget(text: "Final price: ", fontSize: 15, fontWeight: FontWeight.w500)
                                   ),
-                                  AppTextWidget(text:"₹${product.productPrice}", fontSize: 14, fontWeight: FontWeight.w400),
+                                  AppTextWidget(text:"₹${widget.product.productPrice}", fontSize: 14, fontWeight: FontWeight.w400),
                                 ],
                               ),
                               // const SizedBox(height: 4,),
@@ -102,7 +110,15 @@ class RenewSubscriptionWidget extends StatelessWidget {
                   ),
                   const SizedBox(height: 20,),
                   // Subscription Detail
-                  const AppTextWidget(text: 'Subscription Detail', fontSize: 17, fontWeight: FontWeight.w500), 
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const AppTextWidget(text: 'Subscription Detail', fontSize: 17, fontWeight: FontWeight.w500),
+                      needStartDate 
+                        ? const AppTextWidget(text: "* start date is required", fontSize: 13, fontWeight: FontWeight.w400, fontColor: Colors.red,)
+                        : Container()
+                    ],
+                  ), 
                   const SizedBox(height: 20,),
                   // Subscription Detail Box
                   Container(
@@ -120,14 +136,14 @@ class RenewSubscriptionWidget extends StatelessWidget {
                             Row(
                               children: [
                                 const AppTextWidget(text: "Subscription ID: ", fontSize: 16, fontWeight: FontWeight.w500),
-                                AppTextWidget(text: "${product.subId} ", fontSize: 15, fontWeight: FontWeight.w500),
+                                AppTextWidget(text: "${widget.product.subId} ", fontSize: 15, fontWeight: FontWeight.w500),
                               ],
                             ),
                             AppTextWidget(
-                              text: product.status, 
+                              text: widget.product.status, 
                               fontSize: 15, 
                               fontWeight: FontWeight.w400,
-                              fontColor: product.status == "Active"
+                              fontColor: widget.product.status == "Active"
                                 ? Theme.of(context).primaryColor
                                 : Colors.orange,
                             )
@@ -150,12 +166,13 @@ class RenewSubscriptionWidget extends StatelessWidget {
                               child: Row(
                                 children: [
                                   AppTextWidget(
-                                    text: renewProvider.renewStartDate![index] != null
-                                    ? DateFormat("dd MMM yyyy").format(renewProvider.renewStartDate![index]!)
+                                    text: renewProvider.renewStartDate![widget.index] != null
+                                    ? DateFormat("dd MMM yyyy").format(renewProvider.renewStartDate![widget.index]!)
                                     : "Pick a date",
                                     maxLines: 2,
                                     textOverflow: TextOverflow.ellipsis, 
                                     fontSize: 14, 
+                                    fontColor: needStartDate ? Colors.red : null,
                                     fontWeight: FontWeight.w400
                                   ),
                                   const SizedBox(width: 8,),
@@ -169,16 +186,22 @@ class RenewSubscriptionWidget extends StatelessWidget {
                                         initialDate: DateTime.now(),
                                       );
                                       if (renewDate != null) {
-                                        renewProvider.setStartDate(renewDate, index);
+                                        renewProvider.setStartDate(renewDate, widget.index);
+                                        setState(() {
+                                          needStartDate = false;
+                                        });
                                         await renewProvider.renewSubscriptionApi(
                                         {
-                                        "sub_id": product.subId, 
-                                        "bal_amt": product.customerBalacne,
+                                        "sub_id": widget.product.subId, 
+                                        "bal_amt": widget.product.customerBalacne,
                                         "renewal_date": DateFormat("yyyy-MM-dd").format(renewDate),
-                                        "prdt_price": product.productPrice,
-                                      }, context, size, index);
+                                        "prdt_price": widget.product.productPrice,
+                                      }, context, size, widget.index);
                                       }else{
-                                        renewProvider.setStartDate(null, index);
+                                        renewProvider.setStartDate(null, widget.index);
+                                        setState(() {
+                                          needStartDate = false;
+                                        });
                                       }
                                     },
                                     child: Icon(
@@ -197,15 +220,15 @@ class RenewSubscriptionWidget extends StatelessWidget {
                         // Subscription End Date
                         SubscriptionDetailWidget(
                           title: 'End date: ', 
-                          value: renewProvider.renewSubscriptionResponse?[index] != null 
-                          ? DateFormat("dd MMM yyyy").format(DateTime.parse(renewProvider.renewSubscriptionResponse![index]!.endDate))
+                          value: renewProvider.renewSubscriptionResponse?[widget.index] != null 
+                          ? DateFormat("dd MMM yyyy").format(DateTime.parse(renewProvider.renewSubscriptionResponse![widget.index]!.endDate))
                           : "End date"),
                         const SizedBox(height: 4,),
                         // Subscription grace date
                         SubscriptionDetailWidget(
                           title: 'Grace date: ', 
-                          value: renewProvider.renewSubscriptionResponse![index] != null 
-                          ? DateFormat("dd MMM yyyy").format(DateTime.parse(renewProvider.renewSubscriptionResponse![index]!.graceDate))
+                          value: renewProvider.renewSubscriptionResponse![widget.index] != null 
+                          ? DateFormat("dd MMM yyyy").format(DateTime.parse(renewProvider.renewSubscriptionResponse![widget.index]!.graceDate))
                           : "No date",
                           valueColor: Colors.orange,
                         ),
@@ -219,116 +242,39 @@ class RenewSubscriptionWidget extends StatelessWidget {
                         // Plan
                         SubscriptionDetailWidget(
                           title: 'Subscription plan: ', 
-                          value: "${product.frequency[0].toUpperCase()}${product.frequency.substring(1)}",
+                          value: "${widget.product.frequency[0].toUpperCase()}${widget.product.frequency.substring(1)}",
                         ),
                         const SizedBox(height: 4,),
                         SubscriptionDetailWidget(
                           title: 'Total days: ', 
-                          value: renewProvider.renewSubscriptionResponse![index] == null 
+                          value: renewProvider.renewSubscriptionResponse![widget.index] == null 
                           ? "0 day"
-                          : "${renewProvider.renewSubscriptionResponse![index]!.totalDays} days",
+                          : "${renewProvider.renewSubscriptionResponse![widget.index]!.totalDays} days",
                         ),
                         const SizedBox(height: 4,),
                         SubscriptionDetailWidget(
                           title: 'Total Quantity: ', 
-                          value: renewProvider.renewSubscriptionResponse![index] == null 
+                          value: renewProvider.renewSubscriptionResponse![widget.index] == null 
                           ? "0"
-                          : renewProvider.renewSubscriptionResponse![index]!.totalQty,
+                          : renewProvider.renewSubscriptionResponse![widget.index]!.totalQty,
                         ),
                         const SizedBox(height: 4,),
                         // payment status
                         SubscriptionDetailWidget(
                           title: 'Your Balance: ', 
-                          value: "₹${product.customerBalacne}",
+                          value: "₹${widget.product.customerBalacne}",
                         ),
                         const SizedBox(height: 4,),
                         // total amount
                         SubscriptionDetailWidget(
                           title: 'Total: ', 
-                          value: renewProvider.renewSubscriptionResponse![index] == null 
+                          value: renewProvider.renewSubscriptionResponse![widget.index] == null 
                           ? "₹0"
-                          : "₹${renewProvider.renewSubscriptionResponse![index]!.finalTotal}"),
+                          : "₹${renewProvider.renewSubscriptionResponse![widget.index]!.finalTotal}"),
                         const SizedBox(height: 4,),
                       ],
                     ),
                   ),
-                  
-                  // Subscription Detail
-                  // const SizedBox(height: 20,),
-                  // const AppTextWidget(text: 'Subscription Detail', fontSize: 17, fontWeight: FontWeight.w500), 
-                  // const SizedBox(height: 20,),
-                  // Container(
-                  //   padding: const EdgeInsets.all(10),
-                  //   decoration: BoxDecoration(
-                  //     borderRadius: BorderRadius.circular(10),
-                  //     border: Border.all(color: Colors.grey.shade300)
-                  //   ),
-                  //   child: product.frequency == "everyday"
-                  //   ? SizedBox(
-                  //     width: double.infinity,
-                  //     child: Column(
-                  //       crossAxisAlignment: CrossAxisAlignment.start,
-                  //       children: [
-                  //         const AppTextWidget(text: "Every day subscription ", fontSize: 16, fontWeight: FontWeight.w500),
-                  //         const SizedBox(height: 5,),
-                  //         SubscriptionDetailWidget(title: 'Morning quantity: ', value: "${product.frequencyMobData[0].mrgQuantity}"),
-                  //         const SizedBox(height: 5,),
-                  //         SubscriptionDetailWidget(title: 'Evening quantity: ', value: "${product.frequencyMobData[0].evgQuantity}")
-                  //       ],
-                  //     ),
-                  //   )
-                  //   : Column(
-                  //     children: [
-                  //       Row(
-                  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //         crossAxisAlignment: CrossAxisAlignment.center,
-                  //         children: [
-                  //           SizedBox(width: size.width * 0.21, child: const AppTextWidget(text: 'Day', fontSize: 15, fontWeight: FontWeight.w500)),
-                  //           SizedBox(
-                  //             width: size.width * 0.18,
-                  //             child: const AppTextWidget(text: 'Morning Quantity', fontSize: 15, fontWeight: FontWeight.w500, maxLines: 2,)
-                  //           ),
-                  //           SizedBox(
-                  //             width: size.width * 0.18,
-                  //             child: const AppTextWidget(text: 'Evening Quantity', fontSize: 15, fontWeight: FontWeight.w500, maxLines: 2,)
-                  //           ),  
-                  //         ],
-                  //       ),
-                  //       SizedBox(
-                  //         width: double.infinity,
-                  //         child: Divider(
-                  //           color: Colors.grey.shade200,
-                  //         ),
-                  //       ),
-                  //       ...List.generate(product.frequencyMobData.length,
-                  //        (index) {
-                  //          return Column(
-                  //           // crossAxisAlignment: CrossAxisAlignment.start,
-                  //           // mainAxisAlignment: MainAxisAlignment.start,
-                  //           children: [
-                  //              Row(
-                  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //               // crossAxisAlignment: CrossAxisAlignment.center,
-                  //               children: [
-                  //                 SizedBox(width: size.width * 0.23, child: AppTextWidget(
-                  //                   text: "${product.frequencyMobData[index].day[0].toUpperCase()}${product.frequencyMobData[index].day.substring(1)}", 
-                  //                   fontSize: 15, fontWeight: FontWeight.w500)),
-                  //                 SizedBox(
-                  //                   width: size.width * 0.18,
-                  //                   child: AppTextWidget(text: "${product.frequencyMobData[index].mrgQuantity}", fontSize: 14, fontWeight: FontWeight.w400,)),
-                  //                 SizedBox(
-                  //                   width: size.width * 0.18,
-                  //                   child: AppTextWidget(text: "${product.frequencyMobData[index].evgQuantity}", fontSize: 14, fontWeight: FontWeight.w400,)),  
-                  //               ],
-                  //             ),
-                  //             const SizedBox(height: 4,)
-                  //           ],
-                  //          );
-                  //        },
-                  //       )
-                  //     ],
-                  //   ),
-                  // ),
                   // Address Detail
                   const SizedBox(height: 20,),
                   Row(
@@ -396,16 +342,20 @@ class RenewSubscriptionWidget extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                       buttonName: 'Confirm', 
                       onPressed: () async {
-                        if (renewProvider.renewStartDate![index] != null) {
+                        if (renewProvider.renewStartDate![widget.index] != null) {
                           await renewProvider.rePreorder({
-                            "subscription_id": product.subId,
-                            "final_total": renewProvider.renewSubscriptionResponse![index]!.finalTotal,
-                            "renewal_date": DateFormat("yyyy-MM-dd").format(renewProvider.renewStartDate![index]!),
-                            "address": addressProvider.currentAddress!.id,
-                            }, context, size).then((value) async {
-                              await renewProvider.activeSubscription();
-                              Navigator.pop(context);
-                            },);
+                          "subscription_id": widget.product.subId,
+                          "final_total": renewProvider.renewSubscriptionResponse![widget.index]!.finalTotal,
+                          "renewal_date": DateFormat("yyyy-MM-dd").format(renewProvider.renewStartDate![widget.index]!),
+                          "address": addressProvider.currentAddress!.id,
+                          }, context, size).then((value) async {
+                            await renewProvider.activeSubscription();
+                            Navigator.pop(context);
+                          },);
+                        }else{
+                          setState(() {
+                            needStartDate = true;
+                          });
                         }
                       }
                     )

@@ -3,6 +3,7 @@ import 'package:app_3/helper/shared_preference_helper.dart';
 import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/providers/api_provider.dart';
 import 'package:app_3/providers/cart_items_provider.dart';
+// import 'package:app_3/providers/notification_provider.dart';
 import 'package:app_3/providers/profile_provider.dart';
 import 'package:app_3/screens/sub-screens/address_selection_screen.dart';
 import 'package:app_3/service/connectivity_helper.dart';
@@ -285,9 +286,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           fontWeight: FontWeight.w600
                         ),
                         isdeliveryDateSelected
-                        ? const AppTextWidget(text: "* delivery date is required", fontSize: 13, fontWeight: FontWeight.w500, fontColor: Colors.red,)
+                        ? const AppTextWidget(text: "* delivery date is required", fontSize: 13, fontWeight: FontWeight.w400, fontColor: Colors.red,)
                         : isDeliveryTimeSelected
-                          ? const AppTextWidget(text: "* delivery time is required", fontSize: 13, fontWeight: FontWeight.w500, fontColor: Colors.red,)
+                          ? const AppTextWidget(text: "* delivery time is required", fontSize: 13, fontWeight: FontWeight.w400, fontColor: Colors.red,)
                           : Container()
                       ],
                     ),
@@ -385,7 +386,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         isPaymentoptionSelected 
                          ? const AppTextWidget(
                           text: "* required", 
-                          fontSize: 13, fontWeight: FontWeight.w500, fontColor: Colors.red,)
+                          fontSize: 13, fontWeight: FontWeight.w400, fontColor: Colors.red,)
                          : Container()
                       ],
                     ),
@@ -693,6 +694,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         await cartProvider.cartCheckOut(context, size, checkOutData).then((value) async {
                             provider.clearCoupon();
                             await profileProvider.orderList();
+                            // await NotificationProvider().showNotification(
+                            //   title: "Order placed successfully", 
+                            //   body: "See order detail here", 
+                            //   payload: "Open", 
+                            //   id: profileProvider.orderInfoData.last.orderId
+                            // );
                           },);
                        
                       }

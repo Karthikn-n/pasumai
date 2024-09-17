@@ -1,3 +1,4 @@
+import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/helper/shared_preference_helper.dart';
 import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/providers/profile_provider.dart';
@@ -7,6 +8,7 @@ import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:app_3/widgets/profile_screen_widgets/active_subscription_widget.dart';
 import 'package:app_3/widgets/profile_screen_widgets/invoice_list_widget.dart';
 import 'package:app_3/widgets/profile_screen_widgets/orders_history_widget.dart';
+import 'package:app_3/widgets/profile_screen_widgets/raise_a_query_widget.dart';
 import 'package:app_3/widgets/profile_screen_widgets/subscription_history_widget.dart';
 import 'package:app_3/widgets/profile_screen_widgets/user_profile_widget.dart';
 import 'package:app_3/widgets/profile_screen_widgets/vacation_list_widget.dart';
@@ -35,23 +37,37 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
     'Subscription History',
     'My Addresses',
     'Invoice Listing',
-    'Vacation Mode'
+    'Vacation Mode',
+    "Raise a query"
   ];
   @override
   void initState() {
     super.initState();
-    isOptionSelected = List.generate(options.length, (index) {
-      return index == 0 ? true : false;
-    },);
+    _loadSelectedOption();
   }
+ 
+
+  Future<void> _loadSelectedOption() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    int savedIndex = prefs.getInt('selectedOptionIndex') ?? 0;
+    setState(() {
+      selectedbody = savedIndex;
+      isOptionSelected = List.generate(options.length, (index) {
+        return index == selectedbody;
+      });
+    });
+  }
+
   
+
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
     final connectivityCheck = Provider.of<ConnectivityService>(context);
     if (!connectivityCheck.isConnected) {
       return Scaffold(
-        resizeToAvoidBottomInset: false,
+        // resizeToAvoidBottomInset: false,
         appBar: const AppBarWidget(
           title: 'Profile',
         ),
@@ -133,14 +149,21 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
                             ? Theme.of(context).primaryColor
                             : null,
                             onTap: () async {
-                              setState(() {
-                                for (var i = 0; i < options.length; i++) {
-                                  isOptionSelected[i] = false;
-                                }
-                                selectedbody = index;
-                                isOptionSelected[index] = true;
-                              });
-                              _scaffoldStateKey.currentState?.closeDrawer();
+                              if (index == images.length -1) {
+                                _scaffoldStateKey.currentState?.closeDrawer();
+                               await Future.delayed(const Duration(milliseconds: 200));
+                                Navigator.push(context, SideTransistionRoute(screen: const RaiseAQueryWidget()));
+                              } else {
+                                 setState(() {
+                                  for (var i = 0; i < options.length; i++) {
+                                    isOptionSelected[i] = false;
+                                  }
+                                  selectedbody = index;
+                                  isOptionSelected[index] = true;
+                                });
+                                await prefs.setInt('selectedOptionIndex', index); 
+                                _scaffoldStateKey.currentState?.closeDrawer();
+                              }
                             },
                             title: AppTextWidget(
                               text: options[index], 
@@ -162,7 +185,7 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
                 children: [
                   UserProfileWidget(prefs: prefs),
                   const SizedBox(height: 20,),
-                  optionsBody[selectedbody],
+                  optionsBody[prefs.getInt('selectedOptionIndex') ?? selectedbody],
                 ],
               ),
             ),
@@ -178,7 +201,7 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
     const SubscriptionHistoryWidget(),
     const YourAddressWidget(),
     const InvoiceListWidget(),
-    VacationListWidget()
+    VacationListWidget(),
   ];
 
   List<String> images = [
@@ -188,6 +211,7 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
     "assets/icons/profile/location.png",
     "assets/icons/profile/invoice.png",
     "assets/icons/profile/sunset.png",
+    "assets/icons/profile/question-sign.png",
   ];
   
 }

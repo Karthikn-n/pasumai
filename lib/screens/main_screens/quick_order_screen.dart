@@ -34,7 +34,8 @@ class QuickOrderScreen extends StatelessWidget {
           builder: (context, productProvider, addressProvider, child) {
           return PopScope(
             canPop: false,
-            onPopInvoked: (didPop) {
+            onPopInvokedWithResult: (didPop, result) {
+              print("Result: $result");
               productProvider.setQuick(false);
             },
             child: Scaffold(
@@ -321,18 +322,21 @@ class QuickOrderScreen extends StatelessWidget {
                       addressProvider.addnewAddress(context, size);
                     }else{
                       List<Map<String, dynamic>> productDataList = [];
+                      print("Quantites: ${productProvider.quickOrderQuantites}");
                       for (int i = 0; i < productProvider.quickOrderProductsList.length; i++) {
                         if (productProvider.quickOrderQuantites[productProvider.quickOrderProductsList[i].id] != null &&  productProvider.quickOrderQuantites[productProvider.quickOrderProductsList[i].id]! > 0) {
                           productProvider.quickOrderQuantites.forEach((key, value) {
-                          productDataList.add({
-                            'prdt_id': key,
-                            'prdt_qty': value,
-                            'prdt_total': value * productProvider.quickOrderProductsList[i].finalPrice,
-                          });
+                            if (value > 0) {
+                               productDataList.add({
+                                'prdt_id': key,
+                                'prdt_qty': value,
+                                'prdt_total': value * productProvider.quickOrderProductsList.firstWhere((element) => element.id == key,).finalPrice,
+                              });
+                            }
                           },);
                         }
                       }
-                      print(productDataList);
+                      print("Quick order product Data: $productDataList");
                       await productProvider.addQuickorder(context, size, productDataList).then((value) {
                         productProvider.clearCoupon();
                       },);

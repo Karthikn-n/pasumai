@@ -279,8 +279,9 @@ class OrdersHistoryWidget extends StatelessWidget {
                             onTap: () async {
                               print("Order ID: ${orders[index].orderId}");
                               orderProvider.clearCouponAmount();
-                              await orderProvider.orderDetail(orders[index].orderId);
-                              Navigator.push(context, downToTop(screen: const OrderDetailWidget(), args: {"orderDetail": orders[index]}));
+                              await orderProvider.orderDetail(orders[index].orderId).then((value) {
+                                Navigator.push(context, downToTop(screen: const OrderDetailWidget(), args: {"orderDetail": orders[index]}));
+                              },);
                             },
                             child: AppTextWidget(
                               text: "See detail", 

@@ -95,7 +95,9 @@ class OrderDetailWidget extends StatelessWidget {
                         ),
                         // Discount Amount
                         const SizedBox(height: 5,),
-                        Row(
+                        provider.discountAmount == 0.0
+                        ? Container()
+                        : Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(
@@ -105,7 +107,7 @@ class OrderDetailWidget extends StatelessWidget {
                             Expanded(child: AppTextWidget(text: "₹${provider.discountAmount}", fontSize: 14, fontWeight: FontWeight.w400)),
                           ],
                         ),
-                        const SizedBox(height: 5,),
+                        provider.discountAmount == 0.0 ? Container() : const SizedBox(height: 5,),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -116,9 +118,13 @@ class OrderDetailWidget extends StatelessWidget {
                             Expanded(
                               child: Row(
                                 children: [
-                                  AppTextWidget(text: '₹${double.parse(orderDetail.total)} / ', fontSize: 14, fontWeight: FontWeight.w400),
+                                  AppTextWidget(text: provider.discountAmount == 0.0 
+                                    ? '₹${double.parse(orderDetail.total)}'
+                                    : '₹${double.parse(orderDetail.total)} / ', fontSize: 14, fontWeight: FontWeight.w400),
                                   Text(
-                                    "₹${(double.parse(orderDetail.total) + provider.discountAmount)}",
+                                    provider.discountAmount == 0.0
+                                    ? ""
+                                    : "₹${(double.parse(orderDetail.total) + provider.discountAmount)}",
                                     style: const TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w400,

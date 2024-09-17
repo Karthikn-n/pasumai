@@ -82,6 +82,7 @@ class _MyAppState extends State<MyApp> {
               backgroundColor: Colors.white,
               headerBackgroundColor: Color(0xFF60B47B),
               headerForegroundColor: Colors.white,
+              dividerColor:  Color(0xFF60B47B),
               rangePickerBackgroundColor: Color(0xFF60B47B),
               cancelButtonStyle: ButtonStyle(
                 textStyle: WidgetStatePropertyAll(

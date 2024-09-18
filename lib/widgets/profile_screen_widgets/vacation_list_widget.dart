@@ -93,6 +93,7 @@ class VacationListWidget extends StatelessWidget {
                             Builder(
                               builder: (context) {
                                 return IconButton(
+                                  tooltip: "Add vacation",
                                   onPressed: (){
                                     if (DateTime.now().hour >= 15 ) {
                                       final alertMessage = snackBarMessage(
@@ -134,6 +135,7 @@ class VacationListWidget extends StatelessWidget {
                       Consumer<VacationProvider>(
                         builder: (context, vacation, child) {
                           return IconButton(
+                            tooltip: "Add vacation",
                             onPressed: (){
                               if (DateTime.now().hour >= 15 ) {
                                 final alertMessage = snackBarMessage(

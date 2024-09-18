@@ -47,6 +47,7 @@ class YourAddressWidget extends StatelessWidget {
                           fontWeight: FontWeight.w500
                         ),
                          IconButton(
+                          tooltip: "Add Address",
                           onPressed: (){
                             Navigator.push(context, downToTop(screen: const NewAddressFormWidget()));
                           },
@@ -80,6 +81,7 @@ class YourAddressWidget extends StatelessWidget {
                             fontWeight: FontWeight.w500
                           ),
                           IconButton(
+                            tooltip: "Add Address",
                             style: IconButton.styleFrom(
                               padding: const EdgeInsets.all(0)
                             ),
@@ -115,6 +117,7 @@ class YourAddressWidget extends StatelessWidget {
                         fontWeight: FontWeight.w500
                       ),
                        IconButton(
+                        tooltip: "Add Address",
                         style: IconButton.styleFrom(
                               padding: const EdgeInsets.all(0)
                             ),

@@ -32,105 +32,109 @@ class SubscriptionPageWidget extends StatelessWidget {
                       ),
                       // borderRadius: BorderRadius.circular(10)
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Product Image
-                        SizedBox(
-                          width: 94,
-                          height: 105,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: CachedNetworkImage(
-                              // imageUrl: 'http://192.168.1.5/pasumaibhoomi/public/image/product/${provider.subscribeProducts[index].image}',
-                              imageUrl: 'https://maduraimarket.in/public/image/product/${provider.subscribeProducts[index].image}',
-                              fit: BoxFit.cover,
+                    child: GestureDetector(
+                      onTap: () => Navigator.push(context, SideTransistionRoute(
+                        screen: ProductSubScription(product: provider.subscribeProducts[index],),
+                      )),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          // Product Image
+                          SizedBox(
+                            width: 94,
+                            height: 105,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: CachedNetworkImage(
+                                // imageUrl: 'http://192.168.1.5/pasumaibhoomi/public/image/product/${provider.subscribeProducts[index].image}',
+                                imageUrl: 'https://maduraimarket.in/public/image/product/${provider.subscribeProducts[index].image}',
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          width: size.width * 0.5,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Product Name and Quantity
-                              AppTextWidget(
-                                text: "${provider.subscribeProducts[index].name}/${provider.subscribeProducts[index].quantity}", 
-                                fontSize: 16, 
-                                maxLines: 2,
-                                textOverflow: TextOverflow.ellipsis,
-                                fontWeight: FontWeight.w500
-                              ),
-                              const SizedBox(height: 5,),
-                              // Product Description
-                              AppTextWidget(
-                                text: provider.subscribeProducts[index].description.replaceAll("<p>", ""), 
-                                fontSize: 12, 
-                                maxLines: 2,
-                                fontColor: Colors.black54,
-                                textOverflow: TextOverflow.ellipsis,
-                                fontWeight: FontWeight.w400
-                              ),
-                              const SizedBox(height: 5,),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  // Product Final price
-                                  AppTextWidget(
-                                    text: "₹${provider.subscribeProducts[index].finalPrice.toString()}", 
-                                    fontSize: 15, 
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                  const SizedBox(width: 5,),
-                                  // Product Price 
-                                  Text(
-                                    "₹${provider.subscribeProducts[index].price.toString()}",
-                                    style: const TextStyle(
-                                      fontSize: 13, 
+                          SizedBox(
+                            width: size.width * 0.5,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Product Name and Quantity
+                                AppTextWidget(
+                                  text: "${provider.subscribeProducts[index].name}/${provider.subscribeProducts[index].quantity}", 
+                                  fontSize: 16, 
+                                  maxLines: 2,
+                                  textOverflow: TextOverflow.ellipsis,
+                                  fontWeight: FontWeight.w500
+                                ),
+                                const SizedBox(height: 5,),
+                                // Product Description
+                                AppTextWidget(
+                                  text: provider.subscribeProducts[index].description.replaceAll("<p>", ""), 
+                                  fontSize: 12, 
+                                  maxLines: 2,
+                                  fontColor: Colors.black54,
+                                  textOverflow: TextOverflow.ellipsis,
+                                  fontWeight: FontWeight.w400
+                                ),
+                                const SizedBox(height: 5,),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    // Product Final price
+                                    AppTextWidget(
+                                      text: "₹${provider.subscribeProducts[index].finalPrice.toString()}", 
+                                      fontSize: 15, 
                                       fontWeight: FontWeight.w400,
-                                      decorationThickness: 2,
-                                      decorationColor: Colors.red,
-                                      color: Colors.black54,
-                                      decoration: TextDecoration.lineThrough,
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                    const SizedBox(width: 5,),
+                                    // Product Price 
+                                    Text(
+                                      "₹${provider.subscribeProducts[index].price.toString()}",
+                                      style: const TextStyle(
+                                        fontSize: 13, 
+                                        fontWeight: FontWeight.w400,
+                                        decorationThickness: 2,
+                                        decorationColor: Colors.red,
+                                        color: Colors.black54,
+                                        decoration: TextDecoration.lineThrough,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        // Add to Cart Button
-                        SizedBox(
-                          width: 40,
-                          height: 105,
-                          child: ElevatedButton(
-                            onPressed: () async => Navigator.push(context, SideTransistionRoute(
-                              screen: ProductSubScription(product: provider.subscribeProducts[index],),
-                              
-                            )), 
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.transparent.withOpacity(0.0),
-                              elevation: 0,
-                              alignment: Alignment.center,
-                              padding: const EdgeInsets.fromLTRB(18, 0, 0, 0),
-                              shadowColor: Colors.transparent.withOpacity(0.0),
-                              overlayColor: Colors.transparent.withOpacity(0.1),
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(color: Colors.grey.shade300),
-                                borderRadius: BorderRadius.circular(5)
+                          // Add to Cart Button
+                          SizedBox(
+                            width: 40,
+                            height: 105,
+                            child: ElevatedButton(
+                              onPressed: () => Navigator.push(context, SideTransistionRoute(
+                                screen: ProductSubScription(product: provider.subscribeProducts[index],),
+                              )), 
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.transparent.withOpacity(0.0),
+                                elevation: 0,
+                                alignment: Alignment.center,
+                                padding: const EdgeInsets.fromLTRB(18, 0, 0, 0),
+                                shadowColor: Colors.transparent.withOpacity(0.0),
+                                overlayColor: Colors.transparent.withOpacity(0.1),
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(color: Colors.grey.shade300),
+                                  borderRadius: BorderRadius.circular(5)
+                                )
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                                child: Icon(
+                                  CupertinoIcons.chevron_right,
+                                  color: Theme.of(context).primaryColor,
+                                  size: 20,
+                                ),
                               )
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                              child: Icon(
-                                CupertinoIcons.chevron_right,
-                                color: Theme.of(context).primaryColor,
-                                size: 20,
-                              ),
-                            )
-                          ),
-                        )
-                      ],
+                          )
+                        ],
+                      ),
                     ),
                   ),
                   SizedBox(height: index == provider.subscribeProducts.length - 1 ? 40 : 0,)

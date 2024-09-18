@@ -87,11 +87,13 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
               onBack: () {
                 _scaffoldStateKey.currentState?.openDrawer();
               },
+              toolTip: "Menu",
               leading: CupertinoIcons.bars,
               actions: [
                 Padding(
                   padding: const EdgeInsets.only(right: 10),
                   child: IconButton(
+                    tooltip: "Logout",
                     onPressed: () async {
                      provider.confirmLogout(context, size);
                     }, 

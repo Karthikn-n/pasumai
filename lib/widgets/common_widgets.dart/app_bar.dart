@@ -9,11 +9,13 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final List<Widget>? actions;
   final VoidCallback? onBack;
   final IconData? leading;
+  final String? toolTip;
   const AppBarWidget({
     super.key, 
     required this.title, 
     this.leading,
     this.needBack, 
+    this.toolTip,
     this.leadBuilder,
     this.onBack, 
     this.actions
@@ -34,6 +36,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         centerTitle: true,
         leading: needBack != null && needBack! 
         ? IconButton(
+          tooltip: leading == null ? "Navigate up" : toolTip ,
           onPressed: onBack,
           icon: Icon(leading ?? CupertinoIcons.chevron_back, size: 20,),
         )

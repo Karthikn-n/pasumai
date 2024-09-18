@@ -171,6 +171,7 @@ class _HomePageState extends State<HomePage> {
                   child: Consumer<ApiProvider>(
                     builder: (context, wishlistProductProvider, child) {
                       return IconButton(
+                        tooltip: "Wishlist",
                         style: ElevatedButton.styleFrom(
                           overlayColor: Colors.grey.shade400
                         ),

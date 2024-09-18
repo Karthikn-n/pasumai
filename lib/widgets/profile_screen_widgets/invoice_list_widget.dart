@@ -159,6 +159,9 @@ class InvoiceListWidget extends StatelessWidget {
                               height: 40,
                               width: 45,
                               child: TextButton(
+                                style: TextButton.styleFrom(
+                                  overlayColor: Colors.transparent.withOpacity(0.1),
+                                ),
                                 onPressed: () async {
                                   print("FileName: ${invoices[index].invoiceFile}");
                                   await provider.downloadInvoice(invoices[index].invoiceFile, context, size);

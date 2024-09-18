@@ -340,12 +340,9 @@ class _BottomBarState extends State<BottomBar> {
       return BottomNavigationBarItem(
         icon: icon,
         label: label,
+        tooltip: label,
       );
     }
   }
-
-
-  // Get User profile Details from API and Store it in Cache
-  
 }
 

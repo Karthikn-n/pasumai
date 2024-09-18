@@ -470,7 +470,7 @@ class ProfileProvider extends ChangeNotifier{
   Future<void> raiseAQueryAPI(String comment, Size size, BuildContext context) async {
     Map<String, dynamic> queryData = {
       "customer_id": prefs.getString("customerId"),
-      "query": selectedQuery ?? "",
+      "queries": selectedQuery ?? "",
       "comments": comment
     };
     print("query Data: $queryData");
@@ -489,6 +489,7 @@ class ProfileProvider extends ChangeNotifier{
     if (response.statusCode == 200 && decodedResponse["status"] == "success") {
       ScaffoldMessenger.of(context).showSnackBar(queryRaisedMessage).closed.then((value) async {
         selectQuery(null);
+        Navigator.pop(context);
       },);
     }else{
        ScaffoldMessenger.of(context).showSnackBar(queryRaisedMessage);

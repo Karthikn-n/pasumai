@@ -394,10 +394,10 @@ class VacationListWidget extends StatelessWidget {
                                       onPressed: () async {
                                         DateTime? endDate = await showDatePicker(
                                           context: context, 
-                                          firstDate: isUpdating ? updatedStartDate! : provider.startDate!, 
+                                          firstDate: isUpdating ? DateTime.now() : provider.startDate!, 
                                           helpText: "End date",
                                           lastDate: DateTime(2100),
-                                          initialDate: isUpdating ? updatedStartDate! : provider.startDate!,
+                                          initialDate: isUpdating ? updatedEndDate! : provider.startDate!,
                                         );
                                         if (isUpdating) {
                                           provider.updateTime(isStart: false, updatedDate: endDate);

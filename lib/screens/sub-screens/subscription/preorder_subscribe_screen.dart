@@ -18,6 +18,7 @@ class PreOrderProductsScreen extends StatefulWidget{
 }
 
 class _PreOrderProductScreen extends State<PreOrderProductsScreen>{
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -137,13 +138,30 @@ class _PreOrderProductScreen extends State<PreOrderProductsScreen>{
             Center(
               child: Consumer<SubscriptionProvider>(
                 builder: (context, payProvider, child) {
-                  return ButtonWidget(
+                  return isLoading
+                  ? const LoadingButton(width: double.infinity,)
+                  : ButtonWidget(
                     width: double.infinity,
                     buttonName: 'Pay Now', 
                     fontSize: 15,
                     onPressed: () async {
+                      setState(() {
+                        isLoading = true;
+                      });
+
+                      try {
+                        await payProvider.preorderAPi(context, size).then((value) async {
+                          await payProvider.activeSubscription();
+                        },);
+                      } catch (e) {
+                        print("Somthing happend in subscription: $e");
+                      } finally{
+                        setState(() {
+                          isLoading = false;
+                        });
+                      }
                       // await payProvider.rePreorder({"subscription_id": 67}, context, size);
-                      await payProvider.preorderAPi(context, size);
+                      
                     },
                   );
                 }

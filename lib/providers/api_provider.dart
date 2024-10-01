@@ -591,22 +591,27 @@ class ApiProvider extends ChangeNotifier{
     String decryptedResponse= decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
     final decodedResponse = json.decode(decryptedResponse);
     debugPrint("Quick order Placed Response: $decodedResponse, Status code: ${response.statusCode}", wrapWidth: 1064);
-     final quickOrderMessage = snackBarMessage(
-      context: context, 
-      message: decodedResponse['message'], 
-      backgroundColor: Theme.of(context).primaryColor, 
-      sidePadding: size.width * 0.1, 
-      bottomPadding: size.height * 0.05
-    );
+    //  final quickOrderMessage = snackBarMessage(
+    //   context: context, 
+    //   message: decodedResponse['message'], 
+    //   backgroundColor: Theme.of(context).primaryColor, 
+    //   sidePadding: size.width * 0.1, 
+    //   bottomPadding: size.height * 0.05
+    // );
     if (response.statusCode == 200 && decodedResponse["status"] == "success") {
       clearQuickOrder();
-      ScaffoldMessenger.of(context).showSnackBar(quickOrderMessage).closed.then((value){
+      confirmOrder(context, size);
+      Future.delayed(const Duration(seconds: 3), () {
+        Navigator.pop(context);
         bottomIndex = 0;
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const BottomBar(),),
           (route) => false
         );
-      });
+        
+      },);
+      // ScaffoldMessenger.of(context).showSnackBar(quickOrderMessage).closed.then((value){
+      // });
     } else {
       print('Error: ${response.statusCode}');
     }
@@ -706,6 +711,46 @@ class ApiProvider extends ChangeNotifier{
   }
 
 
+  void confirmOrder(BuildContext context, Size size,){
+    showDialog(
+      context: context, 
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          elevation: 0,
+          // backgroundColor: Colors.transparent.withOpacity(0.1),
+          child: SizedBox(
+            height: size.height * 0.3,
+            // width: size.width * 0.,
+            child: Column(
+              // crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                const SizedBox(height: 30,),
+                Center(
+                  child: SizedBox(
+                    height: size.height * 0.1,
+                    width:  size.width * 0.2,
+                    child: Image.asset(
+                      "assets/icons/happy-face.png",
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                
+                AppTextWidget(text: "Order Placed Successfully", fontSize: 20, fontWeight: FontWeight.w500, fontColor: Theme.of(context).primaryColorDark,),
+                // const SizedBox(height: 10,),
+                AppTextWidget(text: "Thank you!", fontSize: 16, fontWeight: FontWeight.w400, fontColor: Theme.of(context).primaryColorDark,),
+                const SizedBox(height: 30,),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   
 }

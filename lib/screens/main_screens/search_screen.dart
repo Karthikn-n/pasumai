@@ -30,7 +30,7 @@ class _SearchScreenState extends State<SearchScreen> {
   String query ='';
   List<Products> searchedProducts = [];
   SharedPreferences prefs = SharedPreferencesHelper.getSharedPreferences();
-
+  final ScrollController _controller = ScrollController();
    @override
   void initState(){
     super.initState();
@@ -44,10 +44,11 @@ class _SearchScreenState extends State<SearchScreen> {
   void dispose() {
     initialfoucs!.dispose();
     searchController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
-  
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
@@ -184,12 +185,18 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Widget searchProduct(Size size, BuildContext context,){
     return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.only(left: 12, right: 8),
+      child: CupertinoScrollbar(
+        controller: _controller,
+        thumbVisibility: false,
+        radius: const Radius.circular(10.0),
         child: ListView.builder(
+          controller: _controller,
           itemCount: searchedProducts.length,
           itemBuilder: (context, index) {
             return Column(
               children: [
+                
                 Container(
                   padding: const EdgeInsets.only(top: 10, bottom: 10),
                   decoration: BoxDecoration(
@@ -274,7 +281,9 @@ class _SearchScreenState extends State<SearchScreen> {
                             width: 45,
                             height: 105,
                             child: ElevatedButton(
-                              onPressed: () async => await cartProvider.addCart(searchedProducts[index].id, size, context, searchedProducts[index]), 
+                              onPressed: () async {
+                                await cartProvider.addCart(searchedProducts[index].id, size, context, searchedProducts[index]);
+                              }, 
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.transparent.withOpacity(0.0),
                                 elevation: 0,
@@ -308,7 +317,8 @@ class _SearchScreenState extends State<SearchScreen> {
             );
           },
         ),
-      );
+      ),
+    );
   }
 
  

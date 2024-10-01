@@ -28,7 +28,7 @@ class _AddressSelectionScreenState extends State<AddressSelectionScreen> {
   // AppRepository addressRepository = AppRepository(ApiService('http://192.168.1.5/pasumaibhoomi/public/api'));
   SharedPreferences prefs = SharedPreferencesHelper.getSharedPreferences();
   List<RegionModel> regions = [];
-  // List<bool> isCurrentAddress = [];
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -79,95 +79,99 @@ class _AddressSelectionScreenState extends State<AddressSelectionScreen> {
                 Expanded(
                   child: Consumer<AddressProvider>(
                     builder: (context, addressProvider, child) {
-                      return  ListView.builder(
-                        itemCount: addressProvider.addresses.length,
-                        itemBuilder: (context, index) {
-                          List<AddressModel> address =  addressProvider.addresses;
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: GestureDetector(
-                              onTap: () {
-                                addressProvider.setCurrentAddress(address: address[index], addressId: address[index].id);
-                                Navigator.pop(context);
-                              },
-                              child: Container(
-                                height: size.height * 0.21,
-                                padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(
-                                    width: address[index].id == addressProvider.currentAddress!.id ? 2 : 1,
-                                    color: address[index].id == addressProvider.currentAddress!.id
-                                    ? Theme.of(context).primaryColor
-                                    : Colors.grey.shade300 
-                                  )
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Row(
-                                      // crossAxisAlignment: CrossAxisAlignment.center,
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        SizedBox(
-                                          width: size.width * 0.7,
-                                          child: AppTextWidget(
-                                            text: address[index].location, 
-                                            fontSize: 16, 
-                                            maxLines: 2,
-                                            textOverflow: TextOverflow.ellipsis,
-                                            fontWeight: FontWeight.w500,
-                                            fontColor: Colors.black87,
+                      return  CupertinoScrollbar(
+                        controller: _scrollController,
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          itemCount: addressProvider.addresses.length,
+                          itemBuilder: (context, index) {
+                            List<AddressModel> address =  addressProvider.addresses;
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  addressProvider.setCurrentAddress(address: address[index], addressId: address[index].id);
+                                  Navigator.pop(context);
+                                },
+                                child: Container(
+                                  height: size.height * 0.21,
+                                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                      width: address[index].id == addressProvider.currentAddress!.id ? 2 : 1,
+                                      color: address[index].id == addressProvider.currentAddress!.id
+                                      ? Theme.of(context).primaryColor
+                                      : Colors.grey.shade300 
+                                    )
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Row(
+                                        // crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          SizedBox(
+                                            width: size.width * 0.7,
+                                            child: AppTextWidget(
+                                              text: address[index].location, 
+                                              fontSize: 16, 
+                                              maxLines: 2,
+                                              textOverflow: TextOverflow.ellipsis,
+                                              fontWeight: FontWeight.w500,
+                                              fontColor: Colors.black87,
+                                            ),
                                           ),
-                                        ),
-                                        PopupMenuButton(
-                                          color: Colors.white,
-                                          itemBuilder: (context) {
-                                            return [
-                                              PopupMenuItem(
-                                                onTap: () {
-                                                  // print(prefs.getString("customerId"));
-                                                   Navigator.push(context, SideTransistionRoute(
-                                                    screen: NewAddressFormWidget(
-                                                      needUpdate: true, 
-                                                      updateAddress: address[index], 
-                                                      updateFormKey: GlobalKey<FormState>() 
-                                                    ,)
-                                                  ));
-                                                },
-                                                child: const AppTextWidget(text: "Edit", fontSize: 14, fontWeight: FontWeight.w500)
-                                              ),
-                                              PopupMenuItem(
-                                                onTap: () {
-                                                  addressProvider.confirmDelete(context, size, address[index].id, index);
-                                                },
-                                                child: const AppTextWidget(text: "Delete", fontSize: 14, fontWeight: FontWeight.w500)
-                                              ),
-                                              PopupMenuItem(
-                                                onTap: () {
-                                                  addressProvider.setAddressDefault(context, size, address[index].id);
-                                                },
-                                                child: const AppTextWidget(text: "Set as default", fontSize: 14, fontWeight: FontWeight.w500)
-                                              ),
-                                            ];
-                                          },
-                                        )
-                                      ],
-                                    ),
-                                    AppTextWidget(
-                                      text: """${address[index].floorNo}, ${address[index].flatNo}, ${address[index].address}, ${address[index].landmark}, ${address[index].region}""", 
-                                      fontSize: 14, 
-                                      fontWeight: FontWeight.w400,
-                                      fontColor: Colors.black54,
-                                    ),
-                                  ],
+                                          PopupMenuButton(
+                                            color: Colors.white,
+                                            itemBuilder: (context) {
+                                              return [
+                                                PopupMenuItem(
+                                                  onTap: () {
+                                                    // print(prefs.getString("customerId"));
+                                                     Navigator.push(context, SideTransistionRoute(
+                                                      screen: NewAddressFormWidget(
+                                                        needUpdate: true, 
+                                                        updateAddress: address[index], 
+                                                        updateFormKey: GlobalKey<FormState>() 
+                                                      ,)
+                                                    ));
+                                                  },
+                                                  child: const AppTextWidget(text: "Edit", fontSize: 14, fontWeight: FontWeight.w500)
+                                                ),
+                                                PopupMenuItem(
+                                                  onTap: () {
+                                                    addressProvider.confirmDelete(context, size, address[index].id, index);
+                                                  },
+                                                  child: const AppTextWidget(text: "Delete", fontSize: 14, fontWeight: FontWeight.w500)
+                                                ),
+                                                PopupMenuItem(
+                                                  onTap: () {
+                                                    addressProvider.setAddressDefault(context, size, address[index].id);
+                                                  },
+                                                  child: const AppTextWidget(text: "Set as default", fontSize: 14, fontWeight: FontWeight.w500)
+                                                ),
+                                              ];
+                                            },
+                                          )
+                                        ],
+                                      ),
+                                      AppTextWidget(
+                                        text: """${address[index].floorNo}, ${address[index].flatNo}, ${address[index].address}, ${address[index].landmark}, ${address[index].region}""", 
+                                        fontSize: 14, 
+                                        fontWeight: FontWeight.w400,
+                                        fontColor: Colors.black54,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          );
-                        },
+                            );
+                          },
+                        ),
                       );
                     },
                   )

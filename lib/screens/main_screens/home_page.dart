@@ -296,11 +296,11 @@ class _HomePageState extends State<HomePage> {
                                       children: [
                                         GestureDetector(
                                           onTap: () async {
-                                            await provider.allProducts(provider.categories[index].categoryId).then((value){
+                                            // await provider.allProducts(provider.categories[index].categoryId).then((value){
                                               Navigator.of(context).push(MaterialPageRoute(
-                                                builder: (context) => CategoryProductsListWidget(categoryName: provider.categories[index].categoryName)
+                                                builder: (context) => CategoryProductsListWidget(categoryName: provider.categories[index].categoryName, categoryId: provider.categories[index].categoryId,)
                                               ));
-                                            });
+                                            // });
                                           },
                                           child: Container(
                                             height: 130,

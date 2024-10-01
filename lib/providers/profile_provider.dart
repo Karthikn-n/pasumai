@@ -183,17 +183,23 @@ class ProfileProvider extends ChangeNotifier{
     String decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
     final decodedResponse = json.decode(decryptedResponse);
     print('Re-order Detail Response: $decodedResponse, Status Code: ${response.statusCode}');
-    final reOrderedMessage = snackBarMessage(
-      context: context, 
-      message: decodedResponse['message'], 
-      backgroundColor: Theme.of(context).primaryColor, 
-      sidePadding: size.width * 0.1, 
-      bottomPadding: size.height * 0.05
-    );
+    // final reOrderedMessage = snackBarMessage(
+    //   context: context, 
+    //   message: decodedResponse['message'], 
+    //   backgroundColor: Theme.of(context).primaryColor, 
+    //   sidePadding: size.width * 0.1, 
+    //   bottomPadding: size.height * 0.05
+    // );
     if (response.statusCode == 200) {
-      ScaffoldMessenger.of(context).showSnackBar(reOrderedMessage).closed.then((event) async {
-        await orderList();
-      });
+      
+      messagePopUp(context, size, decodedResponse["message"], "assets/icons/happy-face.png");
+      // ScaffoldMessenger.of(context).showSnackBar(reOrderedMessage).closed.then((event) async {
+      Future.delayed(const Duration(seconds: 2), () async {
+        await orderList().then((value) {
+          Navigator.pop(context);
+        },);
+      },);
+      // });
       
     } else {
       print('Error: ${response.body}');
@@ -208,18 +214,23 @@ class ProfileProvider extends ChangeNotifier{
     String decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
     final decodedResponse = json.decode(decryptedResponse);
     print('Cancel Order Response: $decodedResponse, Status Code: ${response.statusCode}');
-    final cancelOrderedMessage = snackBarMessage(
-      context: context, 
-      message: decodedResponse['message'], 
-      backgroundColor: Theme.of(context).primaryColor, 
-      sidePadding: size.width * 0.1, 
-      bottomPadding: size.height * 0.05
-    );
+    // final cancelOrderedMessage = snackBarMessage(
+    //   context: context, 
+    //   message: decodedResponse['message'], 
+    //   backgroundColor: Theme.of(context).primaryColor, 
+    //   sidePadding: size.width * 0.1, 
+    //   bottomPadding: size.height * 0.05
+    // );
     if (response.statusCode == 200) {
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(cancelOrderedMessage);
+      // ScaffoldMessenger.of(context).showSnackBar(cancelOrderedMessage);
+      messagePopUp(context, size, decodedResponse["message"], "assets/icons/sad-face.png");
       // orderInfoData.removeWhere((element) => element.orderId == orderId,);,
-      await orderList();
+      Future.delayed(const Duration(seconds: 2), () async {
+        await orderList().then((value) {
+          Navigator.pop(context);
+          Navigator.pop(context);
+        },);
+      },);
     } else {
       print('Error: ${response.body}');
     }
@@ -908,6 +919,50 @@ class ProfileProvider extends ChangeNotifier{
               ],
             ),
           )
+        );
+      },
+    );
+  }
+
+  void messagePopUp(BuildContext context, Size size, String message, String image){
+    showDialog(
+      context: context, 
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          elevation: 0,
+          // backgroundColor: Colors.transparent.withOpacity(0.1),
+          child: SizedBox(
+            height: size.height * 0.3,
+            // width: size.width * 0.,
+            child: Column(
+              // crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                const SizedBox(height: 30,),
+                Center(
+                  child: SizedBox(
+                    height: size.height * 0.1,
+                    width:  size.width * 0.2,
+                    child: Image.asset(
+                      image,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                
+                Center(child: AppTextWidget(
+                  text: message, 
+                  textAlign: TextAlign.center,
+                  fontSize: 18, fontWeight: FontWeight.w500, fontColor: Theme.of(context).primaryColorDark,)),
+                // const SizedBox(height: 10,),
+                AppTextWidget(text: "Thank you!", fontSize: 16, fontWeight: FontWeight.w400, fontColor: Theme.of(context).primaryColorDark,),
+                const SizedBox(height: 30,),
+              ],
+            ),
+          ),
         );
       },
     );

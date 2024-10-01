@@ -2,6 +2,7 @@ import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/model/orders_model.dart';
 import 'package:app_3/providers/profile_provider.dart';
 import 'package:app_3/widgets/common_widgets.dart/button_widget.dart';
+import 'package:app_3/widgets/common_widgets.dart/shimmer_profile_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/snackbar_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:app_3/widgets/profile_screen_widgets/order_detail_widget.dart';
@@ -10,7 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class OrdersHistoryWidget extends StatelessWidget {
-  const OrdersHistoryWidget({super.key});
+  OrdersHistoryWidget({super.key});
+  final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -22,21 +24,24 @@ class OrdersHistoryWidget extends StatelessWidget {
             future: provider.orderList(), 
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const AppTextWidget(
-                      text: "Order History", 
-                      fontSize: 16, 
-                      fontWeight: FontWeight.w500
-                    ),
-                    const SizedBox(height: 15,),
-                    LinearProgressIndicator(
-                      // minHeight: 1,
-                      color: Theme.of(context).primaryColor,
-                      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                    ),
-                  ],
+                return const Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AppTextWidget(
+                        text: "Order History", 
+                        fontSize: 16, 
+                        fontWeight: FontWeight.w500
+                      ),
+                      SizedBox(height: 15,),
+                      // LinearProgressIndicator(
+                      //   // minHeight: 1,
+                      //   color: Theme.of(context).primaryColor,
+                      //   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                      // ),
+                      Expanded(child: ShimmerProfileWidget())
+                    ],
+                  ),
                 );
               }else if(!snapshot.hasData){
                 return const Center(
@@ -246,159 +251,163 @@ class OrdersHistoryWidget extends StatelessWidget {
         List<OrderInfo> orders = filteredProducts != null 
         ? filteredProducts.reversed.toList() 
         : orderProvider.orderInfoData.reversed.toList();
-        return ListView.builder(
-          itemCount: orders.length,
-          itemBuilder: (context, index) {
-            return Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: Colors.grey.shade300
-                    )
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                            width: size.width * 0.6,
-                            child: AppTextWidget(
-                              text: "Order ID: ${orders[index].orderId}",
-                              // : "order" , 
-                              fontSize: 16, 
-                              fontWeight: FontWeight.w500,
-                              // maxLines: 1,
-                              textOverflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () async {
-                              print("Order ID: ${orders[index].orderId}");
-                              orderProvider.clearCouponAmount();
-                              await orderProvider.orderDetail(orders[index].orderId).then((value) {
-                                Navigator.push(context, downToTop(screen: const OrderDetailWidget(), args: {"orderDetail": orders[index]}));
-                              },);
-                            },
-                            child: AppTextWidget(
-                              text: "See detail", 
-                              fontSize: 13, 
-                              fontWeight: FontWeight.w500,
-                              fontColor: Theme.of(context).primaryColor,
-                            ),
-                          )
-                        ],
-                      ),
-                      const SizedBox(height: 5,),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: size.width *0.3,
-                            child: const AppTextWidget(text: 'Products: ', fontSize: 15, fontWeight: FontWeight.w500)
-                          ),
-                          AppTextWidget(text: '${orders[index].quantity}', fontSize: 14, fontWeight: FontWeight.w400),
-                        ],
-                      ),
-                      const SizedBox(height: 5,),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: size.width *0.29,
-                            child: const AppTextWidget(text: 'Ordered on: ', fontSize: 15, fontWeight: FontWeight.w500)
-                          ),
-                          AppTextWidget(text: orders[index].orderOn, fontSize: 14, fontWeight: FontWeight.w400),
-                        ],
-                      ),
-                      const SizedBox(height: 5,),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            width: size.width *0.3,
-                            child: const AppTextWidget(text: 'Address: ', fontSize: 15, fontWeight: FontWeight.w500)
-                          ),
-                          Expanded(child: AppTextWidget(text: orders[index].address, fontSize: 14, fontWeight: FontWeight.w400)),
-                        ],
-                      ),
-                      const SizedBox(height: 5,),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            width: size.width *0.3,
-                            child: const AppTextWidget(text: 'Total: ', fontSize: 15, fontWeight: FontWeight.w500)
-                          ),
-                          Expanded(child: AppTextWidget(text: '₹${orders[index].total}', fontSize: 14, fontWeight: FontWeight.w400)),
-                        ],
-                      ),
-                      const SizedBox(height: 5,),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                           SizedBox(
-                             width: size.width *0.3,
-                             child: const AppTextWidget(text: 'Status: ', fontSize: 15, fontWeight: FontWeight.w500)),
-                          Expanded(
-                              child: AppTextWidget(
-                              text: orders[index].status, 
-                              fontSize: 14, 
-                              fontWeight: FontWeight.w400,
-                              fontColor: orders[index].status == "Pending" || orders[index].status == "Cancelled"
-                                ? Colors.orange
-                                : Theme.of(context).primaryColor,
-                            )
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10,),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                            height: size.height * 0.05,
-                            width: size.width * 0.42,
-                            child: ButtonWidget(
-                              buttonName: 'Reorder', 
-                              borderRadius: 8,
-                              fontSize: 16,
-                              onPressed: () async {
-                                await orderProvider.reOrder(orders[index].orderId,  context, size);
-                              }
-                            ),
-                          ),
-                          SizedBox(
-                            width: size.width * 0.42,
-                            height: size.height * 0.05,
-                            child: ButtonWidget(
-                              fontColor: Colors.black,
-                              buttonColor: Colors.transparent.withOpacity(0.0),
-                              buttonName: 'Cancel', 
-                              borderRadius: 8,
-                              fontSize: 16,
-                              bordercolor: Colors.red,
-                              onPressed: () async {
-                                if (orders[index].status == "Cancelled") {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    snackBarMessage(context: context, message: "Already Product Cancelled", backgroundColor: Theme.of(context).primaryColor, sidePadding: size.width * 0.1, bottomPadding: size.height * 0.05)
-                                  );
-                                }else{
-                                  orderProvider.confirmCancelOrder(orders[index].orderId, context, size);
-                                }
-                              }
-                            ),
-                          )
-                        ],
+        return CupertinoScrollbar(
+          controller: _scrollController,
+          child: ListView.builder(
+            controller: _scrollController,
+            itemCount: orders.length,
+            itemBuilder: (context, index) {
+              return Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: Colors.grey.shade300
                       )
-                    ],
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(
+                              width: size.width * 0.6,
+                              child: AppTextWidget(
+                                text: "Order ID: ${orders[index].orderId}",
+                                // : "order" , 
+                                fontSize: 16, 
+                                fontWeight: FontWeight.w500,
+                                // maxLines: 1,
+                                textOverflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () async {
+                                print("Order ID: ${orders[index].orderId}");
+                                orderProvider.clearCouponAmount();
+                                await orderProvider.orderDetail(orders[index].orderId).then((value) {
+                                  Navigator.push(context, downToTop(screen: const OrderDetailWidget(), args: {"orderDetail": orders[index]}));
+                                },);
+                              },
+                              child: AppTextWidget(
+                                text: "See detail", 
+                                fontSize: 13, 
+                                fontWeight: FontWeight.w500,
+                                fontColor: Theme.of(context).primaryColor,
+                              ),
+                            )
+                          ],
+                        ),
+                        const SizedBox(height: 5,),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: size.width *0.3,
+                              child: const AppTextWidget(text: 'Products: ', fontSize: 15, fontWeight: FontWeight.w500)
+                            ),
+                            AppTextWidget(text: '${orders[index].quantity}', fontSize: 14, fontWeight: FontWeight.w400),
+                          ],
+                        ),
+                        const SizedBox(height: 5,),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: size.width *0.29,
+                              child: const AppTextWidget(text: 'Ordered on: ', fontSize: 15, fontWeight: FontWeight.w500)
+                            ),
+                            AppTextWidget(text: orders[index].orderOn, fontSize: 14, fontWeight: FontWeight.w400),
+                          ],
+                        ),
+                        const SizedBox(height: 5,),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: size.width *0.3,
+                              child: const AppTextWidget(text: 'Address: ', fontSize: 15, fontWeight: FontWeight.w500)
+                            ),
+                            Expanded(child: AppTextWidget(text: orders[index].address, fontSize: 14, fontWeight: FontWeight.w400)),
+                          ],
+                        ),
+                        const SizedBox(height: 5,),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: size.width *0.3,
+                              child: const AppTextWidget(text: 'Total: ', fontSize: 15, fontWeight: FontWeight.w500)
+                            ),
+                            Expanded(child: AppTextWidget(text: '₹${orders[index].total}', fontSize: 14, fontWeight: FontWeight.w400)),
+                          ],
+                        ),
+                        const SizedBox(height: 5,),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                             SizedBox(
+                               width: size.width *0.3,
+                               child: const AppTextWidget(text: 'Status: ', fontSize: 15, fontWeight: FontWeight.w500)),
+                            Expanded(
+                                child: AppTextWidget(
+                                text: orders[index].status, 
+                                fontSize: 14, 
+                                fontWeight: FontWeight.w400,
+                                fontColor: orders[index].status == "Pending" || orders[index].status == "Cancelled"
+                                  ? Colors.orange
+                                  : Theme.of(context).primaryColor,
+                              )
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(
+                              height: size.height * 0.05,
+                              width: size.width * 0.42,
+                              child: ButtonWidget(
+                                buttonName: 'Reorder', 
+                                borderRadius: 8,
+                                fontSize: 16,
+                                onPressed: () async {
+                                  await orderProvider.reOrder(orders[index].orderId,  context, size);
+                                }
+                              ),
+                            ),
+                            SizedBox(
+                              width: size.width * 0.42,
+                              height: size.height * 0.05,
+                              child: ButtonWidget(
+                                fontColor: Colors.black,
+                                buttonColor: Colors.transparent.withOpacity(0.0),
+                                buttonName: 'Cancel', 
+                                borderRadius: 8,
+                                fontSize: 16,
+                                bordercolor: Colors.red,
+                                onPressed: () async {
+                                  if (orders[index].status == "Cancelled") {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      snackBarMessage(context: context, message: "Already Product Cancelled", backgroundColor: Theme.of(context).primaryColor, sidePadding: size.width * 0.1, bottomPadding: size.height * 0.05)
+                                    );
+                                  }else{
+                                    orderProvider.confirmCancelOrder(orders[index].orderId, context, size);
+                                  }
+                                }
+                              ),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(height: orders.length - 1 ==  index ? 70:  10,)
-              ],
-            );
-          },
+                  SizedBox(height: orders.length - 1 ==  index ? 70:  10,)
+                ],
+              );
+            },
+          ),
         );
       }
     );

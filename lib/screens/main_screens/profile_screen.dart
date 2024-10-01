@@ -198,11 +198,11 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
   }
 
   List<Widget> optionsBody = [
-    const OrdersHistoryWidget(),
+    OrdersHistoryWidget(),
     ActiveSubscriptionWidget(),
-    const SubscriptionHistoryWidget(),
+    SubscriptionHistoryWidget(),
     const YourAddressWidget(),
-    const InvoiceListWidget(),
+    InvoiceListWidget(),
     VacationListWidget(),
   ];
 

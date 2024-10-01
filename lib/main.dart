@@ -75,6 +75,7 @@ class _MyAppState extends State<MyApp> {
             appBarTheme: const AppBarTheme(
               backgroundColor: Colors.white
             ),
+            primaryColorLight: Colors.white,
             colorScheme:  const ColorScheme.light(
               primary: Color(0xFF60B47B),
             ),

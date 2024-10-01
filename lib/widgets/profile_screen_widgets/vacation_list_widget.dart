@@ -14,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class VacationListWidget extends StatelessWidget {
   VacationListWidget({super.key});
   SharedPreferences prefs = SharedPreferencesHelper.getSharedPreferences();
+  final ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
@@ -171,116 +172,120 @@ class VacationListWidget extends StatelessWidget {
   Widget vacationList(Size size){
     return Consumer2<ProfileProvider, VacationProvider>(
       builder: (context, provider, vacation, child) {
-        return ListView.builder(
-          itemCount: provider.vacations.length,
-          itemBuilder: (context, index) {
-            return Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.grey.shade300)
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                            width: size.width * 0.65,
-                            child: AppTextWidget(
-                              text: provider.vacations[index].comments, 
-                              fontSize: 15, 
-                              fontWeight: FontWeight.w500
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              GestureDetector(
-                                onTap: () async {
-                                  if (DateTime.now().hour >= 15 ) {
-                                    final alertMessage = snackBarMessage(
-                                      context: context, 
-                                      message: "You can't update vacation after 3PM", 
-                                      backgroundColor: Theme.of(context).primaryColor, 
-                                      sidePadding: size.width * 0.1, bottomPadding: size.height * 0.05);
-                                    ScaffoldMessenger.of(context).showSnackBar(alertMessage);
-                                  }else{
-                                    vacation.validate(false);
-                                    vacation.clearAddDates();
-                                    // vacation.cleatupdateDates();
-                                    addVacation(
-                                      context: context, size: size, 
-                                      isUpdating: true, 
-                                      updatedStartDate: DateTime.parse(provider.vacations[index].startDate),
-                                      updatedEndDate: DateTime.parse(provider.vacations[index].endDate),
-                                      reason: provider.vacations[index].comments,
-                                      id: provider.vacations[index].id
-                                    );
-                                  }
-                                },
-                                child: const Icon(CupertinoIcons.pen, size: 20,)
+        return CupertinoScrollbar(
+          controller: _scrollController,
+          child: ListView.builder(
+            controller: _scrollController,
+            itemCount: provider.vacations.length,
+            itemBuilder: (context, index) {
+              return Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.grey.shade300)
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(
+                              width: size.width * 0.65,
+                              child: AppTextWidget(
+                                text: provider.vacations[index].comments, 
+                                fontSize: 15, 
+                                fontWeight: FontWeight.w500
                               ),
-                              const SizedBox(width: 10,),
-                              GestureDetector(
-                                onTap: ()  {
-                                  if (DateTime.now().hour >= 15 ) {
-                                    final alertMessage = snackBarMessage(
-                                      context: context, 
-                                      message: "You can't delete vacation after 3PM", 
-                                      backgroundColor: Theme.of(context).primaryColor, 
-                                      sidePadding: size.width * 0.1, bottomPadding: size.height * 0.05);
-                                    ScaffoldMessenger.of(context).showSnackBar(alertMessage);
-                                  }else{
-                                     provider.confirmDeleteVacation(provider.vacations[index].id, context, size);
-                                  }
-                                },
-                                child: const Icon(CupertinoIcons.delete, size: 20, color: Colors.red,)
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                      const SizedBox(height: 10,),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            ),
+                            Row(
                               children: [
-                                const AppTextWidget(text: "Start date", fontSize: 15, fontWeight: FontWeight.w500),
-                                AppTextWidget(
-                                  text: DateFormat("dd/MM/yyyy").format(DateTime.parse(provider.vacations[index].startDate)), 
-                                  fontSize: 14, 
-                                  fontWeight: FontWeight.w400
+                                GestureDetector(
+                                  onTap: () async {
+                                    if (DateTime.now().hour >= 15 ) {
+                                      final alertMessage = snackBarMessage(
+                                        context: context, 
+                                        message: "You can't update vacation after 3PM", 
+                                        backgroundColor: Theme.of(context).primaryColor, 
+                                        sidePadding: size.width * 0.1, bottomPadding: size.height * 0.05);
+                                      ScaffoldMessenger.of(context).showSnackBar(alertMessage);
+                                    }else{
+                                      vacation.validate(false);
+                                      vacation.clearAddDates();
+                                      // vacation.cleatupdateDates();
+                                      addVacation(
+                                        context: context, size: size, 
+                                        isUpdating: true, 
+                                        updatedStartDate: DateTime.parse(provider.vacations[index].startDate),
+                                        updatedEndDate: DateTime.parse(provider.vacations[index].endDate),
+                                        reason: provider.vacations[index].comments,
+                                        id: provider.vacations[index].id
+                                      );
+                                    }
+                                  },
+                                  child: const Icon(CupertinoIcons.pen, size: 20,)
+                                ),
+                                const SizedBox(width: 10,),
+                                GestureDetector(
+                                  onTap: ()  {
+                                    if (DateTime.now().hour >= 15 ) {
+                                      final alertMessage = snackBarMessage(
+                                        context: context, 
+                                        message: "You can't delete vacation after 3PM", 
+                                        backgroundColor: Theme.of(context).primaryColor, 
+                                        sidePadding: size.width * 0.1, bottomPadding: size.height * 0.05);
+                                      ScaffoldMessenger.of(context).showSnackBar(alertMessage);
+                                    }else{
+                                       provider.confirmDeleteVacation(provider.vacations[index].id, context, size);
+                                    }
+                                  },
+                                  child: const Icon(CupertinoIcons.delete, size: 20, color: Colors.red,)
                                 )
                               ],
+                            )
+                          ],
+                        ),
+                        const SizedBox(height: 10,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const AppTextWidget(text: "Start date", fontSize: 15, fontWeight: FontWeight.w500),
+                                  AppTextWidget(
+                                    text: DateFormat("dd/MM/yyyy").format(DateTime.parse(provider.vacations[index].startDate)), 
+                                    fontSize: 14, 
+                                    fontWeight: FontWeight.w400
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                          SizedBox(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const AppTextWidget(text: "End date", fontSize: 15, fontWeight: FontWeight.w500),
-                                AppTextWidget(
-                                  text: DateFormat("dd/MM/yyyy").format(DateTime.parse(provider.vacations[index].endDate)), 
-                                  fontSize: 14, 
-                                  fontWeight: FontWeight.w400
-                                )
-                              ],
-                            ),
-                          )
-                        ],
-                      )
-                    ],
+                            SizedBox(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const AppTextWidget(text: "End date", fontSize: 15, fontWeight: FontWeight.w500),
+                                  AppTextWidget(
+                                    text: DateFormat("dd/MM/yyyy").format(DateTime.parse(provider.vacations[index].endDate)), 
+                                    fontSize: 14, 
+                                    fontWeight: FontWeight.w400
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(height: provider.vacations.length - 1 == index ? 70 : 10,)
-              ],
-            );
-          },
+                  SizedBox(height: provider.vacations.length - 1 == index ? 70 : 10,)
+                ],
+              );
+            },
+          ),
         );
       },
     );

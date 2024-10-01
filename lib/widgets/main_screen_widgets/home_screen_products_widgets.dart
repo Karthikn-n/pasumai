@@ -76,14 +76,9 @@ class _HomeScreenProductsState extends State<HomeScreenProducts> with TickerProv
                     margin: EdgeInsets.only(left: size.width * 0.03, right: size.width * 0.03),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: GestureDetector(
-                        onTap: ()async{
-                          cartProvider.cartItemsAPI();
-                        },
-                        child: CachedNetworkImage(
-                          imageUrl: imageUrl,
-                          fit: BoxFit.cover,
-                        ),
+                      child: CachedNetworkImage(
+                        imageUrl: imageUrl,
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),

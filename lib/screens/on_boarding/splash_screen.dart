@@ -68,6 +68,6 @@ class _SplashScreenState extends State<SplashScreen>{
     await provider.getCatgories();
     await provider.getFeturedProducts();
     await provider.getBanners();
-    Navigator.pushReplacement(context, downToTop(screen: const LoginPage(fromSplash: true,)));
+    Navigator.pushAndRemoveUntil(context, downToTop(screen: const LoginPage(fromSplash: true,)), (route) => false);
   }
 }

@@ -25,6 +25,7 @@ class RenewSubscriptionWidget extends StatefulWidget {
 class _RenewSubscriptionWidgetState extends State<RenewSubscriptionWidget> {
 
   bool needStartDate = false;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -337,26 +338,41 @@ class _RenewSubscriptionWidgetState extends State<RenewSubscriptionWidget> {
                   const SizedBox(height: 20,),
                   SizedBox(
                     width: double.infinity,
-                    child: ButtonWidget(
+                    child: isLoading
+                    ? const LoadingButton()
+                    : ButtonWidget(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                       buttonName: 'Confirm', 
                       onPressed: () async {
-                        if (renewProvider.renewStartDate![widget.index] != null) {
-                          await renewProvider.rePreorder({
-                          "subscription_id": widget.product.subId,
-                          "final_total": renewProvider.renewSubscriptionResponse![widget.index]!.finalTotal,
-                          "renewal_date": DateFormat("yyyy-MM-dd").format(renewProvider.renewStartDate![widget.index]!),
-                          "address": addressProvider.currentAddress!.id,
-                          }, context, size).then((value) async {
-                            await renewProvider.activeSubscription();
-                            Navigator.pop(context);
-                          },);
-                        }else{
+                        setState(() {
+                          isLoading = true;
+                        });
+                        try {
+                          if (renewProvider.renewStartDate![widget.index] != null) {
+                            await renewProvider.rePreorder({
+                            "subscription_id": widget.product.subId,
+                            "final_total": renewProvider.renewSubscriptionResponse![widget.index]!.finalTotal,
+                            "renewal_date": DateFormat("yyyy-MM-dd").format(renewProvider.renewStartDate![widget.index]!),
+                            "address": addressProvider.currentAddress!.id,
+                            }, context, size).then((value) async {
+                              await renewProvider.activeSubscription();
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                            },);
+                          }else{
+                            setState(() {
+                              needStartDate = true;
+                            });
+                          }
+                        } catch (e) {
+                          print("Can't renew it: $e");
+                        } finally {
                           setState(() {
-                            needStartDate = true;
+                            isLoading = false;
                           });
                         }
+                        
                       }
                     )
                   ),

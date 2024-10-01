@@ -40,7 +40,7 @@ class _OtpPageState extends State<OtpPage> {
   late Timer _resendTimer;
   late bool showResendButton;
   int _timerSeconds = 30;
-
+  bool isLoading = false;
   int totalAmount = 0;
   int totalProduct = 0;
 
@@ -177,16 +177,30 @@ class _OtpPageState extends State<OtpPage> {
                       ),
                       const SizedBox(height: 20),
                       Center(
-                        child: ButtonWidget(
+                        child: isLoading
+                        ? const LoadingButton()
+                        : ButtonWidget(
                           buttonName: 'Verify',
                           onPressed: () async {
-                            await addressProvider.getRegionLocation();
-                            if(widget.fromRegister){
-                              Navigator.pushAndRemoveUntil(context, SideTransistionRoute(screen: const NewAddressFormWidget(fromOnboarding: true,)), (route) => false,);
-                            }else{
-                              addressProvider.getAddressesAPI();
-                               Navigator.pushAndRemoveUntil(context,  SideTransistionRoute(screen: const BottomBar()), (route) => false);
+                            setState(() {
+                              isLoading = true;
+                            });
+                            try {
+                               await addressProvider.getRegionLocation();
+                                if(widget.fromRegister){
+                                  Navigator.pushAndRemoveUntil(context, SideTransistionRoute(screen: const NewAddressFormWidget(fromOnboarding: true,)), (route) => false,);
+                                }else{
+                                  addressProvider.getAddressesAPI();
+                                  Navigator.pushAndRemoveUntil(context,  SideTransistionRoute(screen: const BottomBar()), (route) => false);
+                                }
+                            } catch (e) {
+                              print("Error occured: $e");
+                            }finally{
+                              setState(() {
+                                isLoading = false;
+                              });
                             }
+                           
                             // FocusScope.of(context).unfocus();
                             // String otp = '';
                             // for (var controller in controllers) {

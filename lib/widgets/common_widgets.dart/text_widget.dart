@@ -10,6 +10,7 @@ class AppTextWidget extends StatelessWidget{
   final double? textDecorationThickness;
   final Color? textDecorationColor;
   final double? letterSpacing;
+  final TextAlign? textAlign;
   final TextOverflow? textOverflow;
   const AppTextWidget({
     required this.text,
@@ -17,6 +18,7 @@ class AppTextWidget extends StatelessWidget{
     required this.fontWeight,
     this.fontColor,
     this.maxLines,
+    this.textAlign,
     this.letterSpacing,
     this.decoration,
     this.textDecorationColor,
@@ -30,6 +32,7 @@ class AppTextWidget extends StatelessWidget{
     return Text(
       text,
       maxLines: maxLines,
+      textAlign: textAlign,
       style: TextStyle(
         color: fontColor, 
         decoration: TextDecoration.none,

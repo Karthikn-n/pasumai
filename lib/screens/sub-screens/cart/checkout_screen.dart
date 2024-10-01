@@ -40,6 +40,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   bool isdeliveryDateSelected = false;
   bool isDeliveryTimeSelected = false;
   bool isPaymentoptionSelected = false;
+
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     final connectivityService = Provider.of<ConnectivityService>(context);
@@ -653,7 +655,25 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             height: 50,
             child: Consumer4<AddressProvider, ApiProvider, ProfileProvider, CartProvider>(
               builder: (context, addressProvider, provider,  profileProvider, cartProvider, child) {
-                return FloatingActionButton(
+                return isLoading
+                ? FloatingActionButton(
+                    onPressed: () {
+                      
+                    },
+                    backgroundColor: Theme.of(context).primaryColor,
+                    splashColor: Colors.white24,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)
+                    ),
+                    child: SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).primaryColorLight,
+                      ),
+                    ),
+                  )
+                : FloatingActionButton(
                   // elevation: 1,
                   onPressed: () async {
                     if (expectedDeliverydate ==  null || expectedDeliveryTime == null || selectedPaymentOption == null) {
@@ -673,35 +693,46 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         });
                       }
                     }else{
-                      Map<String, dynamic> checkOutData = {
-                        'customer_id': prefs.getString('customerId'),
-                        'address_id': addressProvider.currentAddress!.id,
-                        'delivery_date': DateFormat('yyyy-MM-dd').format(expectedDeliverydate!),
-                        'delivery_time': expectedDeliveryTime ?? '06:00 AM - 12.00 PM',
-                        'payment_method': selectedPaymentOption ?? 'Cash on delivery'
-                      };
-                      print(widget.fromCart);
-                      /// Quick order Checkout if user add products from quick order this API gives response
-                      if (widget.fromCart ?? true) {
-                        await provider.quickOrderCheckOut(context, size, checkOutData).then((value) async {
-                          provider.clearCoupon();
-                          await profileProvider.orderList();
-                          /// Once order placed it will remove coupon from checkout session
-                          print("Order Placed from Quick order");
-                        });
-                      }else{
-                      /// Cart Checkout if the user added product from cart this API gives response
-                        await cartProvider.cartCheckOut(context, size, checkOutData).then((value) async {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      try {
+                        Map<String, dynamic> checkOutData = {
+                          'customer_id': prefs.getString('customerId'),
+                          'address_id': addressProvider.currentAddress!.id,
+                          'delivery_date': DateFormat('yyyy-MM-dd').format(expectedDeliverydate!),
+                          'delivery_time': expectedDeliveryTime ?? '06:00 AM - 12.00 PM',
+                          'payment_method': selectedPaymentOption ?? 'Cash on delivery'
+                        };
+                        print(widget.fromCart);
+                        /// Quick order Checkout if user add products from quick order this API gives response
+                        if (widget.fromCart ?? true) {
+                          await provider.quickOrderCheckOut(context, size, checkOutData).then((value) async {
                             provider.clearCoupon();
                             await profileProvider.orderList();
-                            // await NotificationProvider().showNotification(
-                            //   title: "Order placed successfully", 
-                            //   body: "See order detail here", 
-                            //   payload: "Open", 
-                            //   id: profileProvider.orderInfoData.last.orderId
-                            // );
-                          },);
-                       
+                            /// Once order placed it will remove coupon from checkout session
+                            print("Order Placed from Quick order");
+                          });
+                        }else{
+                        /// Cart Checkout if the user added product from cart this API gives response
+                          await cartProvider.cartCheckOut(context, size, checkOutData).then((value) async {
+                              provider.clearCoupon();
+                              await profileProvider.orderList();
+                              // await NotificationProvider().showNotification(
+                              //   title: "Order placed successfully", 
+                              //   body: "See order detail here", 
+                              //   payload: "Open", 
+                              //   id: profileProvider.orderInfoData.last.orderId
+                              // );
+                            },);
+                          
+                        }
+                      } catch (e) {
+                        print('Error Happened: $e');
+                      } finally {
+                        setState(() {
+                          isLoading = false;
+                        });
                       }
                     }
                   },

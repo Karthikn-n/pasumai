@@ -46,183 +46,180 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Product image
-              Center(
-                child: SizedBox(
-                  height: 320,
-                  width: 320,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: CachedNetworkImage(
-                      imageUrl: "https://maduraimarket.in/public/image/product/${widget.product.image}",
-                      fit: BoxFit.cover,
-                    ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Product image
+            Center(
+              child: SizedBox(
+                height: 320,
+                width: 320,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: CachedNetworkImage(
+                    imageUrl: "https://maduraimarket.in/public/image/product/${widget.product.image}",
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
-              const SizedBox(height: 20,),
-              // Product details
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        width: size.width * 0.65,
-                        child: Row(
-                          children: [
-                            AppTextWidget(
-                              text: "${widget.product.name}/", 
-                              fontSize: 18, 
-                              fontWeight: FontWeight.w600
-                            ),
-                            AppTextWidget(
-                              text: widget.product.quantity, 
-                              fontSize: 16, 
-                              fontWeight: FontWeight.w600
-                            ),
-                          ],
-                        ),
-                      ),
-                      Row(
+            ),
+            const SizedBox(height: 20,),
+            // Product details
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      width: size.width * 0.65,
+                      child: Row(
                         children: [
                           AppTextWidget(
-                            text: '₹${widget.product.finalPrice} ', 
-                            fontSize: 16, 
-                            fontColor: Theme.of(context).primaryColor,
-                            fontWeight: FontWeight.w500
+                            text: "${widget.product.name}/", 
+                            fontSize: 18, 
+                            fontWeight: FontWeight.w600
                           ),
-                          Text(
-                            '₹${widget.product.price}', 
-                            style: const TextStyle(
-                              fontSize: 12,
-                              decoration: TextDecoration.lineThrough,
-                              color: Colors.black54,
-                              decorationColor: Colors.red, 
-                              fontWeight: FontWeight.w500
-                            ),
+                          AppTextWidget(
+                            text: widget.product.quantity, 
+                            fontSize: 16, 
+                            fontWeight: FontWeight.w600
                           ),
                         ],
-                      )
-                    ],
-                  ),
-                  const SizedBox(height: 5,),
-                  AppTextWidget(
-                    text: widget.product.description.replaceAll("<p>", "").replaceAll("</p>", ""), 
-                    fontSize: 14, 
-                    fontWeight: FontWeight.w400
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20,),
-              dateNeeded 
-              ? const AppTextWidget(
-                text: '* Subscription start date is required', 
-                fontSize: 13, 
-                fontWeight: FontWeight.w400,
-                fontColor: Colors.red,
-              )
-              : Container(),
-              dateNeeded ? const SizedBox(height: 5,) : Container(),
-              // Start Date Picker
-               ListTile(
-                 minTileHeight: size.height * 0.05,
-                 focusColor: Colors.transparent.withOpacity(0.1),
-                 title: subscriptionDate != null
-                 ? Row(
-                   crossAxisAlignment: CrossAxisAlignment.center,
-                   mainAxisAlignment: MainAxisAlignment.center,
-                   children: [
-                     const AppTextWidget(
-                       text: 'Subscription start from: ', 
-                       fontSize: 14, 
-                       fontWeight: FontWeight.w400
-                     ),
-                     AppTextWidget(
-                       text: DateFormat('dd MMM yyyy').format(subscriptionDate!).toString(), 
-                       fontSize: 14, 
-                       fontWeight: FontWeight.w600,
-                       fontColor: Theme.of(context).primaryColor,
-                     )
-                   ],
-                 )
-                 : const AppTextWidget(
-                     text: 'When do you want to start subscription?', 
-                     fontSize: 13, 
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        AppTextWidget(
+                          text: '₹${widget.product.finalPrice} ', 
+                          fontSize: 16, 
+                          fontColor: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.w500
+                        ),
+                        Text(
+                          '₹${widget.product.price}', 
+                          style: const TextStyle(
+                            fontSize: 12,
+                            decoration: TextDecoration.lineThrough,
+                            color: Colors.black54,
+                            decorationColor: Colors.red, 
+                            fontWeight: FontWeight.w500
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+                const SizedBox(height: 5,),
+                AppTextWidget(
+                  text: widget.product.description.replaceAll("<p>", "").replaceAll("</p>", ""), 
+                  fontSize: 14, 
+                  fontWeight: FontWeight.w400
+                ),
+              ],
+            ),
+            const SizedBox(height: 20,),
+            dateNeeded 
+            ? const AppTextWidget(
+              text: '* Subscription start date is required', 
+              fontSize: 13, 
+              fontWeight: FontWeight.w400,
+              fontColor: Colors.red,
+            )
+            : Container(),
+            dateNeeded ? const SizedBox(height: 5,) : Container(),
+            // Start Date Picker
+             ListTile(
+               minTileHeight: size.height * 0.05,
+               focusColor: Colors.transparent.withOpacity(0.1),
+               title: subscriptionDate != null
+               ? Row(
+                 crossAxisAlignment: CrossAxisAlignment.center,
+                 mainAxisAlignment: MainAxisAlignment.center,
+                 children: [
+                   const AppTextWidget(
+                     text: 'Subscription start from: ', 
+                     fontSize: 14, 
                      fontWeight: FontWeight.w400
                    ),
-                 onTap: () async {
-                   DateTime? startDate = await showDatePicker(
-                     context: context, 
-                     firstDate: DateTime.now().add(const Duration(days: 1)), 
-                     lastDate: DateTime(2100),
-                     initialDate: DateTime.now().add(const Duration(days: 1)),
-                   );
-                   if (startDate != null) {
-                     subscriptionDate = startDate;
-                     setState(() {
-                       dateNeeded = false;
-                     });
-                   }
-                 },
-                 trailing: subscriptionDate != null ? null : const Icon(CupertinoIcons.calendar),
-                 shape: RoundedRectangleBorder(
-                   borderRadius: BorderRadius.circular(10),
-                   side: BorderSide(color: dateNeeded ? Colors.red: Colors.black38)
+                   AppTextWidget(
+                     text: DateFormat('dd MMM yyyy').format(subscriptionDate!).toString(), 
+                     fontSize: 14, 
+                     fontWeight: FontWeight.w600,
+                     fontColor: Theme.of(context).primaryColor,
+                   )
+                 ],
+               )
+               : const AppTextWidget(
+                   text: 'When do you want to start subscription?', 
+                   fontSize: 13, 
+                   fontWeight: FontWeight.w400
                  ),
+               onTap: () async {
+                 DateTime? startDate = await showDatePicker(
+                   context: context, 
+                   firstDate: DateTime.now().add(const Duration(days: 1)), 
+                   lastDate: DateTime(2100),
+                   initialDate: DateTime.now().add(const Duration(days: 1)),
+                 );
+                 if (startDate != null) {
+                   subscriptionDate = startDate;
+                   setState(() {
+                     dateNeeded = false;
+                   });
+                 }
+               },
+               trailing: subscriptionDate != null ? null : const Icon(CupertinoIcons.calendar),
+               shape: RoundedRectangleBorder(
+                 borderRadius: BorderRadius.circular(10),
+                 side: BorderSide(color: dateNeeded ? Colors.red: Colors.black38)
                ),
-              const SizedBox(height: 20,),
-              // Subscription buttons
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(buttonNames.length, (index) {
-                  bool isSelected = index == selectedIndex;
-                  return SizedBox(
-                    width: size.width * 0.3,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.all(5),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          side: BorderSide(
-                            color: isSelected ? Theme.of(context).primaryColor : Colors.black
-                          )
-                        ),
-                        backgroundColor: isSelected? Theme.of(context).primaryColor : Colors.transparent.withOpacity(0.0),
-                        shadowColor: Colors.transparent.withOpacity(0.0),
-                        overlayColor: isSelected ? Colors.white24 : Colors.transparent.withOpacity(0.1)
+             ),
+            const SizedBox(height: 20,),
+            // Subscription buttons
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: List.generate(buttonNames.length, (index) {
+                bool isSelected = index == selectedIndex;
+                return SizedBox(
+                  width: size.width * 0.3,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.all(5),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        side: BorderSide(
+                          color: isSelected ? Theme.of(context).primaryColor : Colors.black
+                        )
                       ),
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                        setState(() {
-                          selectedIndex = index;
-                        });
-                        if (selectedIndex == 0) {
-                          everyDay(context, dailyQuantity, size);
-                        } else if (selectedIndex == 1) {
-                          weekDay(context, size);
-                        } else if (selectedIndex == 2) {
-                          custom(context, size, widget.product.finalPrice);
-                        }
-                      }, 
-                      child: AppTextWidget(
-                        text: buttonNames[index], 
-                        fontSize: 14, 
-                        fontColor: isSelected? Colors.white : Colors.black,
-                        fontWeight: FontWeight.w400
-                      )
+                      backgroundColor: isSelected? Theme.of(context).primaryColor : Colors.transparent.withOpacity(0.0),
+                      shadowColor: Colors.transparent.withOpacity(0.0),
+                      overlayColor: isSelected ? Colors.white24 : Colors.transparent.withOpacity(0.1)
                     ),
-                  );
-                },),
-              ),
-            ],
-          ),
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                      setState(() {
+                        selectedIndex = index;
+                      });
+                      if (selectedIndex == 0) {
+                        everyDay(context, dailyQuantity, size);
+                      } else if (selectedIndex == 1) {
+                        weekDay(context, size);
+                      } else if (selectedIndex == 2) {
+                        custom(context, size, widget.product.finalPrice);
+                      }
+                    }, 
+                    child: AppTextWidget(
+                      text: buttonNames[index], 
+                      fontSize: 14, 
+                      fontColor: isSelected? Colors.white : Colors.black,
+                      fontWeight: FontWeight.w400
+                    )
+                  ),
+                );
+              },),
+            ),
+          ],
         ),
       ),
     );
@@ -437,6 +434,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                                   'address_id': addressProvider.currentAddress!.id
                                 };
                                 print('Every day subscriptin: $everyDayData');
+                                Navigator.pop(sheetContext);
                                 await activeSub.addSubscription(context, size, everyDayData);
                               }
                             }else{
@@ -703,6 +701,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                                       'address_id': value.currentAddress!.id
                                     };
                                     print("Weekday subscription data: $weekDaySubscriptionData");
+                                    Navigator.pop(sheetContext);
                                     await subProvider.addSubscription(context, size, weekDaySubscriptionData);
                                   }
                                 }else{
@@ -969,6 +968,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                                       'address_id': value.currentAddress!.id
                                     };
                                     print("Custome subscription data: $customSubscriptionData");
+                                    Navigator.pop(sheetContext);
                                     await activeSub.addSubscription(context, size, customSubscriptionData);
                                   }
                                 }else{

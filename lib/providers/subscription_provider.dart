@@ -28,6 +28,7 @@ class SubscriptionProvider extends ChangeNotifier{
   List<ActiveSubscriptionModel> activeSubscriptions = [];
   List<ActiveSubscriptionModel> historyProducts = [];
   List<List<String>> options = [];
+  bool isCancellingSubscription = false;
   // Get all the Subscribe Product in Login Page
   Future<void> getSubscribProducts() async {
      // Call SubScribe Product API
@@ -117,19 +118,23 @@ class SubscriptionProvider extends ChangeNotifier{
     String decrptedData = decryptAES(response.body);
     final decodedResponse = json.decode(decrptedData.replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), ''));
     print('Pre order Subscription Response: $decodedResponse, Code: ${response.statusCode}');
-     final renewsubscriptionMessage = snackBarMessage(
-      context: context, 
-      message: decodedResponse['message'], 
-      backgroundColor: Theme.of(context).primaryColor, 
-      sidePadding: size.width * 0.1, 
-      duration: const Duration(seconds: 2),
-      bottomPadding: size.height * 0.05
-    );
+    //  final renewsubscriptionMessage = snackBarMessage(
+    //   context: context, 
+    //   message: decodedResponse['message'], 
+    //   backgroundColor: Theme.of(context).primaryColor, 
+    //   sidePadding: size.width * 0.1, 
+    //   duration: const Duration(seconds: 2),
+    //   bottomPadding: size.height * 0.05
+    // );
     if (response.statusCode == 200 && decodedResponse["status"] == "success") {
-      ScaffoldMessenger.of(context).showSnackBar(renewsubscriptionMessage).closed.then((value) {
+      confirmSubscriptionMessage(context, size, decodedResponse["message"], "assets/icons/happy-face.png");
+      Future.delayed(const Duration(seconds: 2), (){
           Navigator.pop(context);
           Navigator.pop(context);
-      },);
+          Navigator.pop(context);
+      });
+      // ScaffoldMessenger.of(context).showSnackBar(renewsubscriptionMessage).closed.then((value) {
+      // },);
     } else {
       print('Error: ${response.body}');
     }
@@ -143,14 +148,14 @@ class SubscriptionProvider extends ChangeNotifier{
     final decodedResponse = json.decode(decrptedData.replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), ''));
     debugPrint('Add Subscription Response: $decodedResponse, Code: ${response.statusCode}');
     if(response.statusCode == 200 && decodedResponse['status'] == "success"){
-      Navigator.pop(context);
-      await activeSubscription().then((value) {
+      
+      // await activeSubscription().then((value) {
         final preOrderData = PreOrderModel.fromJson(decodedResponse["data"]);
         Navigator.push(context, SideTransistionRoute(
           screen: const PreOrderProductsScreen(),
           args: {'preOrderData': preOrderData}
         ));
-      },);
+      // },);
     }else{
       print('Success: ${response.body}');
     }
@@ -192,20 +197,27 @@ class SubscriptionProvider extends ChangeNotifier{
     String decrptedData = decryptAES(response.body);
     final decodedResponse = json.decode(decrptedData.replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), ''));
     print('Canncel Subscription Response: $decodedResponse, Code: ${response.statusCode}');
-     final cancelSubscriptinoMessage = snackBarMessage(
-      context: context, 
-      message: decodedResponse['message'], 
-      backgroundColor: Theme.of(context).primaryColor, 
-      sidePadding: size.width * 0.1,
-      bottomPadding: size.height * 0.05
-    );
+    //  final cancelSubscriptinoMessage = snackBarMessage(
+    //   context: context, 
+    //   message: decodedResponse['message'], 
+    //   backgroundColor: Theme.of(context).primaryColor, 
+    //   sidePadding: size.width * 0.1,
+    //   bottomPadding: size.height * 0.05
+    // );
     if(response.statusCode == 200 && decodedResponse['status'] == "success"){
-      Navigator.pop(context);
-     ScaffoldMessenger.of(context).showSnackBar(cancelSubscriptinoMessage).closed.then((value) async {
-       await activeSubscription().then((value) async {
+      confirmSubscriptionMessage(context, size, decodedResponse["message"], "assets/icons/sad-face.png");
+      Future.delayed(const Duration(seconds: 2), () {
+        Navigator.pop(context);
+        Navigator.pop(context);
+        activeSubscription().then((value) async {
         await subscriptionHistoryAPI();
       },);
-     },);
+      },);
+      isCancellingSubscription = false;
+      notifyListeners();
+    //  ScaffoldMessenger.of(context).showSnackBar(cancelSubscriptinoMessage).closed.then((value) async {
+       
+    //  },);
     }else{
       print('Success: ${response.body}');
     }
@@ -222,19 +234,25 @@ class SubscriptionProvider extends ChangeNotifier{
     String decrptedData = decryptAES(response.body);
     final decodedResponse = json.decode(decrptedData.replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), ''));
     print('Resume Subscription Response: $decodedResponse, Code: ${response.statusCode}');
-     final resumeSubscriptinoMessage = snackBarMessage(
-      context: context, 
-      message: decodedResponse['message'], 
-      backgroundColor: Theme.of(context).primaryColor, 
-      sidePadding: size.width * 0.1, 
-      bottomPadding: size.height * 0.05
-    );
+    //  final resumeSubscriptinoMessage = snackBarMessage(
+    //   context: context, 
+    //   message: decodedResponse['message'], 
+    //   backgroundColor: Theme.of(context).primaryColor, 
+    //   sidePadding: size.width * 0.1, 
+    //   bottomPadding: size.height * 0.05
+    // );
     if(response.statusCode == 200 && decodedResponse['status'] == "success"){
-     ScaffoldMessenger.of(context).showSnackBar(resumeSubscriptinoMessage).closed.then((value) async {
-       await activeSubscription().then((value) async {
-          await subscriptionHistoryAPI();
-        },);
-      },);
+        confirmSubscriptionMessage(context, size, decodedResponse["message"], "assets/icons/happy-face.png");
+
+        Future.delayed(const Duration(seconds: 2), () async {
+          Navigator.pop(context);
+         await activeSubscription().then((value) async {
+            await subscriptionHistoryAPI();
+          },);
+        });
+    //  ScaffoldMessenger.of(context).showSnackBar(resumeSubscriptinoMessage).closed.then((value) async {
+       
+      // },);
      print("Called");
     }else{
       print('Success: ${response.body}');
@@ -248,15 +266,16 @@ class SubscriptionProvider extends ChangeNotifier{
     String decrptedData = decryptAES(response.body);
     final decodedResponse = json.decode(decrptedData.replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), ''));
     print('Confirm Re-Subscription Response: $decodedResponse, Code: ${response.statusCode}');
-     final renewsubscriptionMessage = snackBarMessage(
-      context: context, 
-      message: decodedResponse['message'], 
-      backgroundColor: Theme.of(context).primaryColor, 
-      sidePadding: size.width * 0.1, 
-      bottomPadding: size.height * 0.05
-    );
+    //  final renewsubscriptionMessage = snackBarMessage(
+    //   context: context, 
+    //   message: decodedResponse['message'], 
+    //   backgroundColor: Theme.of(context).primaryColor, 
+    //   sidePadding: size.width * 0.1, 
+    //   bottomPadding: size.height * 0.05
+    // );
     if (response.statusCode == 200) {
-      ScaffoldMessenger.of(context).showSnackBar(renewsubscriptionMessage);
+      // ScaffoldMessenger.of(context).showSnackBar(renewsubscriptionMessage);
+      confirmSubscriptionMessage(context, size, decodedResponse['message'], "assets/icons/happy-face.png");
     } else {
       print('Error: ${response.body}');
     }
@@ -277,6 +296,11 @@ class SubscriptionProvider extends ChangeNotifier{
   void generateData(int length){
     renewSubscriptionResponse = List.generate(length, (index) => null,);
     renewStartDate = List.generate(length, (index) => null,);
+  }
+
+  void userCancelSubscription(){
+    isCancellingSubscription = true;
+    notifyListeners();
   }
 
   // Confirm Cancel Subscription
@@ -375,4 +399,50 @@ class SubscriptionProvider extends ChangeNotifier{
     );
   
   }
+
+
+  void confirmSubscriptionMessage(BuildContext context, Size size, String message, String image){
+    showDialog(
+      context: context, 
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          elevation: 0,
+          // backgroundColor: Colors.transparent.withOpacity(0.1),
+          child: SizedBox(
+            height: size.height * 0.3,
+            // width: size.width * 0.,
+            child: Column(
+              // crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                const SizedBox(height: 30,),
+                Center(
+                  child: SizedBox(
+                    height: size.height * 0.1,
+                    width:  size.width * 0.2,
+                    child: Image.asset(
+                      image,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                
+                Center(child: AppTextWidget(
+                  text: message, 
+                  textAlign: TextAlign.center,
+                  fontSize: 18, fontWeight: FontWeight.w500, fontColor: Theme.of(context).primaryColorDark,)),
+                // const SizedBox(height: 10,),
+                AppTextWidget(text: "Thank you!", fontSize: 16, fontWeight: FontWeight.w400, fontColor: Theme.of(context).primaryColorDark,),
+                const SizedBox(height: 30,),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
 }

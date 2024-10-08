@@ -7,6 +7,7 @@ import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/model/region_model.dart';
 import 'package:app_3/providers/api_provider.dart';
 import 'package:app_3/screens/main_screens/bottom_bar.dart';
+import 'package:app_3/screens/on_boarding/signin_page.dart';
 import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
 import 'package:app_3/widgets/common_widgets.dart/button_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/input_field_widget.dart';
@@ -50,6 +51,7 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
   bool isRegionSelected = true;
   bool isLocationSelected = true;
   List<LocationModel> locations = [];
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -93,10 +95,14 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
           // resizeToAvoidBottomInset: false,
           appBar: AppBarWidget(
             title: 'New Address',
-            needBack: true,
+            needBack:  true,
             onBack: () {
               // addressProvider.disposeController();
-              Navigator.pop(context);
+              if (widget.fromOnboarding!) {
+                Navigator.pushAndRemoveUntil(context, downToTop(screen: const LoginPage()), (route) => false,);
+              }else{
+                Navigator.pop(context);
+              }
             },
           ),
           body: Container(
@@ -161,7 +167,7 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
                         children: [
                           const SizedBox(height: 20,),
                           TextFields(
-                            labelText: "Enter Flat/house No", 
+                            hintText: "Enter Flat/house No", 
                             isObseure: false, 
                             textInputAction: TextInputAction.next,
                             controller: flatController,
@@ -174,7 +180,7 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
                           ),
                           const SizedBox(height: 20,),
                           TextFields(
-                            labelText: "Enter Floor No", 
+                            hintText: "Enter Floor No", 
                             isObseure: false, 
                             textInputAction: TextInputAction.next,
                             controller: floorContoller,
@@ -187,7 +193,7 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
                           ),
                           const SizedBox(height: 20,),
                           TextFields(
-                            labelText: "Address", 
+                            hintText: "Address", 
                             isObseure: false, 
                             textInputAction: TextInputAction.next,
                             controller: provider.mapAddressController.text.isEmpty ? addressController : provider.mapAddressController,
@@ -200,7 +206,7 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
                           ),
                           const SizedBox(height: 20,),
                           TextFields(
-                            labelText: "Pincode", 
+                            hintText: "Pincode", 
                             isObseure: false, 
                             textInputAction: TextInputAction.next,
                             controller: pincodeController,
@@ -215,7 +221,7 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
                           const SizedBox(height: 20,),
                           // Landmark text field
                           TextFields(
-                            labelText: "Landmark", 
+                            hintText: "Landmark", 
                             isObseure: false, 
                             textInputAction: TextInputAction.next,
                             controller: landmarkController,
@@ -309,81 +315,93 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
                           // Add address button 
                           ButtonWidget(
                             onPressed: () async {
-                              if (widget.needUpdate != null && widget.needUpdate! && widget.updateAddress != null) {
-                                if (formKey.currentState!.validate()) {
-                                  // print("Regions length: ${provider.regionLocationsList.length}");
-                                  // print("Regios: ${widget.updateAddress!.region}");
-                                  // print("Regios: ${widget.updateAddress!.location}");
-                                  // print("Selected Location: $selectedLocation");
-                                  // print("Selected REgion: $selectedRegion");
-                                  List<RegionModel> regions = provider.regionLocationsList;
-                                  // print(regions[0].regionName);
-                                  // print(regions[1].regionName);
-                                // print("Region Id: ${regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).regionId}");
-                                //  print("Location Id: ${locations.firstWhere((element) => element.locationName == selectedLocation,).locationId}");
-                                // print("Location Id2: ${locations.firstWhere((element) => widget.updateAddress!.location == selectedLocation,).locationId}");
-                                // print("Region Id2: ${provider.regionLocationsList.firstWhere((element) => element.regionName == selectedRegion,).regionId}");
-                                Map<String, dynamic> updateAddressData = {
-                                  'customer_id': prefs.getString('customerId'),
-                                  'address_id': widget.updateAddress!.id,
-                                  'flat_no': flatController.text,
-                                  'address': provider.mapAddressController.text.isEmpty ? addressController.text : provider.mapAddressController.text,
-                                  'floor': floorContoller.text,
-                                  'landmark': landmarkController.text,
-                                  'region': selectedRegion == null 
-                                    ? regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).regionId 
-                                    : regions.firstWhere((element) => element.regionName == selectedRegion,).regionId,
-                                  'location':  selectedLocation == null 
-                                    ? regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).locationData.firstWhere((element) => element.locationName == element.locationName,).locationId
-                                    : locations.firstWhere((element) => element.locationName == selectedLocation,).locationId,
-                                  'pincode': pincodeController.text,
-                                };
-                                print("Region: ${regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).regionName}");
-                                print("Region: ${regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).locationData.firstWhere((element) => element.locationName == element.locationName,).locationName}");
-                                print("Selected Region: $selectedRegion");
-                                print("Selected Location: $selectedLocation");
-                                print("Update Address Data: $updateAddressData");
-                                await  provider.updateAddressAPI(context, size, updateAddressData).then((value) {
-                                  provider.clearMapAddress();
-                                  Navigator.pop(context);
-                                },);
-                              }
-                              }else{
-                                if (selectedRegion == null) {
-                                  if (selectedLocation == null) {
-                                    setState(() {
-                                      isRegionSelected = false;
-                                      isLocationSelected = false;
-                                    });
-                                  }
-                                }
-                                if (formKey.currentState!.validate() && isRegionSelected && isLocationSelected) {
-                                  print("Region Id: ${provider.regionLocationsList.firstWhere((element) => element.regionName == selectedRegion,).regionId}");
-                                  print("Location Id: ${locations.firstWhere((element) => element.locationName == selectedLocation,).locationId}");
-                                  Map<String, dynamic> addressData = {
-                                    'customer_id': prefs.getString('customerId'),
-                                    'flat_no': flatController.text,
-                                    'address': provider.mapAddressController.text.isEmpty ? addressController.text : provider.mapAddressController.text,
-                                    'floor': floorContoller.text,
-                                    'landmark': landmarkController.text,
-                                    'region': provider.regionLocationsList.firstWhere((element) => element.regionName == selectedRegion,).regionId,
-                                    'location': locations.firstWhere((element) => element.locationName == selectedLocation,).locationId,
-                                    'pincode': pincodeController.text,
-                                  };
-                                  print("New Address Data: $addressData");
-                                  await  provider.addAddressAPI(context, size, addressData).then((value) async {
-                                    if (widget.fromOnboarding ?? false) {
+                              setState(() {
+                                isLoading = true;
+                              });
+
+                              try {
+                                if (widget.needUpdate != null && widget.needUpdate! && widget.updateAddress != null) {
+                                  if (formKey.currentState!.validate()) {
+                                    // print("Regions length: ${provider.regionLocationsList.length}");
+                                    // print("Regios: ${widget.updateAddress!.region}");
+                                    // print("Regios: ${widget.updateAddress!.location}");
+                                    // print("Selected Location: $selectedLocation");
+                                    // print("Selected REgion: $selectedRegion");
+                                    List<RegionModel> regions = provider.regionLocationsList;
+                                    // print(regions[0].regionName);
+                                    // print(regions[1].regionName);
+                                    // print("Region Id: ${regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).regionId}");
+                                    //  print("Location Id: ${locations.firstWhere((element) => element.locationName == selectedLocation,).locationId}");
+                                    // print("Location Id2: ${locations.firstWhere((element) => widget.updateAddress!.location == selectedLocation,).locationId}");
+                                    // print("Region Id2: ${provider.regionLocationsList.firstWhere((element) => element.regionName == selectedRegion,).regionId}");
+                                    Map<String, dynamic> updateAddressData = {
+                                      'customer_id': prefs.getString('customerId'),
+                                      'address_id': widget.updateAddress!.id,
+                                      'flat_no': flatController.text,
+                                      'address': provider.mapAddressController.text.isEmpty ? addressController.text : provider.mapAddressController.text,
+                                      'floor': floorContoller.text,
+                                      'landmark': landmarkController.text,
+                                      'region': selectedRegion == null 
+                                        ? regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).regionId 
+                                        : regions.firstWhere((element) => element.regionName == selectedRegion,).regionId,
+                                      'location':  selectedLocation == null 
+                                        ? regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).locationData.firstWhere((element) => element.locationName == element.locationName,).locationId
+                                        : locations.firstWhere((element) => element.locationName == selectedLocation,).locationId,
+                                      'pincode': pincodeController.text,
+                                    };
+                                    print("Region: ${regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).regionName}");
+                                    print("Region: ${regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).locationData.firstWhere((element) => element.locationName == element.locationName,).locationName}");
+                                    print("Selected Region: $selectedRegion");
+                                    print("Selected Location: $selectedLocation");
+                                    print("Update Address Data: $updateAddressData");
+                                    await  provider.updateAddressAPI(context, size, updateAddressData).then((value) {
                                       provider.clearMapAddress();
-                                      await provider.getAddressesAPI();
-                                      prefs.remove("registered");
-                                      prefs.remove("newUserVerified");
-                                      prefs.remove("phoneNo");
-                                      Navigator.push(context, SideTransistionRoute(screen: const BottomBar()));
-                                    }else{
                                       Navigator.pop(context);
-                                    } 
-                                  },);
+                                    },);
+                                  }
+                                  }else{
+                                    if (selectedRegion == null) {
+                                      if (selectedLocation == null) {
+                                        setState(() {
+                                          isRegionSelected = false;
+                                          isLocationSelected = false;
+                                        });
+                                      }
+                                    }
+                                    if (formKey.currentState!.validate() && isRegionSelected && isLocationSelected) {
+                                      print("Region Id: ${provider.regionLocationsList.firstWhere((element) => element.regionName == selectedRegion,).regionId}");
+                                      print("Location Id: ${locations.firstWhere((element) => element.locationName == selectedLocation,).locationId}");
+                                      Map<String, dynamic> addressData = {
+                                        'customer_id': prefs.getString('customerId'),
+                                        'flat_no': flatController.text,
+                                        'address': provider.mapAddressController.text.isEmpty ? addressController.text : provider.mapAddressController.text,
+                                        'floor': floorContoller.text,
+                                        'landmark': landmarkController.text,
+                                        'region': provider.regionLocationsList.firstWhere((element) => element.regionName == selectedRegion,).regionId,
+                                        'location': locations.firstWhere((element) => element.locationName == selectedLocation,).locationId,
+                                        'pincode': pincodeController.text,
+                                      };
+                                      print("New Address Data: $addressData");
+                                      await  provider.addAddressAPI(context, size, addressData).then((value) async {
+                                        if (widget.fromOnboarding ?? false) {
+                                          provider.clearMapAddress();
+                                          await provider.getAddressesAPI();
+                                          prefs.remove("registered");
+                                          prefs.remove("newUserVerified");
+                                          prefs.remove("phoneNo");
+                                          Navigator.push(context, SideTransistionRoute(screen: const BottomBar()));
+                                        }else{
+                                          Navigator.pop(context);
+                                        } 
+                                      },);
+                                    }
                                 }
+                              } catch (e) {
+                                print("Can't register address: $e");
+                              }finally{
+                                setState(() {
+                                  isLoading = false;
+                                });
                               }
                             }, 
                             buttonName: widget.updateAddress != null && widget.needUpdate! ? "Update" : 'Add'

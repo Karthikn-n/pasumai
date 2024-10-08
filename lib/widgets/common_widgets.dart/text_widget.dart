@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppTextWidget extends StatelessWidget{
   final String text;
-  final double fontSize;
+  final double? fontSize;
   final FontWeight fontWeight;
   final Color? fontColor;
   final int? maxLines;
@@ -14,7 +14,7 @@ class AppTextWidget extends StatelessWidget{
   final TextOverflow? textOverflow;
   const AppTextWidget({
     required this.text,
-    required this.fontSize,
+    this.fontSize,
     required this.fontWeight,
     this.fontColor,
     this.maxLines,

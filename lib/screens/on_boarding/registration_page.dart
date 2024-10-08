@@ -27,7 +27,9 @@ class _RegisterationPageState extends State<RegisterationPage> {
   final _formKey = GlobalKey<FormState>();
 
   final RegExp nameRegex = RegExp(r'^[a-zA-Z]+$');
+  // final RegExp emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
   final RegExp emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -45,138 +47,125 @@ class _RegisterationPageState extends State<RegisterationPage> {
       backgroundColor: Colors.white,
       appBar: const AppBarWidget(title: "Register"),
       body: SingleChildScrollView(
-        child: Container(
-          color: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
+              // Welcome Text
+              const AppTextWidget(
+                text: 'Welcome !',
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+                letterSpacing: -0.5
+              ),
+              // Or Sigin button
+              const AppTextWidget(
+                text: 'Join now for exclusive deals & benifits',
+                fontSize: 14, 
+                fontWeight: FontWeight.w300,
+              ),
+              
+              const SizedBox(height: 20,),
+              // Form 
+              Form(
+                key: _formKey,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(2),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const AppTextWidget(
-                            text: 'Welcome !',
-                            fontSize: 32,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: -0.5
-                          ),
-                          Row(
-                            children: [
-                              const AppTextWidget(
-                                text: 'Create an account',
-                                fontSize: 16, 
-                                fontWeight: FontWeight.w300,
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.pushReplacement(context, SideTransistionRoute(screen: const LoginPage()));
-                                },
-                                child: const AppTextWidget(
-                                  text: ' or Sign in',
-                                  fontSize: 16, 
-                                  fontWeight: FontWeight.w500,
-                                  fontColor: Color(0xFF60B47B)
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          children: [
-                            TextFields(
-                            hintText: 'Enter your first name', 
-                            isObseure: false, 
-                            // borderRadius: 8,
-                            textInputAction: TextInputAction.next,
-                            prefixIcon: const Icon(CupertinoIcons.person_fill),
-                            controller: firstNameController,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Please enter your first name';
-                              }
-                              if (!nameRegex.hasMatch(value)) {
-                                return 'First name can only contain letters';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 20,),
-                          TextFields(
-                            hintText: 'Enter your last name',
-                            isObseure: false, 
-                            textInputAction: TextInputAction.next,
-                            prefixIcon: const Icon(CupertinoIcons.person_fill),
-                            controller: lastNameController,
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return 'Please enter your last name';
-                                }
-                                if (!nameRegex.hasMatch(value)) {
-                                  return 'Last name can only contain letters';
-                                }
-                                return null;
-                              },
-                          ),
-                          const SizedBox(height: 20,),
-                          TextFields(
-                            hintText: 'Enter your email address',
-                            isObseure: false, 
-                            textInputAction: TextInputAction.next,
-                            prefixIcon: const Icon(CupertinoIcons.mail_solid),
-                            controller: emailController,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Please enter your email';
-                              }
-                              if (!emailRegex.hasMatch(value)) {
-                                return  'Please enter a valid email address';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 20,),
-                          TextFields(
-                            hintText: 'Enter your Mobile number',
-                            isObseure: false, 
-                            textInputAction: TextInputAction.done,
-                            prefixIcon: const Icon(Icons.phone_android_sharp),
-                            controller: mobileController,
-                            keyboardType: TextInputType.phone,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Please enter your mobile number';
-                              }
-                              return null;
-                            },
-                          ),
-                          ],
-                        ),
-                      
-                      ),
-                    ),
-                    
+                    TextFields(
+                    hintText: 'Enter your first name', 
+                    isObseure: false, 
+                    // borderRadius: 8,
+                    textInputAction: TextInputAction.next,
+                    prefixIcon: const Icon(CupertinoIcons.person_fill),
+                    controller: firstNameController,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please enter your first name';
+                      }
+                      if (!nameRegex.hasMatch(value)) {
+                        return 'First name can only contain letters';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 20,),
+                  TextFields(
+                    hintText: 'Enter your last name',
+                    isObseure: false, 
+                    textInputAction: TextInputAction.next,
+                    prefixIcon: const Icon(CupertinoIcons.person_fill),
+                    controller: lastNameController,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter your last name';
+                        }
+                        if (!nameRegex.hasMatch(value)) {
+                          return 'Last name can only contain letters';
+                        }
+                        return null;
+                      },
+                  ),
+                  const SizedBox(height: 20,),
+                  TextFields(
+                    hintText: 'Enter your email address',
+                    isObseure: false, 
+                    textInputAction: TextInputAction.next,
+                    prefixIcon: const Icon(CupertinoIcons.mail_solid),
+                    controller: emailController,
+                    validator: (value) {
+                      if (value == null && value!.isEmpty) {
+                        return 'Please enter your email';
+                      }
+                      if (!emailRegex.hasMatch(value)) {
+                        return  'Please enter a valid email address';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 20,),
+                  TextFields(
+                    hintText: 'Enter your Mobile number',
+                    isObseure: false, 
+                    textInputAction: TextInputAction.done,
+                    prefixIcon: const Icon(Icons.phone_android_sharp),
+                    controller: mobileController,
+                    keyboardType: TextInputType.phone,
+                    validator: (value) {
+                      final RegExp mobileRegex = RegExp(r'^[0-9]{10}$');
+                      if (value!.isEmpty) {
+                        return 'Please enter your mobile number';
+                      }
+                      if (mobileController.text.length != 10) {
+                        return "Please Enter a valid mobile number";
+                      }
+                      if (mobileRegex.hasMatch(value)) {
+                        return null;
+                      } else {
+                        return 'Invalid mobile number';
+                      }
+                      // return null;
+                    },
+                  ),
                   ],
                 ),
+              
               ),
-              const SizedBox(height: 10,),
-              Center(
-                child: Consumer<ApiProvider>(
-                  builder: (context, provider, child) {
-                    return ButtonWidget(
-                      buttonName: 'Signup', 
-                      onPressed: () async {
-                        FocusScope.of(context).unfocus();
+              const SizedBox(height: 20,),
+              Consumer<ApiProvider>(
+                builder: (context, provider, child) {
+                  return isLoading
+                  ? const LoadingButton()
+                  : ButtonWidget(
+                    width: double.infinity,
+                    buttonName: 'Signup', 
+                    onPressed: () async {
+                      FocusScope.of(context).unfocus();
+                      setState(() {
+                        isLoading = true;
+                      });
+              
+                      try {
                         if (_formKey.currentState!.validate()) {
                           Map<String, dynamic> userData = {
                               'first_name' : firstNameController.text,
@@ -187,11 +176,68 @@ class _RegisterationPageState extends State<RegisterationPage> {
                           await provider.registerUser(userData, context, size);
                           // await registerUser(context, size);
                         }
+                      } catch (e) {
+                        print("Can't Signup $e");
+                      } finally{
+                        setState(() {
+                          isLoading = false;
+                        });
                       }
-                    );
-                  }
-                )
+                    }
+                  );
+                }
               ),
+              const SizedBox(height: 20,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: size.width * 0.4,
+                    child: Divider(
+                      color: Colors.black.withOpacity(0.3),
+                      thickness: 1,
+                    ),
+                  ),
+                  const SizedBox(width: 10,),
+                  const AppTextWidget(
+                    text: "or", 
+                    fontWeight: FontWeight.w400, 
+                    // fontColor: Colors.black.withOpacity(0.5),
+                  ),
+                  const SizedBox(width: 10,),
+                  SizedBox(
+                    width: size.width * 0.4,
+                    child: Divider(
+                      color: Colors.black.withOpacity(0.3),
+                      thickness: 1,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20,),
+              Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const AppTextWidget(text: "Already have an account ", fontWeight: FontWeight.w500, fontSize: 14,),
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      splashFactory: InkRipple.splashFactory,
+                      splashColor: Colors.transparent.withOpacity(0.1),
+                      onTap: () {
+                        Navigator.pushReplacement(context, SideTransistionRoute(screen: const LoginPage(), ));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 2),
+                        child: AppTextWidget(text: "Sign in", fontWeight: FontWeight.w500, fontSize: 14, fontColor: Theme.of(context).primaryColor,),
+                      )
+                    ),
+                  ),
+                ],
+              ),
+            )
+              
             ],
           ),
         ),

@@ -52,8 +52,8 @@ class ButtonWidget extends StatelessWidget {
           children: [
             AppTextWidget(
               text: buttonName,
-              fontSize: fontSize ?? 20, 
-              fontWeight: fontWeight ?? FontWeight.w400,
+              fontSize: fontSize ?? 18, 
+              fontWeight: fontWeight ?? FontWeight.w500,
               fontColor: fontColor ?? Colors.white,
             ),
           ],

@@ -17,6 +17,7 @@ import 'package:app_3/widgets/common_widgets.dart/button_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:app_3/widgets/sub_screen_widgets/new_address_form_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -33,7 +34,7 @@ class _OtpPageState extends State<OtpPage> {
   // OTP box controller it have 4 so list of controllers
   SharedPreferences prefs = SharedPreferencesHelper.getSharedPreferences();
   AppRepository otpRepository = AppRepository(ApiService("https://maduraimarket.in/api"));
-  late List<TextEditingController> controllers;
+  TextEditingController otpController = TextEditingController();
   // cover all the box foucs nodes
   late List<FocusNode> focusNodes;
   late List<TextInputType> keyboardType;
@@ -48,20 +49,6 @@ class _OtpPageState extends State<OtpPage> {
   void initState() {
     super.initState();
     showResendButton = false;
-    
-    // initialise the controllers and foucs nodes
-    controllers = List.generate(4, (index) => TextEditingController());
-    focusNodes = List.generate(4, (index) => FocusNode());
-    keyboardType = List.generate(4, (index) => TextInputType.number,);
-    // preload();
-    for (int i = 0; i < controllers.length; i++) {
-      controllers[i].addListener(() {
-        if (controllers[i].text.isNotEmpty && i < controllers.length - 1) {
-          // Move focus to the next text field
-          FocusScope.of(context).requestFocus(focusNodes[i + 1]);
-        }
-      });
-    }
     // _addKeyboardVisibilityListener();
     _resendTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
@@ -79,12 +66,6 @@ class _OtpPageState extends State<OtpPage> {
   @override
   void dispose() {
     _resendTimer.cancel();
-    for (var controller in controllers) {
-      controller.dispose();
-    }
-    for (var focusNode in focusNodes) {
-      focusNode.dispose();
-    }
     super.dispose();
   }
 
@@ -123,9 +104,9 @@ class _OtpPageState extends State<OtpPage> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: AppTextWidget(
-                          text: 'Verify with OTP sent to\n${prefs.getString("mobile")}',
-                          fontSize: 32,
-                          fontWeight: FontWeight.w600,
+                          text: 'OTP sent to ${prefs.getString("mobile")}',
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
                           letterSpacing: -0.5
                         ),
                       ),
@@ -164,16 +145,21 @@ class _OtpPageState extends State<OtpPage> {
                         ),
                       ),
                       Center(
-                        child: Container(
-                          margin: const EdgeInsets.only(top: 14, left: 16),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: List.generate(
-                              controllers.length,
-                              (index) => buildOtpTextField(index),
-                            ),
-                          ),
-                        ),
+                        child: Pinput(
+                          controller: otpController,
+                          length: 4,
+                        )
+                        // Container(
+                        //   margin: const EdgeInsets.only(top: 14, left: 16),
+                        //   child:
+                        //    Row(
+                        //     crossAxisAlignment: CrossAxisAlignment.start,
+                        //     children: List.generate(
+                        //       controllers.length,
+                        //       (index) => buildOtpTextField(index),
+                        //     ),
+                        //   ),
+                        // ),
                       ),
                       const SizedBox(height: 20),
                       Center(
@@ -188,7 +174,7 @@ class _OtpPageState extends State<OtpPage> {
                             try {
                                await addressProvider.getRegionLocation();
                                 if(widget.fromRegister){
-                                  Navigator.pushAndRemoveUntil(context, SideTransistionRoute(screen: const NewAddressFormWidget(fromOnboarding: true,)), (route) => false,);
+                                  Navigator.push(context, SideTransistionRoute(screen: const NewAddressFormWidget(fromOnboarding: true,)));
                                 }else{
                                   addressProvider.getAddressesAPI();
                                   Navigator.pushAndRemoveUntil(context,  SideTransistionRoute(screen: const BottomBar()), (route) => false);
@@ -296,42 +282,6 @@ class _OtpPageState extends State<OtpPage> {
 
   
 
-  Widget buildOtpTextField(int index) {
-    return Container(
-      width: 50.0,
-      height: 50.0,
-      margin: const EdgeInsets.only(left: 16, right: 16),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.black),
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      child: TextFormField(
-        controller: controllers[index],
-        autofocus: index == 0, // Autofocus only the first field
-        keyboardType: keyboardType[index],
-        textAlign: TextAlign.center,
-        maxLength: 1,
-        textInputAction: index < controllers.length - 1 
-          ? TextInputAction.next // Move to the next field
-          : TextInputAction.done,
-        onFieldSubmitted: (value) {
-          if (value.isEmpty && index > 0) {
-            // Move focus to the previous text field when backspace is pressed
-            FocusScope.of(context).requestFocus(focusNodes[index - 1]);
-          } else if (value.isNotEmpty && index < controllers.length - 1) {
-            // Move to the next field if the current field is not the last one
-            FocusScope.of(context).requestFocus(focusNodes[index + 1]);
-          }
-        },
-        focusNode: focusNodes[index],
-        decoration: const InputDecoration(
-          counter: Offstage(),
-          border: InputBorder.none,
-        ),
-      ),
-    );
-  }
 
 
   void _startResendTimer() {

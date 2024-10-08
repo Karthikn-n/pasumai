@@ -69,9 +69,10 @@ class TextFields extends StatelessWidget {
         onFieldSubmitted: onFieldSubmitted,
         onEditingComplete: onEditingComplete,
         validator: validator,
-        style: TextStyle(
-          fontSize: 15,
-          color: const Color(0xFF656872).withOpacity(1.0)
+        style: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: Colors.black
         ),
         decoration: InputDecoration(
           prefixIcon: prefixIcon,
@@ -91,24 +92,24 @@ class TextFields extends StatelessWidget {
           suffixIconColor: const Color(0xFF656872).withOpacity(1.0),
           hintText: hintText,
           hintStyle: TextStyle(
-            fontSize: hintTextSize ?? 15,
+            fontSize: hintTextSize ?? 14,
             fontWeight: FontWeight.w500,
-            color:Colors.grey.withOpacity(0.5)
+            color:Colors.grey.withOpacity(1.0)
           ),
           filled: true,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(borderRadius ?? 10),
             borderSide: BorderSide(
-              color: const Color(0xFF656872).withOpacity(0.1)
+              color: Colors.grey.withOpacity(1.0)
             )
           ),
           disabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(borderRadius ?? 10),
             borderSide: BorderSide(
-              color: const Color(0xFF656872).withOpacity(0.1)
+              color: Colors.grey.withOpacity(1.0),
             )
           ),
-          fillColor: const Color(0xFF656872).withOpacity(0.1),
+          // fillColor: const Color(0xFF656872).withOpacity(0.1),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(borderRadius ?? 10),
             borderSide: const BorderSide(
@@ -118,13 +119,13 @@ class TextFields extends StatelessWidget {
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(borderRadius ?? 10),
             borderSide: BorderSide(
-              color: const Color(0xFF656872).withOpacity(0.1)
+              color: Colors.grey.withOpacity(1.0)
             )
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(borderRadius ?? 10),
             borderSide: BorderSide(
-              color: const Color(0xFF656872).withOpacity(0.0)
+              color: Colors.grey.withOpacity(1.0)
             )
           )
         ),

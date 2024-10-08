@@ -30,8 +30,8 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: AppTextWidget(
           text: title, 
-          fontSize: 16, 
-          fontWeight: FontWeight.w400
+          fontSize: 20, 
+          fontWeight: FontWeight.w500
         ),
         centerTitle: true,
         leading: needBack != null && needBack! 

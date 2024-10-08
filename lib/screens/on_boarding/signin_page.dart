@@ -20,16 +20,34 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
   final _key = GlobalKey<FormState>();
   final TextEditingController mobileController = TextEditingController();
   FocusNode mobileNoFocus = FocusNode();
   final RegExp mobileRegex = RegExp(r'^[0-9]{10}$');
   // bool _isInitialized = false;
-  
+  double imageHeight = 360; // Initial height of the image
+  bool isLoading = false;
+  bool isKeyboard= false;
+
+
+
+  @override
+  void didChangeMetrics() {
+    super.didChangeMetrics();
+    final bottomInset = View.of(context).viewInsets.bottom;  // Using View.of(context)
+    bool isKeyboardVisible = bottomInset > 0.0;
+
+    // Adjust the height of the image when the keyboard is visible or hidden
+    setState(() {
+      isKeyboard = isKeyboardVisible;
+      imageHeight = isKeyboardVisible ? 300 : 360; // Shrink the image when keyboard appears
+    });
+  }
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     notificationPermission();
     widget.fromSplash ?? false 
     ? null
@@ -39,6 +57,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void dispose() {
     mobileController.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -49,94 +68,161 @@ class _LoginPageState extends State<LoginPage> {
     if (connectivityService.isConnected) {
       return Scaffold(
         resizeToAvoidBottomInset: true,
-        appBar: const AppBarWidget(title: "Login"),
-        body: Container(
-          height: size.height,
-          color: Colors.white,
-          child: Column(
-            // alignment: Alignment.topCenter,
-            children: [
-              //Login content
-              Padding(
-                padding: const EdgeInsets.only(left: 15, right: 15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const AppTextWidget(
-                      text: 'Welcome back !',
-                      fontSize: 32,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: -0.5
+        // appBar: const AppBarWidget(title: "Login"),
+        body: Column(
+          // alignment: Alignment.topCenter,
+          children: [
+            AnimatedContainer(
+            duration: const Duration(milliseconds: 10),
+            height: imageHeight, // Dynamically change height based on keyboard
+            width: size.width,
+            child: Image.asset(
+              "assets/icons/App Login Photo.png",
+              fit: BoxFit.cover,
+            ),
+          ),
+            //Login content
+            Padding(
+              padding: const EdgeInsets.only(left: 12, right: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 20,),
+                  const AppTextWidget(
+                    text: 'Welcome back !',
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: -0.5
+                  ),
+                  AppTextWidget(
+                    text: 'Login into your account',
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    fontColor: Colors.grey.withOpacity(1.0),
+                    letterSpacing: -0.5
+                  ),
+                  
+                  const SizedBox(height: 20,),
+                  // phone text field
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                    child: Form(
+                      key: _key,
+                      child: TextFields(
+                        hintText: 'Enter your mobile number', 
+                        isObseure: false,
+                        focusNode: mobileNoFocus,
+                        textInputAction: TextInputAction.done,
+                        prefixIcon: const Icon(CupertinoIcons.phone, size: 20, color: Colors.grey,),
+                        controller: mobileController,
+                        keyboardType: TextInputType.phone,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter your mobile number';
+                          }
+                        if (mobileRegex.hasMatch(value)) {
+                            return null;
+                          } else {
+                            return 'Invalid mobile number';
+                          }
+                        },
+                      ),
                     ),
-                    Row(
+                  ),
+                  const SizedBox(height: 20,),
+                  // Button
+                  Consumer<ApiProvider>(
+                    builder: (context, provider, child) {
+                      return isLoading
+                      ? const LoadingButton(
+                          width: double.infinity,
+                        )
+                      : ButtonWidget(
+                        width: double.infinity,
+                        buttonName: 'Login',
+                        onPressed: () async {
+                         setState(() {
+                           isLoading = true;
+                         });
+                         try {
+                          if (_key.currentState!.validate()) {
+                            mobileNoFocus.unfocus();
+                            // FirebaseAuthHelper.verifyUserPhoneNumber("+91${mobileController.text}");
+                            await provider.userLogin(mobileController.text, size, context);
+                          }
+                         } catch (e) {
+                           print("Can't Login $e");
+                         } finally {
+                            setState(() {
+                              isLoading = false;
+                            });
+                         }
+                        }, 
+                      );
+                    }
+                  ),
+                  const SizedBox(height: 20,),
+                  if(isKeyboard)
+                    Container()
+                  else
+                    Column(
                       children: [
-                        const AppTextWidget(
-                          text: 'Login to your account',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w300,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.pushReplacement(context, SideTransistionRoute(screen: const RegisterationPage(), ));
-                          },
-                          child: const AppTextWidget(
-                            text: ' or Sign up',
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            fontColor: Color(0xFF60B47B)
+                         Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: size.width * 0.4,
+                                child: Divider(
+                                  color: Colors.black.withOpacity(0.3),
+                                  thickness: 1,
+                                ),
+                              ),
+                              const SizedBox(width: 10,),
+                              const AppTextWidget(
+                                text: "or", 
+                                fontWeight: FontWeight.w400, 
+                                // fontColor: Colors.black.withOpacity(0.5),
+                              ),
+                              const SizedBox(width: 10,),
+                              SizedBox(
+                                width: size.width * 0.4,
+                                child: Divider(
+                                  color: Colors.black.withOpacity(0.3),
+                                  thickness: 1,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20,),
+                          Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const AppTextWidget(text: "Create a account ", fontWeight: FontWeight.w500, fontSize: 14,),
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            splashFactory: InkRipple.splashFactory,
+                            splashColor: Colors.transparent.withOpacity(0.1),
+                            onTap: () {
+                              Navigator.pushReplacement(context, SideTransistionRoute(screen: const RegisterationPage(), ));
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 2),
+                              child: AppTextWidget(text: "Sign up", fontWeight: FontWeight.w500, fontSize: 14, fontColor: Theme.of(context).primaryColor,),
+                            )
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20,),
-                    // phone text field
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                      child: Form(
-                        key: _key,
-                        child: TextFields(
-                          hintText: 'Enter your mobile number', 
-                          isObseure: false,
-                          focusNode: mobileNoFocus,
-                          textInputAction: TextInputAction.done,
-                          prefixIcon: const Icon(CupertinoIcons.phone),
-                          controller: mobileController,
-                          keyboardType: TextInputType.phone,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter your mobile number';
-                            }
-                          if (mobileRegex.hasMatch(value)) {
-                              return null;
-                            } else {
-                              return 'Invalid mobile number';
-                            }
-                          },
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  )
+                
+                      ],
+                    )
+                ],
               ),
-              const SizedBox(height: 20,),
-              // Button
-              Consumer<ApiProvider>(
-                builder: (context, provider, child) {
-                  return ButtonWidget(
-                    buttonName: 'Login',
-                    onPressed: () async {
-                      print("Mobile number: +91${mobileController.text}");
-                      if (_key.currentState!.validate()) {
-                        mobileNoFocus.unfocus();
-                        // FirebaseAuthHelper.verifyUserPhoneNumber("+91${mobileController.text}");
-                        await provider.userLogin(mobileController.text, size, context);
-                      }
-                    }, 
-                  );
-                }
-              )
-            ],
-          ),
+            ),
+          ],
         ),
       );
     } else {

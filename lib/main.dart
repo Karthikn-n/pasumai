@@ -79,6 +79,10 @@ class _MyAppState extends State<MyApp> {
             colorScheme:  const ColorScheme.light(
               primary: Color(0xFF60B47B),
             ),
+            textTheme: Theme.of(context).textTheme.apply(
+              fontFamily: 'Poppins',
+            ),
+            primaryColor: const Color(0xFF60B47B),
             datePickerTheme: const DatePickerThemeData(
               backgroundColor: Colors.white,
               headerBackgroundColor: Color(0xFF60B47B),
@@ -101,7 +105,6 @@ class _MyAppState extends State<MyApp> {
             ),
             primaryColorDark: Colors.black,
             scaffoldBackgroundColor: Colors.white,
-            primaryColor: const Color(0xFF60B47B),
             
           ),
           

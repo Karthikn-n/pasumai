@@ -18,14 +18,14 @@ import '../../model/products_model.dart';
 class HomeScreenProducts extends StatefulWidget {
   final List<Products> products;
   final Widget? icon;
-  const HomeScreenProducts({super.key, required this.products, this.icon});
+  final VoidCallback onViewall;
+  const HomeScreenProducts({super.key, required this.products, this.icon, required this.onViewall});
 
   @override
   State<HomeScreenProducts> createState() => _HomeScreenProductsState();
 }
 
-class _HomeScreenProductsState extends State<HomeScreenProducts> with TickerProviderStateMixin{
-  late List<AnimationController> controller;
+class _HomeScreenProductsState extends State<HomeScreenProducts>{
   SharedPreferences prefs = SharedPreferencesHelper.getSharedPreferences();
   final wishlistRepository = AppRepository(ApiService('https://maduraimarket.in/api'));
   // final wishlistRepository = AppRepository(ApiService('http://192.168.1.5/pasumaibhoomi/public/api'));
@@ -34,13 +34,7 @@ class _HomeScreenProductsState extends State<HomeScreenProducts> with TickerProv
   void initState() {
     super.initState();
     isLiked = List.generate(widget.products.length, (index) => false,);
-    controller = List.generate(widget.products.length, (index) {
-      return AnimationController(
-        vsync: this, 
-        duration: const Duration(milliseconds: 500), 
-        reverseDuration: const Duration(milliseconds: 500)
-      );
-    },);
+   
   }
 
   @override
@@ -48,227 +42,277 @@ class _HomeScreenProductsState extends State<HomeScreenProducts> with TickerProv
     Size size = MediaQuery.sizeOf(context);
     final addtoWishlistHelper = Provider.of<ApiProvider>(context);
     final cartProvider = Provider.of<CartProvider>(context);
-    return  Container(
-      margin: EdgeInsets.only(left: size.width * 0.008, right: size.width * 0.008),
-      height: size.height * 0.45,
-      child: CarouselSlider.builder(
+    return  SizedBox(
+      height: size.height * 0.4,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
         itemCount: widget.products.length,
-        options: CarouselOptions(
-          height: size.width > 600 ? size.height * 0.8 : size.height * 0.5,
-          aspectRatio: 16 / 9,
-          // enableInfiniteScroll: true,
-          enlargeCenterPage: true,
-          viewportFraction: size.width > 600 ? 0.28 : 0.8,
-          // autoPlay: true
-        ),
-        itemBuilder: (context, index, relaindex) {
+        itemBuilder: (context, index) {
           Products product = widget.products[index];
           String imageUrl = 'https://maduraimarket.in/public/image/product/${product.image}';
           // String imageUrl = 'http://192.168.1.5/pasumaibhoomi/public/image/product/${product.image}';
-          return Column(
-            // crossAxisAlignment: CrossAxisAlignment.start,
+          return Row(
             children: [
-              Stack(
-                children: [
-                  Container(
-                    height: size.height * 0.34,
-                    width: size.width > 600 ? size.height * 0.45 : size.width * 1.2,
-                    margin: EdgeInsets.only(left: size.width * 0.03, right: size.width * 0.03),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: CachedNetworkImage(
-                        imageUrl: imageUrl,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top:  size.height * 0.021,
-                    left:  size.width * 0.58,
-                    child: GestureDetector(
-                      onTap: () async {
-                        // await addWishlist(product.id, size, product.name, product.quantity);
-                        await addtoWishlistHelper.addWishlist(product.id, size, product.name, product.quantity, context);
-                      },
-                      child: CircleAvatar(
-                        radius: 25,
-                        backgroundColor: Theme.of(context).primaryColor,
-                        child: Center(
-                          child: Icon(
-                            prefs.getBool('${product.id}${product.name}${product.quantity}') ?? false
-                            ? CupertinoIcons.heart_fill
-                            : CupertinoIcons.heart, 
-                            size: 20, 
-                            color: prefs.getBool('${product.id}${product.name}${product.quantity}') ?? false
-                            ? Colors.white
-                            : Theme.of(context).scaffoldBackgroundColor,
-                          )
-                        ),
-                      ),
-                    )
-                  )
-                ],
-              ),
-              SizedBox(height: size.height * 0.006,),
-              Container(
-                alignment: Alignment.bottomCenter,
-                child: Row(
+              SizedBox(
+                width:  size.width * 0.7,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Stack(
                       children: [
-                        Container(
-                          width: size.width > 600 
-                            ? size.width * 0.18 
-                            : widget.icon != null ? size.width * 0.5 
-                            : cartProvider.cartQuantities.isNotEmpty && cartProvider.cartQuantities[product.id] != null
-                              ? size.width * 0.53
-                              : size.width * 0.6,
-                          margin: EdgeInsets.only(left: size.width > 600 ? size.height * 0.08 : size.width * 0.035, top: 5),
-                          child: Row(
-                            children: [
-                             cartProvider.cartQuantities[product.id] != null
-                             ? AppTextWidget(
-                                text: "${cartProvider.cartQuantities[product.id]}x ", fontSize: 15, fontWeight: FontWeight.w500, fontColor: Theme.of(context).primaryColor,)
-                              : Container(),
-                              Expanded(
-                                child: AppTextWidget(
-                                  text: product.name, 
-                                  fontSize: 15, 
-                                  fontWeight: FontWeight.w600,
-                                  maxLines: 1, 
-                                  textOverflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          )
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const SizedBox(width: 15,),
-                            Row(
-                              children: [
-                                AppTextWidget(text: "${product.quantity} - ", fontSize: 14, fontWeight: FontWeight.w500),
-                                Text(
-                                  '₹${product.finalPrice}/',
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  style: const TextStyle(
-                                    fontSize: 13,
-                                  ),
-                                ),
-                                const SizedBox(width: 4,),
-                                Text(
-                                  "₹${product.price}",
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.black54,
-                                    fontWeight: FontWeight.w400,
-                                    decoration: TextDecoration.lineThrough,
-                                    decorationColor: Colors.red,
-                                    decorationThickness: 2
-                                  ),
-                                )
-                              ],
+                        // Product Image
+                        SizedBox(
+                          height: size.height * 0.3,
+                          width:  size.width * 0.69,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: CachedNetworkImage(
+                              imageUrl: imageUrl,
+                              fit: BoxFit.cover,
                             ),
-                          ],
+                          ),
                         ),
+                        // Wishlist Icon
+                        Positioned(
+                          top: 15,
+                          left:  190,
+                          child: GestureDetector(
+                            onTap: () async {
+                              // await addWishlist(product.id, size, product.name, product.quantity);
+                              await addtoWishlistHelper.addWishlist(product.id, size, product.name, product.quantity, context);
+                            },
+                            child: CircleAvatar(
+                              radius: 25,
+                              backgroundColor: Theme.of(context).primaryColor,
+                              child: Center(
+                                child: Icon(
+                                  prefs.getBool('${product.id}${product.name}${product.quantity}') ?? false
+                                  ? CupertinoIcons.heart_fill
+                                  : CupertinoIcons.heart, 
+                                  size: 20, 
+                                  color: prefs.getBool('${product.id}${product.name}${product.quantity}') ?? false
+                                  ? Colors.white
+                                  : Theme.of(context).scaffoldBackgroundColor,
+                                )
+                              ),
+                            ),
+                          )
+                        )
                       ],
                     ),
-                    // Add a Product to Cart 
-                    cartProvider.cartQuantities[product.id] != null
-                    ? Container(
-                        // height: ,
-                        // width: size.width * 0.12,
-                        margin: const EdgeInsets.only(top: 8),
-                        padding: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.grey.shade300)
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            GestureDetector(
-                              onTap: () async {
-                                print("ProductId: ${product.id}");
-                                print("ProductId: ${cartProvider.cartQuantities}");
-                                 if (cartProvider.cartQuantities[product.id]  != null && cartProvider.cartQuantities[product.id]  == 1) {
-                                  cartProvider.confirmDelete(product.id, size, index, context);
-                                } else {
-                                  cartProvider.incrementQuantity(productId: product.id);
-                                  List<Map<String, dynamic>> cartProductData = [];
-                                  cartProvider.cartQuantities.forEach((key, value) {
-                                    cartProductData.add({
-                                      "prdt_id": key,
-                                      "prdt_qty": value,
-                                      "prdt_total": value * product.finalPrice
-                                    });
-                                  },);
-                                  addtoWishlistHelper.clearCoupon();
-                                  await cartProvider.updateCart(size, context, cartProductData, false);
-                                }
-                              },
-                              child: Icon(
-                                cartProvider.cartQuantities[product.id] != null && cartProvider.cartQuantities[product.id] == 1 
-                                ? CupertinoIcons.delete
-                                : CupertinoIcons.minus, 
-                                size: 14, 
-                                color: cartProvider.cartQuantities[product.id] != null && cartProvider.cartQuantities[product.id] == 1
-                                ? Colors.red
-                                : null,
-                              )
+                    const SizedBox(height: 8,),
+                    SizedBox(
+                      width:  size.width * 0.7,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            width: size.width * 0.43,
+                            // width:widget.icon != null ? size.width * 0.31 
+                            //       : cartProvider.cartQuantities.isNotEmpty && cartProvider.cartQuantities[product.id] != null
+                            //         ? size.width * 0.5
+                            //         : size.width * 0.5,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                   cartProvider.cartQuantities[product.id] != null
+                                   ? AppTextWidget(
+                                      text: "${cartProvider.cartQuantities[product.id]}x ", fontSize: 16, fontWeight: FontWeight.w500, fontColor: Theme.of(context).primaryColor,)
+                                    : Container(),
+                                    Expanded(
+                                      child: AppTextWidget(
+                                        text: product.name, 
+                                        fontSize: 16, 
+                                        fontWeight: FontWeight.w500,
+                                        maxLines: 1, 
+                                        textOverflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        AppTextWidget(
+                                          text: "${product.quantity} - ", 
+                                          fontSize: 12, 
+                                          fontColor: Colors.grey,
+                                          fontWeight: FontWeight.w500
+                                        ),
+                                        Text(
+                                          '₹${product.finalPrice}/',
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500,
+                                            color:  Colors.grey
+                                          ),
+                                        ),
+                                        const SizedBox(width: 4,),
+                                        Text(
+                                          "₹${product.price}",
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.grey,
+                                            fontWeight: FontWeight.w400,
+                                            decoration: TextDecoration.lineThrough,
+                                            decorationColor: Colors.red.withOpacity(0.8),
+                                            decorationThickness: 2
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: 8,),
-                            AppTextWidget(
-                              text: cartProvider.cartQuantities[product.id] != null && cartProvider.cartQuantities[product.id]! > 99 
-                              ? "99+"
-                              : "${cartProvider.cartQuantities[product.id]}", fontSize: 13, 
-                              fontWeight: FontWeight.w500,
-                              fontColor: Colors.black45,
-                            ),
-                            const SizedBox(width: 8,),
-                            GestureDetector(
-                              onTap: () async {
-                                cartProvider.incrementQuantity(productId: product.id, isIncrement: true);
-                                List<Map<String, dynamic>> cartProductData = [];
-                                cartProvider.cartQuantities.forEach((key, value) {
-                                  cartProductData.add({
-                                    "prdt_id": key,
-                                    "prdt_qty": value,
-                                    "prdt_total": value * product.finalPrice
-                                  });
-                                },);
-                                addtoWishlistHelper.clearCoupon();
-                                await cartProvider.updateCart(size, context, cartProductData, false);
-                              },
-                              child: Icon(
-                                CupertinoIcons.plus, 
-                                size: 14,
-                                color: Theme.of(context).primaryColor,
+                          ),
+                          // Add a Product to Cart 
+                          cartProvider.cartQuantities[product.id] != null
+                          ? Container(
+                              padding: const EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: Colors.grey.shade300)
                               ),
-                            ),
-                          ],
-                        ),
-                      )
-                    : IconButton(
-                      onPressed: () async {
-                        if (widget.icon != null) {
-                          Navigator.push(context, SideTransistionRoute(
-                            screen: ProductSubScription(product: product,),
-                          ));
-                        }else{
-                          await cartProvider.addCart(product.id, size, context, product);
-                        }
-                      },
-                       icon: widget.icon != null 
-                          ? widget.icon! 
-                          : const Icon(CupertinoIcons.cart_badge_plus, size: 30,)
-                      )
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () async {
+                                      print("ProductId: ${product.id}");
+                                      print("ProductId: ${cartProvider.cartQuantities}");
+                                       if (cartProvider.cartQuantities[product.id]  != null && cartProvider.cartQuantities[product.id]  == 1) {
+                                        cartProvider.confirmDelete(product.id, size, index, context);
+                                      } else {
+                                        cartProvider.incrementQuantity(productId: product.id);
+                                        List<Map<String, dynamic>> cartProductData = [];
+                                        cartProvider.cartQuantities.forEach((key, value) {
+                                          cartProductData.add({
+                                            "prdt_id": key,
+                                            "prdt_qty": value,
+                                            "prdt_total": value * product.finalPrice
+                                          });
+                                        },);
+                                        addtoWishlistHelper.clearCoupon();
+                                        await cartProvider.updateCart(size, context, cartProductData, false);
+                                      }
+                                    },
+                                    child: Icon(
+                                      cartProvider.cartQuantities[product.id] != null && cartProvider.cartQuantities[product.id] == 1 
+                                      ? CupertinoIcons.delete
+                                      : CupertinoIcons.minus, 
+                                      size: 14, 
+                                      color: cartProvider.cartQuantities[product.id] != null && cartProvider.cartQuantities[product.id] == 1
+                                      ? Colors.red
+                                      : null,
+                                    )
+                                  ),
+                                  const SizedBox(width: 8,),
+                                  AppTextWidget(
+                                    text: cartProvider.cartQuantities[product.id] != null && cartProvider.cartQuantities[product.id]! > 99 
+                                    ? "99+"
+                                    : "${cartProvider.cartQuantities[product.id]}", fontSize: 13, 
+                                    fontWeight: FontWeight.w500,
+                                    fontColor: Colors.black45,
+                                  ),
+                                  const SizedBox(width: 8,),
+                                  GestureDetector(
+                                    onTap: () async {
+                                      cartProvider.incrementQuantity(productId: product.id, isIncrement: true);
+                                      List<Map<String, dynamic>> cartProductData = [];
+                                      cartProvider.cartQuantities.forEach((key, value) {
+                                        cartProductData.add({
+                                          "prdt_id": key,
+                                          "prdt_qty": value,
+                                          "prdt_total": value * product.finalPrice
+                                        });
+                                      },);
+                                      addtoWishlistHelper.clearCoupon();
+                                      await cartProvider.updateCart(size, context, cartProductData, false);
+                                    },
+                                    child: Icon(
+                                      CupertinoIcons.plus, 
+                                      size: 14,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : IconButton(
+                            // splashRadius:  widget.icon != null ? 0.1 : null,
+                            highlightColor: widget.icon != null ? Colors.transparent.withOpacity(0.0) : null,
+                            onPressed: () async {
+                              if (widget.icon != null) {
+                                Navigator.push(context, SideTransistionRoute(
+                                  screen: ProductSubScription(product: product,),
+                                ));
+                              }else{
+                                await cartProvider.addCart(product.id, size, context, product);
+                              }
+                            },
+                             icon: widget.icon != null 
+                                ? Container(
+                                  padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                    child: const AppTextWidget(
+                                      text: "Subscribe", fontSize: 12, 
+                                      fontWeight: FontWeight.w500,
+                                      fontColor: Colors.white,
+                                    )
+                                ) 
+                                : const Icon(CupertinoIcons.cart_badge_plus, size: 30,)
+                            )
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
+              const SizedBox(width: 12,),
+              widget.products.length - 1 == index
+                ? Padding(
+                  padding: EdgeInsets.only(bottom: size.height *0.1,),
+                  child: Tooltip(
+                    message: "View all",
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(40),
+                      splashColor: Colors.transparent.withOpacity(0.1),
+                      splashFactory: InkRipple.splashFactory,
+                      onTap: widget.onViewall,
+                      child: Container(
+                        height: 50,
+                        width: 50,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(40),
+                          // border: Border.all(
+                          //   // color: Colors.grey.withOpacity(0.1),
+                          // ),
+                          color: Colors.grey.withOpacity(0.2),
+                          // shape: BoxShape.circle
+                        ),
+                        child: const Center(
+                          child: Icon(
+                            CupertinoIcons.chevron_right,
+                            size: 24,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+                : Container()
             ],
           );
         },

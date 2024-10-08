@@ -162,8 +162,8 @@ class _AddressSelectionScreenState extends State<AddressSelectionScreen> {
                                       AppTextWidget(
                                         text: """${address[index].floorNo}, ${address[index].flatNo}, ${address[index].address}, ${address[index].landmark}, ${address[index].region}""", 
                                         fontSize: 14, 
-                                        fontWeight: FontWeight.w400,
-                                        fontColor: Colors.black54,
+                                        fontWeight: FontWeight.w300,
+                                        fontColor: Colors.grey,
                                       ),
                                     ],
                                   ),

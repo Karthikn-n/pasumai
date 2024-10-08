@@ -39,10 +39,10 @@ class _PreOrderProductScreen extends State<PreOrderProductsScreen>{
             // Delivery Address Heading
             const AppTextWidget(
               text: 'Delivery Address', 
-              fontSize: 16,
-              fontWeight: FontWeight.w600
+              fontSize: 18,
+              fontWeight: FontWeight.w500
               ),
-            const SizedBox(height: 20,),
+            const SizedBox(height: 12,),
             // Delivery Address
             Container(
               padding: const EdgeInsets.all(10),
@@ -61,19 +61,19 @@ class _PreOrderProductScreen extends State<PreOrderProductsScreen>{
                     '${provider.regionLocationsList.firstWhere((element) => element.regionId == int.parse(preOrderData.customerAddress.region),).locationData.firstWhere((element) => element.locationId == int.parse(preOrderData.customerAddress.location),).locationName}, '
                     '${preOrderData.customerAddress.pincode}, ', 
                     fontSize: 14, 
-                    fontWeight: FontWeight.w400
+                    fontWeight: FontWeight.w300
                   );
                 }
               ),
             ),
-            const SizedBox(height: 20,),
+            const SizedBox(height: 16,),
             // Subscription Detail
             const AppTextWidget(
               text: 'Subscription Detail', 
-              fontSize: 16,
-              fontWeight: FontWeight.w600
+              fontSize: 18,
+              fontWeight: FontWeight.w500
             ),
-            const SizedBox(height: 20,),
+            const SizedBox(height: 12,),
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
@@ -134,7 +134,7 @@ class _PreOrderProductScreen extends State<PreOrderProductsScreen>{
                 ],
               ),
             ),
-            const SizedBox(height: 20,),
+            const SizedBox(height: 16,),
             Center(
               child: Consumer<SubscriptionProvider>(
                 builder: (context, payProvider, child) {

@@ -178,7 +178,7 @@ class YourAddressWidget extends StatelessWidget {
                                 width: size.width * 0.7,
                                 child: AppTextWidget(
                                   text: addressList[index].location, 
-                                  fontSize: 15, 
+                                  fontSize: 16, 
                                   fontWeight: FontWeight.w500
                                 ),
                               ),
@@ -225,9 +225,9 @@ class YourAddressWidget extends StatelessWidget {
                             '${addressList[index].location}, ' 
                             '${addressList[index].region}, '
                             '${addressList[index].pincode}, ',
-                            fontSize: 14, 
+                            fontSize: 12, 
                             maxLines: 5,
-                            fontWeight: FontWeight.w400
+                            fontWeight: FontWeight.w300
                           ),
                           const SizedBox(height: 5,),
                         ],

@@ -112,19 +112,20 @@ class CartScreen extends StatelessWidget {
                                             // Product Final price
                                             AppTextWidget(
                                               text: "₹${cartProvider.cartItems[index].price.toString()}", 
-                                              fontSize: 15, 
-                                              fontWeight: FontWeight.w400,
+                                              fontSize: 14, 
+                                              fontWeight: FontWeight.w500,
+                                              fontColor: Theme.of(context).primaryColor,
                                             ),
                                             const SizedBox(width: 5,),
                                             // Product Price 
                                             Text(
                                               "₹${cartProvider.cartItems[index].listPrice.toString()}",
                                               style: const TextStyle(
-                                                fontSize: 13, 
-                                                fontWeight: FontWeight.w400,
+                                                fontSize: 14, 
+                                                fontWeight: FontWeight.w500,
                                                 decorationThickness: 2,
-                                                decorationColor: Colors.red,
-                                                color: Colors.black54,
+                                                decorationColor: Colors.grey,
+                                                color: Colors.grey,
                                                 decoration: TextDecoration.lineThrough,
                                               ),
                                             ),

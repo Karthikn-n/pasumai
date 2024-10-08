@@ -78,9 +78,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     const AppTextWidget(
                       text: 'Product detail',
                       fontSize: 18, 
-                      fontWeight: FontWeight.w600
+                      fontWeight: FontWeight.w500
                     ),
-                    const SizedBox(height: 20,),
+                    const SizedBox(height: 12,),
                     // Product Detail
                     Container(
                       height: widget.fromCart ?? true
@@ -100,7 +100,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Container(
-                                height: 62,
+                                height: 65,
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
                                   border: Border(
@@ -133,8 +133,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                 text: widget.fromCart ?? true 
                                                   ? "${provider.selectedProducts[index].quantity}x "
                                                   : "${cartProvider.cartQuantities[cartProvider.cartItems[index].id]}x ", 
-                                                fontSize: 15, 
-                                                fontWeight: FontWeight.w500,
+                                                fontSize: 16, 
+                                                fontWeight: FontWeight.w600,
                                                 fontColor: Theme.of(context).primaryColor,
                                               ),
                                               SizedBox(
@@ -143,7 +143,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                   text: widget.fromCart ?? true 
                                                   ? provider.selectedProducts[index].productName
                                                   : cartProvider.cartItems[index].name, 
-                                                  fontSize: 14, 
+                                                  fontSize: 16, 
                                                   maxLines: 1,
                                                   textOverflow: TextOverflow.ellipsis,
                                                   fontWeight: FontWeight.w600
@@ -164,15 +164,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                 text: widget.fromCart ?? true 
                                                 ? "${provider.selectedProducts[index].productQuantity} "
                                                 : "₹${int.parse(cartProvider.cartItems[index].price)} ", 
-                                                fontSize: 13, 
-                                                fontColor: Theme.of(context).primaryColor,
+                                                fontSize: 14, 
+                                                // fontColor: Theme.of(context).primaryColor,
                                                 fontWeight: FontWeight.w500
                                               ),
                                               AppTextWidget(
                                                 text: widget.fromCart ?? true 
                                                 ? " - ₹${provider.selectedProducts[index].finalPrice}/ "
                                                 : "", 
-                                                fontSize: 13, 
+                                                fontSize: 14, 
+                                                fontColor: Theme.of(context).primaryColor,
                                                 fontWeight: FontWeight.w500
                                               ),
                                               Text(
@@ -180,10 +181,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                 ? "₹${provider.selectedProducts[index].listPrice}"
                                                 : "₹${cartProvider.cartItems[index].listPrice}",
                                                 style: const TextStyle(
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Colors.black54,
-                                                  decorationColor: Colors.red,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.grey,
+                                                  decorationColor: Colors.grey,
                                                   decoration: TextDecoration.lineThrough
                                                 ),
                                               )
@@ -201,6 +202,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                           ? "₹${provider.selectedProducts[index].finalPrice * provider.selectedProducts[index].quantity}"
                                           : "₹${cartProvider.cartQuantities[cartProvider.cartItems[index].id]! * int.parse(cartProvider.cartItems[index].price)}", 
                                           fontSize: 14, 
+                                          fontColor: Theme.of(context).primaryColor,
                                           fontWeight: FontWeight.w500
                                         ),
                                         const SizedBox(height: 4,),
@@ -209,10 +211,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                           ? "₹${provider.selectedProducts[index].listPrice * provider.selectedProducts[index].quantity}"
                                           : "₹${cartProvider.cartQuantities[cartProvider.cartItems[index].id]! * int.parse(cartProvider.cartItems[index].listPrice)}",
                                           style: const TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400,
-                                            color: Colors.black54,
-                                            decorationColor: Colors.red,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.grey,
+                                            decorationColor: Colors.grey,
                                             decoration: TextDecoration.lineThrough
                                           ),
                                         )
@@ -229,14 +231,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         },
                       ),
                     ),
-                    const SizedBox(height: 20,),
+                    const SizedBox(height: 16,),
                     // Coupon Detail,
                     const AppTextWidget(
                       text: 'Coupon detail',
                       fontSize: 18, 
-                      fontWeight: FontWeight.w600
+                      fontWeight: FontWeight.w500
                     ),
-                    const SizedBox(height: 20,),
+                    const SizedBox(height: 12,),
                     // Coupon field
                     TextFields(
                       isObseure: false, 
@@ -277,15 +279,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         )
                       ),
                     ),
-                    const SizedBox(height: 20,),
+                    const SizedBox(height: 16,),
                     // Schedule Delivery detail
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const AppTextWidget(
-                          text: 'Schedule Delivery',
+                          text: 'Schedule delivery',
                           fontSize: 18, 
-                          fontWeight: FontWeight.w600
+                          fontWeight: FontWeight.w500
                         ),
                         isdeliveryDateSelected
                         ? const AppTextWidget(text: "* delivery date is required", fontSize: 13, fontWeight: FontWeight.w400, fontColor: Colors.red,)
@@ -294,7 +296,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           : Container()
                       ],
                     ),
-                    const SizedBox(height: 20,),
+                    const SizedBox(height: 12,),
                     // Expected Delivery date Detail
                     Container(
                       padding: const EdgeInsets.all(10),
@@ -308,7 +310,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const AppTextWidget(text: "Expected Delivery date: ", fontSize: 14, fontWeight: FontWeight.w500),
+                              const AppTextWidget(text: "Expected Delivery date: ", fontSize: 14, fontWeight: FontWeight.w400),
                               // Date Picker
                               GestureDetector(
                                 onTap: () async {
@@ -334,12 +336,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               )
                             ],
                           ),
-                          const SizedBox(height: 8,),
+                          const SizedBox(height: 5,),
                           // Expected Delivery time
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const AppTextWidget(text: "Expected Delivery time: ", fontSize: 14, fontWeight: FontWeight.w500),
+                              const AppTextWidget(text: "Expected Delivery time: ", fontSize: 14, fontWeight: FontWeight.w400),
                               // Delivery time drop down
                               SizedBox(
                                 height: 30,
@@ -375,7 +377,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         ],
                       )
                     ),
-                    const SizedBox(height: 20,),
+                    const SizedBox(height: 16,),
                     // Payment Option heading
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -383,7 +385,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         const AppTextWidget(
                           text: 'Payment option',
                           fontSize: 18, 
-                          fontWeight: FontWeight.w600
+                          fontWeight: FontWeight.w500
                         ),
                         isPaymentoptionSelected 
                          ? const AppTextWidget(
@@ -392,7 +394,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                          : Container()
                       ],
                     ),
-                    const SizedBox(height: 20,),
+                    const SizedBox(height: 12,),
                     // Payment options
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 0),
@@ -409,7 +411,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
                             return  RadioListTile(
-                              contentPadding: EdgeInsets.zero,
+                              contentPadding: const EdgeInsets.all(0),
+                              
                               shape: RoundedRectangleBorder(
                                 borderRadius: index == 0
                                 ? const BorderRadius.only(
@@ -424,7 +427,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               title: AppTextWidget(
                                 text: paymentOptions[index], 
                                 fontSize: 14, 
-                                fontWeight: FontWeight.w500
+                                fontWeight: FontWeight.w400
                               ),
                               value: paymentOptions[index], 
                               groupValue: selectedPaymentOption, 
@@ -443,14 +446,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20,),
+                    const SizedBox(height: 16,),
                     // Bil Details
                     const AppTextWidget(
                       text: 'Bill detail',
                       fontSize: 18, 
-                      fontWeight: FontWeight.w600
+                      fontWeight: FontWeight.w500
                     ),
-                    const SizedBox(height: 20,),
+                    const SizedBox(height: 12,),
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
@@ -474,7 +477,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     ),
                                   ),
                                   const SizedBox(width: 10,),
-                                  const AppTextWidget(text: "Total item", fontSize: 14, fontWeight: FontWeight.w500),
+                                  const AppTextWidget(text: "Total item", fontSize: 14, fontWeight: FontWeight.w400),
                                 ],
                               ),
                               AppTextWidget(
@@ -505,7 +508,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     ),
                                   ),
                                   const SizedBox(width: 10,),
-                                  const AppTextWidget(text: "Total bill", fontSize: 14, fontWeight: FontWeight.w500),
+                                  const AppTextWidget(text: "Total bill", fontSize: 14, fontWeight: FontWeight.w400),
                                 ],
                               ),
                               AppTextWidget(text: 
@@ -513,6 +516,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 ? "₹${provider.totalQuickOrderAmount.toString()}"
                                 : "₹${cartProvider.totalCartAmount}", 
                                 fontSize: 15, 
+                                fontColor: Theme.of(context).primaryColor,
                                 fontWeight: FontWeight.w700
                               ),
                             ],
@@ -538,7 +542,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       const AppTextWidget(
                                         text: "Discount amount", 
                                         fontColor: Color.fromARGB(255, 255, 191, 0),
-                                        fontSize: 14, fontWeight: FontWeight.w500),
+                                        fontSize: 14, fontWeight: FontWeight.w400),
                                     ],
                                   ),
                                   AppTextWidget(
@@ -568,21 +572,21 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 20,),
+                    const SizedBox(height: 16,),
                     // Address Detail
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const AppTextWidget(text: 'Address Detail', fontSize: 17, fontWeight: FontWeight.w500),
+                        const AppTextWidget(text: 'Address Detail', fontSize: 18, fontWeight: FontWeight.w500),
                         GestureDetector(
                           onTap: () {
                           Navigator.push(context, downToTop(screen: const AddressSelectionScreen()));
                         },
-                        child: AppTextWidget(text: "Change Address", fontSize: 13, fontWeight: FontWeight.w500, fontColor: Theme.of(context).primaryColor,)
+                        child: AppTextWidget(text: "Change Address", fontSize: 14, fontWeight: FontWeight.w500, fontColor: Theme.of(context).primaryColor,)
                         )
                       ],
                     ), 
-                    const SizedBox(height: 20,),
+                    const SizedBox(height: 12,),
                     // Selected Addredd
                     Container(
                       padding: const EdgeInsets.all(10),
@@ -614,7 +618,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                           const SizedBox(width: 5,),
                                           AppTextWidget(
                                             text: addressProvider.currentAddress!.location, 
-                                            fontSize: 15, 
+                                            fontSize: 14, 
                                             fontWeight: FontWeight.w500
                                           ),
                                         ],
@@ -632,9 +636,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               '${addressProvider.currentAddress!.landmark}, '
                               '${addressProvider.currentAddress!.location}, ' 
                               '${addressProvider.currentAddress!.region}, ',
-                              fontSize: 14, 
+                              fontSize: 12, 
                               maxLines: 5,
-                              fontWeight: FontWeight.w400
+                              fontWeight: FontWeight.w300
                             ),
                           ],
                         ),

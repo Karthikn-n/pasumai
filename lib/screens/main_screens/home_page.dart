@@ -80,14 +80,14 @@ class _HomePageState extends State<HomePage> {
             if(currentPress == null || now.difference(currentPress!) > const Duration(seconds: 2)){
               currentPress = now;
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  elevation: 1,
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-                  backgroundColor:  const Color(0xFF60B47B),
-                  content: const Text('Press back again to exit', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
-                  duration: const Duration(seconds: 1),
-                ),
+                snackBarMessage(
+                  context: context, 
+                  message: "Press again to exit", 
+                  backgroundColor: Theme.of(context).primaryColor, 
+                  sidePadding: size.width * 0.1, 
+                  bottomPadding: size.height * 0.03,
+                  duration: const Duration(milliseconds: 1500)
+                )
               );
               return;
             } else {
@@ -125,7 +125,8 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 )
-                : GestureDetector(
+                : InkWell(
+                    splashColor: Colors.transparent.withOpacity(0.1),
                     onTap: () async {
                       await addressProvider.getRegionLocation();
                       Navigator.push(context, downToTop(screen: const AddressSelectionScreen()));
@@ -141,7 +142,7 @@ class _HomePageState extends State<HomePage> {
                               width: size.width * 0.65,
                               child: AppTextWidget(
                                 text: '${addressProvider.currentAddress!.flatNo}, ${addressProvider.currentAddress!.floorNo}', 
-                                fontSize: 15, 
+                                fontSize: 16, 
                                 maxLines: 1,
                                 textOverflow: TextOverflow.ellipsis,
                                 fontWeight: FontWeight.w600,
@@ -173,7 +174,7 @@ class _HomePageState extends State<HomePage> {
                       return IconButton(
                         tooltip: "Wishlist",
                         style: ElevatedButton.styleFrom(
-                          overlayColor: Colors.grey.shade400
+                          // overlayColor: Colors.grey.shade400
                         ),
                         onPressed: () async {
                           await wishlistProductProvider.wishlistProductsAPI();
@@ -210,7 +211,8 @@ class _HomePageState extends State<HomePage> {
                       // banners
                       SliverAppBar(
                         expandedHeight: size.width > 600?  size.height * 0.4 : size.height * 0.180,
-                        floating: false,
+                        // floating: true,
+                        // snap: true,
                         automaticallyImplyLeading: false,
                         // pinned: true,
                         backgroundColor: Colors.white,
@@ -227,11 +229,11 @@ class _HomePageState extends State<HomePage> {
                                   String imageUrl = 'https://maduraimarket.in/public/image/banner/${provider.banners[index]}';
                                   // String imageUrl = 'http://192.168.1.5/pasumaibhoomi/public/image/banner/${provider.banners[index]}';
                                   return SizedBox(
-                                    width: size.width,
+                                    // width: size.width,
                                     height: size.height * 0.1,
                                     child: CachedNetworkImage(
                                       imageUrl: imageUrl,
-                                      fit: BoxFit.cover,
+                                      fit: BoxFit.fitWidth,
                                     )
                                   );
                                 },
@@ -243,7 +245,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               // Page indicator
                               Padding(
-                                padding: EdgeInsets.only(top: size.width > 600 ? size.height * 0.3 : size.height * 0.15),
+                                padding: EdgeInsets.only(top: size.height * 0.15),
                                 child: _buildDotIndicator(provider.banners),
                               ),
                             ],
@@ -251,40 +253,34 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       SliverToBoxAdapter(
-                        child: Container(
-                          margin: EdgeInsets.only(bottom: size.width > 600 ? size.height * 0.2 : size.height * 0.04),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const SizedBox(height: 20),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 20),
-                                child: TextFields(
-                                  hintText: 'Search Product', 
-                                  isObseure: false, 
-                                  textInputAction: TextInputAction.done,
-                                  readOnly: true,
-                                  suffixIcon: const Icon(CupertinoIcons.search),
-                                  onTap: (){
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen(focusNode: FocusNode(),)));
-                                  },
-                                ),
+                              TextFields(
+                                hintText: 'Search Product', 
+                                isObseure: false, 
+                                textInputAction: TextInputAction.done,
+                                readOnly: true,
+                                suffixIcon: const Icon(CupertinoIcons.search),
+                                onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen(focusNode: FocusNode(),)));
+                                },
                               ),
-                              const SizedBox(height: 12),
+                              const SizedBox(height: 20),
                               // Category Heading
-                              Padding(
-                                padding: const EdgeInsets.all(8),
-                                child: AppTextWidget(
-                                  text:  localeProvider.of(context).category,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                              AppTextWidget(
+                                text:  localeProvider.of(context).category,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
                               ),
-                              const SizedBox(height: 12,),
+                              const SizedBox(height: 15,),
                               // Category list
                               SizedBox(
                                 height: 130,
-                                width: size.width,
+                                // width: size.width,
                                 child: ListView.builder(
                                   itemCount: provider.categories.length,
                                   scrollDirection: Axis.horizontal,
@@ -292,7 +288,6 @@ class _HomePageState extends State<HomePage> {
                                     String imageUrl = 'https://maduraimarket.in/public/image/category/${provider.categories[index].categoryImage}';   
                                     // String imageUrl = 'http://192.168.1.5/pasumaibhoomi/public/image/category/${provider.categories[index].categoryImage}';   
                                     return Row(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         GestureDetector(
                                           onTap: () async {
@@ -302,11 +297,11 @@ class _HomePageState extends State<HomePage> {
                                               ));
                                             // });
                                           },
-                                          child: Container(
+                                          child: SizedBox(
                                             height: 130,
                                             width: 110,
-                                            margin: EdgeInsets.only(right: index == provider.categories.length -1 ? 10 : 0),
-                                            padding: const EdgeInsets.only(left: 10),
+                                            // margin: EdgeInsets.only(right: index == provider.categories.length -1 ? 10 : 0),
+                                            // padding: const EdgeInsets.only(left: 10),
                                             child: Column(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
@@ -322,65 +317,68 @@ class _HomePageState extends State<HomePage> {
                                                 ),
                                                 AppTextWidget(
                                                   text: provider.categories[index].categoryName, 
-                                                  fontSize: 13, 
+                                                  fontSize: 14, 
                                                   maxLines: 1,
-                                                  fontWeight: FontWeight.w600,
+                                                  fontWeight: FontWeight.w500,
                                                   textOverflow: TextOverflow.ellipsis,
                                                 )
                                               ],
                                             ),
                                           ),
                                         ),
+                                        const SizedBox(width: 10,)
                                       ],
                                     );
                                   }
                                 ),
                               ),
-                              const SizedBox(height: 12,),
+                              const SizedBox(height: 25,),
                               // Subscribe products Heading
-                              Padding(
-                                padding: const EdgeInsets.all(8),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    AppTextWidget(
-                                      text: localeProvider.of(context).subscriptionProducts, 
-                                      fontSize: 18, 
-                                      fontWeight: FontWeight.w600
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        provider.setIndex(3);
-                                        Navigator.of(context).push(PageRouteBuilder(
-                                          pageBuilder: (context, animation, secondaryAnimation) =>  const BottomBar(),
-                                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                            return child;
-                                          },
-                                          transitionDuration: Duration.zero,
-                                        ));
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            'View all',
-                                            style: TextStyle(
-                                              fontSize: size.width > 600 ?  size.height * 0.034: size.height * 0.018,
-                                              fontWeight: FontWeight.bold,
-                                              color: Theme.of(context).primaryColor,
-                                            ),
-                                          ),
-                                          Icon(
-                                            Icons.arrow_forward_ios_sharp,
-                                            color: Theme.of(context).primaryColor,
-                                            size:  size.width > 600 ?  size.height * 0.034: size.height * 0.014,
-                                          )
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  AppTextWidget(
+                                    text: localeProvider.of(context).subscriptionProducts, 
+                                    fontSize: 18, 
+                                    fontWeight: FontWeight.w500
+                                  ),
+                                  // View all Button
+                                  // InkWell(
+                                  //   splashColor: Colors.transparent.withOpacity(0.1),
+                                  //   borderRadius: BorderRadius.circular(8),
+                                  //   onTap: () {
+                                  //     provider.setIndex(3);
+                                  //     Navigator.of(context).push(PageRouteBuilder(
+                                  //       pageBuilder: (context, animation, secondaryAnimation) =>  const BottomBar(),
+                                  //       transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                  //         return child;
+                                  //       },
+                                  //       transitionDuration: Duration.zero,
+                                  //     ));
+                                  //   },
+                                  //   child: Row(
+                                  //     children: [
+                                  //       Text(
+                                  //         'View all',
+                                  //         style: TextStyle(
+                                  //           fontSize: 14,
+                                  //           fontWeight: FontWeight.w400,
+                                  //           color: Theme.of(context).primaryColor,
+                                  //         ),
+                                  //       ),
+                                  //       Icon(
+                                  //         Icons.arrow_forward_ios_sharp,
+                                  //         color: Theme.of(context).primaryColor,
+                                  //         size:  size.width > 600 ?  size.height * 0.034: size.height * 0.014,
+                                  //       )
+                                  //     ],
+                                  //   ),
+                                  // )
+                                
+                                ],
                               ),
-                              const SizedBox(height: 12,),
+                              // Subscription Products List
+                              const SizedBox(height: 15,),
                               Consumer<SubscriptionProvider>(
                                 builder: (context, value, child) {
                                   return  value.subscribeProducts.isEmpty
@@ -399,79 +397,91 @@ class _HomePageState extends State<HomePage> {
                                               color: Theme.of(context).primaryColor,
                                             ),
                                             child: const AppTextWidget(
-                                              text: "Subscribe", fontSize: 13, 
+                                              text: "Subscribe", fontSize: 12, 
                                               fontWeight: FontWeight.w500,
                                               fontColor: Colors.white,
                                             )
-                                          ),
+                                          ), 
+                                          // Move to Next View all Screen
+                                          onViewall: () { 
+                                            provider.setIndex(3);
+                                            Navigator.of(context).push(PageRouteBuilder(
+                                              pageBuilder: (context, animation, secondaryAnimation) =>  const BottomBar(),
+                                              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                                return child;
+                                              },
+                                              transitionDuration: Duration.zero,
+                                            ));
+                                          },
                                         );
                                       }
                                     } ,
                                   )
                                     // Subscribe product list
                                   : HomeScreenProducts(
-                                    products: value.subscribeProducts, 
-                                    icon: Container(
-                                      padding: const EdgeInsets.all(5),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        color: Theme.of(context).primaryColor,
-                                      ),
-                                      child: const AppTextWidget(
-                                        text: "Subscribe", fontSize: 13, 
-                                        fontWeight: FontWeight.w500,
-                                        fontColor: Colors.white,
-                                      )
-                                    ),
+                                    products: value.subscribeProducts.sublist(0, 5), 
+                                    icon: Container(), 
+                                    onViewall: () { 
+                                      provider.setIndex(3);
+                                      Navigator.of(context).push(PageRouteBuilder(
+                                        pageBuilder: (context, animation, secondaryAnimation) =>  const BottomBar(),
+                                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                          return child;
+                                        },
+                                        transitionDuration: Duration.zero,
+                                      ));
+                                    },
                                   );
                                 },
                               ),
-                              const SizedBox(height: 12,),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    AppTextWidget(
-                                      text: localeProvider.of(context).featuredProducts, 
-                                      fontSize: 18, 
-                                      fontWeight: FontWeight.w600
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        // Move to Featured List Page
-                                        Navigator.of(context).push(MaterialPageRoute(
-                                          builder: (context) => const CategoryProductsListWidget(categoryName: "Featured Products", isFeaturedProduct: true,)
-                                        ));
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            'View all',
-                                            style: TextStyle(
-                                              color: Theme.of(context).primaryColor,
-                                              fontSize: size.width > 600 ?  size.height * 0.034: size.height * 0.018,
-                                              fontWeight: FontWeight.bold
-                                            ),
-                                          ),
-                                          // SizedBox(width: size.width * 0.003,),
-                                          Icon(
-                                            Icons.arrow_forward_ios_sharp,
-                                            color: Theme.of(context).primaryColor,
-                                            size:  size.width > 600 ?  size.height * 0.034: size.height * 0.014,
-                                          )
-                                        ],
-                                      ),
-                                  
-                                    )
-                                  ],
-                                ),
+                              const SizedBox(height: 20,),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  AppTextWidget(
+                                    text: localeProvider.of(context).featuredProducts, 
+                                    fontSize: 18, 
+                                    fontWeight: FontWeight.w600
+                                  ),
+                                  // GestureDetector(
+                                  //   onTap: () {
+                                  //     // Move to Featured List Page
+                                  //     Navigator.of(context).push(MaterialPageRoute(
+                                  //       builder: (context) => const CategoryProductsListWidget(categoryName: "Featured Products", isFeaturedProduct: true,)
+                                  //     ));
+                                  //   },
+                                  //   child: Row(
+                                  //     children: [
+                                  //       Text(
+                                  //         'View all',
+                                  //         style: TextStyle(
+                                  //           color: Theme.of(context).primaryColor,
+                                  //           fontSize: size.width > 600 ?  size.height * 0.034: size.height * 0.018,
+                                  //           fontWeight: FontWeight.bold
+                                  //         ),
+                                  //       ),
+                                  //       // SizedBox(width: size.width * 0.003,),
+                                  //       Icon(
+                                  //         Icons.arrow_forward_ios_sharp,
+                                  //         color: Theme.of(context).primaryColor,
+                                  //         size:  size.width > 600 ?  size.height * 0.034: size.height * 0.014,
+                                  //       )
+                                  //     ],
+                                  //   ),
+                                
+                                  // )
+                                
+                                ],
                               ),
                               const SizedBox(height: 12,),
                               // Featured Products list
-                              Container(
-                                margin: EdgeInsets.only(left: size.width * 0.004),
-                                child: HomeScreenProducts(products: provider.featuredproductData)
+                              HomeScreenProducts(
+                                products: provider.featuredproductData.sublist(0, 5), 
+                                onViewall: () {  
+                                   Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => const CategoryProductsListWidget(categoryName: "Featured Products", isFeaturedProduct: true,)
+                                  ));
+                                },
                               ),
                               const SizedBox(height: 12,),
                               Padding(
@@ -489,42 +499,48 @@ class _HomePageState extends State<HomePage> {
                                         fontWeight: FontWeight.w600
                                       ),
                                     ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        print("Best Seller: ${provider.bestSellerProducts.length}");
-                                         Navigator.of(context).push(MaterialPageRoute(
-                                          builder: (context) => const CategoryProductsListWidget(categoryName: "Best Seller", isBestSellerProduct: true,)
-                                        ));
-                                      },
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            'View all',
-                                            style: TextStyle(
-                                              fontSize: 13,
-                                              color: Theme.of(context).primaryColor,
-                                              fontWeight: FontWeight.bold
-                                            ),
-                                          ),
-                                          Icon(
-                                            Icons.arrow_forward_ios_sharp,
-                                            color: Theme.of(context).primaryColor,
-                                            size:  size.width > 600 ?  size.height * 0.034: size.height * 0.014,
-                                          )
-                                        ],
-                                      ),
-                                    )
+                                    // View all Button
+                                    // GestureDetector(
+                                    //   onTap: () {
+                                    //     print("Best Seller: ${provider.bestSellerProducts.length}");
+                                    //      Navigator.of(context).push(MaterialPageRoute(
+                                    //       builder: (context) => const CategoryProductsListWidget(categoryName: "Best Seller", isBestSellerProduct: true,)
+                                    //     ));
+                                    //   },
+                                    //   child: Row(
+                                    //     mainAxisAlignment: MainAxisAlignment.center,
+                                    //     children: [
+                                    //       Text(
+                                    //         'View all',
+                                    //         style: TextStyle(
+                                    //           fontSize: 14,
+                                    //           color: Theme.of(context).primaryColor,
+                                    //           fontWeight: FontWeight.w500
+                                    //         ),
+                                    //       ),
+                                    //       Icon(
+                                    //         Icons.arrow_forward_ios_sharp,
+                                    //         color: Theme.of(context).primaryColor,
+                                    //         size:  size.width > 600 ?  size.height * 0.034: size.height * 0.014,
+                                    //       )
+                                    //     ],
+                                    //   ),
+                                    // )
+                                  
                                   ],
                                 ),
                               ),
                               const SizedBox(height: 12,),
                               // Best Seller Products List
-                              Container(
-                                margin: EdgeInsets.only(left: size.width * 0.004),
-                                child: HomeScreenProducts(products: provider.bestSellerProducts)
+                              HomeScreenProducts(
+                                products: provider.bestSellerProducts, 
+                                onViewall: () { 
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => const CategoryProductsListWidget(categoryName: "Best Seller", isBestSellerProduct: true,)
+                                  ));
+                                },
                               ),
-                              const SizedBox(height: 20,),
+                              const SizedBox(height: 60,),
                               
                             ],
                           ),

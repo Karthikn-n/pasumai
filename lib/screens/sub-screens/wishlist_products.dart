@@ -26,7 +26,7 @@ class WishlistProducts extends StatelessWidget {
           builder: (context, wishlistProvider, cartProvider, child) {
             return wishlistProvider.wishlistProducts.isEmpty
             ? const Center(
-              child: AppTextWidget(text: "No Products", fontSize: 15, fontWeight: FontWeight.w500),
+              child: AppTextWidget(text: "No Products", fontSize: 16, fontWeight: FontWeight.w500),
             )
             : ListView.builder(
               itemCount: wishlistProvider.wishlistProducts.length,
@@ -68,39 +68,41 @@ class WishlistProducts extends StatelessWidget {
                               children: [
                                 AppTextWidget(
                                   text: product.title, 
-                                  fontSize: 14, 
+                                  fontSize: 16, 
                                   maxLines: 2,
                                   textOverflow: TextOverflow.ellipsis,
-                                  fontWeight: FontWeight.w500
+                                  fontWeight: FontWeight.w600
+                                ),
+                                const SizedBox(height: 5,),
+                                AppTextWidget(
+                                  text: product.description.replaceAll("<p>", ""), 
+                                  fontSize: 12, 
+                                  maxLines: 2,
+                                  fontColor: Colors.grey,
+                                  textOverflow: TextOverflow.ellipsis,
+                                  fontWeight: FontWeight.w300
                                 ),
                                 const SizedBox(height: 5,),
                                 Row(
                                   children: [
                                     AppTextWidget(
-                                      text: '₹${product.finalPrice}', 
-                                      fontSize: 16, 
-                                      fontWeight: FontWeight.w500
+                                      text: '₹${product.finalPrice} /', 
+                                      fontSize: 14, 
+                                      fontWeight: FontWeight.w500,
+                                      fontColor: Theme.of(context).primaryColor,
                                     ),
                                     const SizedBox(width: 5,),
                                     Text(
                                       "₹${product.price}",
                                       style: const TextStyle(
-                                        fontSize: 13,
-                                        color: Colors.black54,
-                                        fontWeight: FontWeight.w400,
+                                        fontSize: 14,
+                                        color: Colors.grey,
+                                        fontWeight: FontWeight.w500,
                                         decoration: TextDecoration.lineThrough,
-                                        decorationColor: Colors.red
+                                        decorationColor: Colors.grey
                                       ),
                                     )
                                   ],
-                                ),
-                                const SizedBox(height: 5,),
-                                AppTextWidget(
-                                  text: product.description.replaceAll("<p>", ""), 
-                                  fontSize: 13, 
-                                  maxLines: 2,
-                                  textOverflow: TextOverflow.ellipsis,
-                                  fontWeight: FontWeight.w400
                                 ),
                               ],
                             ),

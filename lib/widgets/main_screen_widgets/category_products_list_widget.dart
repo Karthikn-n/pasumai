@@ -150,7 +150,7 @@ class _CategoryProductsListWidgetState extends State<CategoryProductsListWidget>
                                           style: const TextStyle(
                                             fontSize: 16, 
                                             color: Colors.black,
-                                            fontWeight: FontWeight.w500
+                                            fontWeight: FontWeight.w600
                                           )
                                         )
                                       ]
@@ -166,7 +166,7 @@ class _CategoryProductsListWidgetState extends State<CategoryProductsListWidget>
                                 maxLines: 2,
                                 fontColor: Colors.black54,
                                 textOverflow: TextOverflow.ellipsis,
-                                fontWeight: FontWeight.w400
+                                fontWeight: FontWeight.w300
                               ),
                               const SizedBox(height: 5,),
                               Row(
@@ -175,19 +175,20 @@ class _CategoryProductsListWidgetState extends State<CategoryProductsListWidget>
                                   // Product Final price
                                   AppTextWidget(
                                     text: "₹${products[index].finalPrice.toString()}", 
-                                    fontSize: 15, 
-                                    fontWeight: FontWeight.w400,
+                                    fontSize: 14, 
+                                    fontColor: Theme.of(context).primaryColor,
+                                    fontWeight: FontWeight.w500,
                                   ),
                                   const SizedBox(width: 5,),
                                   // Product Price 
                                   Text(
                                     "₹${products[index].price.toString()}",
                                     style: const TextStyle(
-                                      fontSize: 13, 
+                                      fontSize: 14, 
                                       fontWeight: FontWeight.w400,
                                       decorationThickness: 2,
-                                      decorationColor: Colors.red,
-                                      color: Colors.black54,
+                                      decorationColor: Colors.grey,
+                                      color: Colors.grey,
                                       decoration: TextDecoration.lineThrough,
                                     ),
                                   ),

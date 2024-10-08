@@ -83,16 +83,16 @@ class _QuickOrderScreenState extends State<QuickOrderScreen> {
   Widget quickorderWidget(Size size, BuildContext context){
     return Consumer2<ApiProvider, AddressProvider>(
       builder: (context, productProvider, addressProvider, child) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              // List Of Products
-              CupertinoScrollbar(
-                controller: _controller,
-                radius: const Radius.circular(10.0),
-                child: ListView.builder(
+        return CupertinoScrollbar(
+          controller: _controller,
+          radius: const Radius.circular(10.0),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                // List Of Products
+                ListView.builder(
                   controller: _controller,
                   itemCount: productProvider.quickOrderProductsList.length,
                   itemBuilder: (context, index) {
@@ -152,7 +152,7 @@ class _QuickOrderScreenState extends State<QuickOrderScreen> {
                                             text: "${productProvider.quickOrderProductsList[index].name}/${productProvider.quickOrderProductsList[index].quantity}",
                                             style: const TextStyle(
                                               fontSize: 16,
-                                              fontWeight: FontWeight.w500,
+                                              fontWeight: FontWeight.w600,
                                               color: Colors.black
                                             )
                                           )
@@ -166,7 +166,7 @@ class _QuickOrderScreenState extends State<QuickOrderScreen> {
                                       fontSize: 16, 
                                       maxLines: 2,
                                       textOverflow: TextOverflow.ellipsis,
-                                      fontWeight: FontWeight.w500
+                                      fontWeight: FontWeight.w600
                                     ),
                                     const SizedBox(height: 5,),
                                     // Product Description
@@ -176,7 +176,7 @@ class _QuickOrderScreenState extends State<QuickOrderScreen> {
                                       maxLines: 2,
                                       fontColor: Colors.black54,
                                       textOverflow: TextOverflow.ellipsis,
-                                      fontWeight: FontWeight.w400
+                                      fontWeight: FontWeight.w300
                                     ),
                                     const SizedBox(height: 5,),
                                     Row(
@@ -185,19 +185,20 @@ class _QuickOrderScreenState extends State<QuickOrderScreen> {
                                         // Product Final price
                                         AppTextWidget(
                                           text: "₹${productProvider.quickOrderProductsList[index].finalPrice.toString()}", 
-                                          fontSize: 15, 
-                                          fontWeight: FontWeight.w400,
+                                          fontSize: 14, 
+                                          fontColor: Theme.of(context).primaryColor,
+                                          fontWeight: FontWeight.w500,
                                         ),
                                         const SizedBox(width: 5,),
                                         // Product Price 
                                         Text(
                                           "₹${productProvider.quickOrderProductsList[index].price.toString()}",
                                           style: const TextStyle(
-                                            fontSize: 13, 
+                                            fontSize: 14, 
                                             fontWeight: FontWeight.w400,
                                             decorationThickness: 2,
-                                            decorationColor: Colors.red,
-                                            color: Colors.black54,
+                                            decorationColor: Colors.grey,
+                                            color: Colors.grey,
                                             decoration: TextDecoration.lineThrough,
                                           ),
                                         ),
@@ -337,81 +338,81 @@ class _QuickOrderScreenState extends State<QuickOrderScreen> {
                     );
                   },
                 ),
-              ),
-              Positioned(
-                top: size.height * 0.74,
-                child: productProvider.totalQuickOrderProduct >= 1 
-                ? GestureDetector(
-                  onTap: () async {
-                    if (addressProvider.addresses.isEmpty) {
-                      addressProvider.addnewAddress(context, size);
-                    }else{
-                      List<Map<String, dynamic>> productDataList = [];
-                      print("Quantites: ${productProvider.quickOrderQuantites}");
-                      for (int i = 0; i < productProvider.quickOrderProductsList.length; i++) {
-                        if (productProvider.quickOrderQuantites[productProvider.quickOrderProductsList[i].id] != null &&  productProvider.quickOrderQuantites[productProvider.quickOrderProductsList[i].id]! > 0) {
-                          productProvider.quickOrderQuantites.forEach((key, value) {
-                            if (value > 0) {
-                               productDataList.add({
-                                'prdt_id': key,
-                                'prdt_qty': value,
-                                'prdt_total': value * productProvider.quickOrderProductsList.firstWhere((element) => element.id == key,).finalPrice,
-                              });
-                            }
-                          },);
+                Positioned(
+                  top: size.height * 0.74,
+                  child: productProvider.totalQuickOrderProduct >= 1 
+                  ? GestureDetector(
+                    onTap: () async {
+                      if (addressProvider.addresses.isEmpty) {
+                        addressProvider.addnewAddress(context, size);
+                      }else{
+                        List<Map<String, dynamic>> productDataList = [];
+                        print("Quantites: ${productProvider.quickOrderQuantites}");
+                        for (int i = 0; i < productProvider.quickOrderProductsList.length; i++) {
+                          if (productProvider.quickOrderQuantites[productProvider.quickOrderProductsList[i].id] != null &&  productProvider.quickOrderQuantites[productProvider.quickOrderProductsList[i].id]! > 0) {
+                            productProvider.quickOrderQuantites.forEach((key, value) {
+                              if (value > 0) {
+                                 productDataList.add({
+                                  'prdt_id': key,
+                                  'prdt_qty': value,
+                                  'prdt_total': value * productProvider.quickOrderProductsList.firstWhere((element) => element.id == key,).finalPrice,
+                                });
+                              }
+                            },);
+                          }
                         }
+                        print("Quick order product Data: $productDataList");
+                        await productProvider.addQuickorder(context, size, productDataList).then((value) {
+                          productProvider.clearCoupon();
+                        },);
                       }
-                      print("Quick order product Data: $productDataList");
-                      await productProvider.addQuickorder(context, size, productDataList).then((value) {
-                        productProvider.clearCoupon();
-                      },);
-                    }
-                  },
-                  child: Container(
-                    height: 50,
-                    width: size.width * 0.94,
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          spreadRadius: 1.0,
-                          blurRadius: 1.0,
-                          offset: const Offset(0, 1),
-                          color: Colors.transparent.withOpacity(0.2)
-                        ),
-                      ],
-                      borderRadius: BorderRadius.circular(10),
-                      color: Theme.of(context).primaryColor
+                    },
+                    child: Container(
+                      height: 50,
+                      width: size.width * 0.94,
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            spreadRadius: 1.0,
+                            blurRadius: 1.0,
+                            offset: const Offset(0, 1),
+                            color: Colors.transparent.withOpacity(0.2)
+                          ),
+                        ],
+                        borderRadius: BorderRadius.circular(10),
+                        color: Theme.of(context).primaryColor
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          AppTextWidget(
+                            text: productProvider.totalQuickOrderProduct > 1
+                              ? "${productProvider.totalQuickOrderProduct} items | ₹${productProvider.totalQuickOrderAmount}"
+                              : "${productProvider.totalQuickOrderProduct} item | ₹${productProvider.totalQuickOrderAmount}",
+                            fontSize: 16, 
+                            fontWeight: FontWeight.w600,
+                            fontColor: Colors.white,
+                          ),
+                          const Row(
+                            children: [
+                              AppTextWidget(
+                                text: "Checkout ", 
+                                fontSize: 15, 
+                                fontWeight: FontWeight.w600, 
+                                fontColor: Colors.white,
+                              ),
+                              Icon(CupertinoIcons.chevron_right, size: 20, color: Colors.white,)
+                            ],
+                          )
+                        ],
+                      ),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        AppTextWidget(
-                          text: productProvider.totalQuickOrderProduct > 1
-                            ? "${productProvider.totalQuickOrderProduct} items | ₹${productProvider.totalQuickOrderAmount}"
-                            : "${productProvider.totalQuickOrderProduct} item | ₹${productProvider.totalQuickOrderAmount}",
-                          fontSize: 16, 
-                          fontWeight: FontWeight.w600,
-                          fontColor: Colors.white,
-                        ),
-                        const Row(
-                          children: [
-                            AppTextWidget(
-                              text: "Checkout ", 
-                              fontSize: 15, 
-                              fontWeight: FontWeight.w600, 
-                              fontColor: Colors.white,
-                            ),
-                            Icon(CupertinoIcons.chevron_right, size: 20, color: Colors.white,)
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
+                  )
+                  : Container()
                 )
-                : Container()
-              )
-            ],
+              ],
+            ),
           ),
         );
                   

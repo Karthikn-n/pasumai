@@ -77,7 +77,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                         children: [
                           AppTextWidget(
                             text: "${widget.product.name}/", 
-                            fontSize: 18, 
+                            fontSize: 16, 
                             fontWeight: FontWeight.w600
                           ),
                           AppTextWidget(
@@ -92,17 +92,17 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                       children: [
                         AppTextWidget(
                           text: '₹${widget.product.finalPrice} ', 
-                          fontSize: 16, 
+                          fontSize: 14, 
                           fontColor: Theme.of(context).primaryColor,
                           fontWeight: FontWeight.w500
                         ),
                         Text(
                           '₹${widget.product.price}', 
                           style: const TextStyle(
-                            fontSize: 12,
+                            fontSize: 14,
                             decoration: TextDecoration.lineThrough,
-                            color: Colors.black54,
-                            decorationColor: Colors.red, 
+                            color: Colors.grey,
+                            decorationColor: Colors.grey, 
                             fontWeight: FontWeight.w500
                           ),
                         ),
@@ -113,8 +113,8 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                 const SizedBox(height: 5,),
                 AppTextWidget(
                   text: widget.product.description.replaceAll("<p>", "").replaceAll("</p>", ""), 
-                  fontSize: 14, 
-                  fontWeight: FontWeight.w400
+                  fontSize: 12, 
+                  fontWeight: FontWeight.w300
                 ),
               ],
             ),
@@ -122,7 +122,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
             dateNeeded 
             ? const AppTextWidget(
               text: '* Subscription start date is required', 
-              fontSize: 13, 
+              fontSize: 12, 
               fontWeight: FontWeight.w400,
               fontColor: Colors.red,
             )
@@ -135,24 +135,24 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                title: subscriptionDate != null
                ? Row(
                  crossAxisAlignment: CrossAxisAlignment.center,
-                 mainAxisAlignment: MainAxisAlignment.center,
+                //  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                  children: [
                    const AppTextWidget(
                      text: 'Subscription start from: ', 
                      fontSize: 14, 
-                     fontWeight: FontWeight.w400
+                     fontWeight: FontWeight.w500
                    ),
                    AppTextWidget(
                      text: DateFormat('dd MMM yyyy').format(subscriptionDate!).toString(), 
                      fontSize: 14, 
-                     fontWeight: FontWeight.w600,
+                     fontWeight: FontWeight.w500,
                      fontColor: Theme.of(context).primaryColor,
                    )
                  ],
                )
                : const AppTextWidget(
                    text: 'When do you want to start subscription?', 
-                   fontSize: 13, 
+                   fontSize: 12, 
                    fontWeight: FontWeight.w400
                  ),
                onTap: () async {
@@ -189,7 +189,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                         side: BorderSide(
-                          color: isSelected ? Theme.of(context).primaryColor : Colors.black
+                          color: isSelected ? Theme.of(context).primaryColor : Colors.grey
                         )
                       ),
                       backgroundColor: isSelected? Theme.of(context).primaryColor : Colors.transparent.withOpacity(0.0),
@@ -213,7 +213,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                       text: buttonNames[index], 
                       fontSize: 14, 
                       fontColor: isSelected? Colors.white : Colors.black,
-                      fontWeight: FontWeight.w400
+                      fontWeight: FontWeight.w500
                     )
                   ),
                 );
@@ -247,8 +247,8 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                   const Text(
                     'Quantity',
                     style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w400,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                   const SizedBox(height: 20,),
@@ -271,7 +271,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                         },
                       ),
                       // const SizedBox(width: 10,),
-                      const AppTextWidget(text: "Morning", fontSize: 14, fontWeight: FontWeight.w400),
+                      const AppTextWidget(text: "Morning", fontSize: 14, fontWeight: FontWeight.w500),
                       const SizedBox(width: 10,),
                       // Quantity counter for Morning
                       GestureDetector(
@@ -347,7 +347,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                           });
                         },
                       ),
-                      const AppTextWidget(text: "Evening", fontSize: 14, fontWeight: FontWeight.w400),
+                      const AppTextWidget(text: "Evening", fontSize: 14, fontWeight: FontWeight.w500),
                       const SizedBox(width: 10,),
                       // Quantity counter for Evening
                       GestureDetector(
@@ -377,7 +377,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                         child: Center(
                           child: AppTextWidget(
                             text: "$eveningQuantity", 
-                            fontSize: 15, 
+                            fontSize: 14, 
                             fontWeight: FontWeight.w500
                           ),
                         ),
@@ -481,10 +481,10 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                   child: Column(
                     children: [
                       const SizedBox(height: 20,),
-                      const AppTextWidget(text: "Qunatity", fontSize: 24, fontWeight: FontWeight.w400),
+                      const AppTextWidget(text: "Qunatity", fontSize: 18, fontWeight: FontWeight.w500),
                       const SizedBox(height: 20,),
                       Container(
-                        margin: const EdgeInsets.only(left: 40),
+                        margin: const EdgeInsets.only(left: 35),
                         child: Column(
                           // crossAxisAlignment: CrossAxisAlignment.start,
                           children: List.generate(
@@ -494,8 +494,8 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                               children: [
                                 // Day name
                                 Container(
-                                  margin: const EdgeInsets.only(left: 10),
-                                  child: AppTextWidget(text: weekdays[index], fontSize: 15, fontWeight: FontWeight.w500)
+                                  margin: const EdgeInsets.only(left: 8),
+                                  child: AppTextWidget(text: weekdays[index], fontSize: 16, fontWeight: FontWeight.w500)
                                 ),
                                 const SizedBox(height: 10,),
                                 // Checkbox for Morning
@@ -517,7 +517,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                                       },
                                     ),
                                     SizedBox(
-                                      width: size.width * 0.15,
+                                      width: size.width * 0.17,
                                       child: const AppTextWidget(text: "Morning", fontSize: 14, fontWeight: FontWeight.w400)
                                     ),
                                     // Quantity counter for Morning
@@ -590,7 +590,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                                       }
                                     ),
                                     SizedBox(
-                                      width: size.width * 0.15,
+                                      width: size.width * 0.17,
                                       child: const AppTextWidget(text: "Evening", fontSize: 14, fontWeight: FontWeight.w400)
                                     ),
                                     const SizedBox(width: 25,),
@@ -749,7 +749,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                   child: Column(
                     children: [
                       const SizedBox(height: 20,),
-                      const AppTextWidget(text: "Quantity", fontSize: 24, fontWeight: FontWeight.w400),
+                      const AppTextWidget(text: "Quantity", fontSize: 18, fontWeight: FontWeight.w500),
                       const SizedBox(height: 20,),
                       Container(
                         margin: const EdgeInsets.only(left: 40),
@@ -762,7 +762,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                                 // Day name
                                 Container(
                                   margin: const EdgeInsets.only(left: 10),
-                                  child: AppTextWidget(text: weekdays[index], fontSize: 15, fontWeight: FontWeight.w500)
+                                  child: AppTextWidget(text: weekdays[index], fontSize: 16, fontWeight: FontWeight.w500)
                                 ),
                                 const SizedBox(height: 10,),
                                 // Checkbox for Morning
@@ -784,7 +784,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                                       },
                                     ),
                                     SizedBox(
-                                      width: size.width * 0.15,
+                                      width: size.width * 0.17,
                                       child: const AppTextWidget(text: "Morning", fontSize: 14, fontWeight: FontWeight.w400)
                                     ),
                                     // Quantity counter for Morning
@@ -814,7 +814,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                                       height: 30,
                                       width: 40,
                                       child: Center(
-                                        child: AppTextWidget(text: "${quantities[index][0]}", fontSize: 14, fontWeight: FontWeight.w400),
+                                        child: AppTextWidget(text: "${quantities[index][0]}", fontSize: 14, fontWeight: FontWeight.w500),
                                       ),
                                     ),
                                     const SizedBox(width: 10),
@@ -858,7 +858,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                                       },
                                     ),
                                      SizedBox(
-                                      width: size.width * 0.15,
+                                      width: size.width * 0.17,
                                       child: const AppTextWidget(text: "Evening", fontSize: 14, fontWeight: FontWeight.w400)
                                     ),
                                     const SizedBox(width: 25,),

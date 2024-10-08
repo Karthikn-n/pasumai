@@ -63,7 +63,7 @@ class SubscriptionPageWidget extends StatelessWidget {
                                   fontSize: 16, 
                                   maxLines: 2,
                                   textOverflow: TextOverflow.ellipsis,
-                                  fontWeight: FontWeight.w500
+                                  fontWeight: FontWeight.w600
                                 ),
                                 const SizedBox(height: 5,),
                                 // Product Description
@@ -71,9 +71,9 @@ class SubscriptionPageWidget extends StatelessWidget {
                                   text: provider.subscribeProducts[index].description.replaceAll("<p>", ""), 
                                   fontSize: 12, 
                                   maxLines: 2,
-                                  fontColor: Colors.black54,
+                                  fontColor: Colors.grey,
                                   textOverflow: TextOverflow.ellipsis,
-                                  fontWeight: FontWeight.w400
+                                  fontWeight: FontWeight.w300
                                 ),
                                 const SizedBox(height: 5,),
                                 Row(
@@ -82,19 +82,20 @@ class SubscriptionPageWidget extends StatelessWidget {
                                     // Product Final price
                                     AppTextWidget(
                                       text: "₹${provider.subscribeProducts[index].finalPrice.toString()}", 
-                                      fontSize: 15, 
-                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14, 
+                                      fontColor: Theme.of(context).primaryColor,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                     const SizedBox(width: 5,),
                                     // Product Price 
                                     Text(
                                       "₹${provider.subscribeProducts[index].price.toString()}",
                                       style: const TextStyle(
-                                        fontSize: 13, 
-                                        fontWeight: FontWeight.w400,
+                                        fontSize: 14, 
+                                        fontWeight: FontWeight.w500,
                                         decorationThickness: 2,
-                                        decorationColor: Colors.red,
-                                        color: Colors.black54,
+                                        decorationColor: Colors.grey,
+                                        color: Colors.grey,
                                         decoration: TextDecoration.lineThrough,
                                       ),
                                     ),

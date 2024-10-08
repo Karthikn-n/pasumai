@@ -23,10 +23,10 @@ class SubscriptionDetailWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          width: width ?? size.width * 0.42,
+          width: width ?? size.width * 0.44,
           child: AppTextWidget(
             text: title, 
-            fontSize: 15, 
+            fontSize: 14, 
             fontWeight: FontWeight.w500
           ),
         ),

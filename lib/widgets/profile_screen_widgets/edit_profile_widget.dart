@@ -23,6 +23,7 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
   TextEditingController emailController = TextEditingController();
   TextEditingController mobileController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool isLoading = false;
   @override
   void initState() {
     super.initState();
@@ -65,7 +66,7 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
                         isObseure: false, 
                         // borderRadius: 8,
                         textInputAction: TextInputAction.next,
-                        prefixIcon: const Icon(CupertinoIcons.person_fill),
+                        prefixIcon: const Icon(CupertinoIcons.person, color: Colors.grey,),
                         controller: firstNameController,
                         validator: (value) {
                           if (value!.isEmpty) {
@@ -79,7 +80,7 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
                         hintText: 'Enter your last name',
                         isObseure: false, 
                         textInputAction: TextInputAction.next,
-                        prefixIcon: const Icon(CupertinoIcons.person_fill),
+                        prefixIcon: const Icon(CupertinoIcons.person, color: Colors.grey),
                         controller: lastNameController,
                           validator: (value) {
                             if (value!.isEmpty) {
@@ -93,7 +94,7 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
                         hintText: 'Enter your email address',
                         isObseure: false, 
                         textInputAction: TextInputAction.next,
-                        prefixIcon: const Icon(CupertinoIcons.mail_solid),
+                        prefixIcon: const Icon(CupertinoIcons.mail, color: Colors.grey,),
                         controller: emailController,
                         validator: (value) {
                           if (value!.isEmpty) {
@@ -107,7 +108,7 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
                         hintText: 'Enter your Mobile number',
                         isObseure: false, 
                         textInputAction: TextInputAction.done,
-                        prefixIcon: const Icon(Icons.phone_android_sharp),
+                        prefixIcon: const Icon(Icons.phone, color: Colors.grey,),
                         controller: mobileController,
                         keyboardType: TextInputType.phone,
                         validator: (value) {
@@ -120,31 +121,44 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
                       const SizedBox(height: 20,),
                       SizedBox(
                         width: double.infinity,
-                        child: ButtonWidget(
+                        child: isLoading
+                        ? const LoadingButton()
+                        : ButtonWidget(
                           buttonName: "Update", 
                           fontSize: 15,
                           fontWeight: FontWeight.w500,
                           onPressed: () async {
-                            if (_formKey.currentState!.validate()) {
-                              print("${prefs.getString("mobile") == mobileController.text}");
-                              if (mobileController.text != prefs.getString("mobile")) {
-                                profile.confirmEditProfile({
-                                  'customer_id': prefs.getString("customerId"),
-                                    'first_name': firstNameController.text,
-                                    'last_name': lastNameController.text,
-                                    'email': emailController.text,
-                                    'mobile_no': mobileController.text
-                                }, size, context, true);
-                               
-                              }else{
-                                 profile.confirmEditProfile({
-                                  'customer_id': prefs.getString("customerId"),
-                                    'first_name': firstNameController.text,
-                                    'last_name': lastNameController.text,
-                                    'email': emailController.text,
-                                    'mobile_no': mobileController.text
-                                }, size, context, false);
+                            setState(() {
+                              isLoading = true;
+                            });
+                            try {
+                              if (_formKey.currentState!.validate()) {
+                                print("${prefs.getString("mobile") == mobileController.text}");
+                                if (mobileController.text != prefs.getString("mobile")) {
+                                  profile.confirmEditProfile({
+                                    'customer_id': prefs.getString("customerId"),
+                                      'first_name': firstNameController.text,
+                                      'last_name': lastNameController.text,
+                                      'email': emailController.text,
+                                      'mobile_no': mobileController.text
+                                  }, size, context, true);
+                                
+                                }else{
+                                  profile.confirmEditProfile({
+                                    'customer_id': prefs.getString("customerId"),
+                                      'first_name': firstNameController.text,
+                                      'last_name': lastNameController.text,
+                                      'email': emailController.text,
+                                      'mobile_no': mobileController.text
+                                  }, size, context, false);
+                                }
                               }
+                            } catch (e) {
+                              print("Can't update Profile: $e");
+                            } finally {
+                              setState(() {
+                                isLoading = false;
+                              });
                             }
                           }
                         ),

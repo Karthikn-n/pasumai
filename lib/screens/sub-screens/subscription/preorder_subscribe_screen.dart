@@ -38,7 +38,7 @@ class _PreOrderProductScreen extends State<PreOrderProductsScreen>{
           children: [
             // Delivery Address Heading
             const AppTextWidget(
-              text: 'Delivery Address', 
+              text: 'Delivery address', 
               fontSize: 18,
               fontWeight: FontWeight.w500
               ),
@@ -60,7 +60,7 @@ class _PreOrderProductScreen extends State<PreOrderProductsScreen>{
                     '${provider.regionLocationsList.firstWhere((element) => element.regionId == int.parse(preOrderData.customerAddress.region),).regionName}, ' 
                     '${provider.regionLocationsList.firstWhere((element) => element.regionId == int.parse(preOrderData.customerAddress.region),).locationData.firstWhere((element) => element.locationId == int.parse(preOrderData.customerAddress.location),).locationName}, '
                     '${preOrderData.customerAddress.pincode}, ', 
-                    fontSize: 14, 
+                    fontSize: 12, 
                     fontWeight: FontWeight.w300
                   );
                 }
@@ -69,7 +69,7 @@ class _PreOrderProductScreen extends State<PreOrderProductsScreen>{
             const SizedBox(height: 16,),
             // Subscription Detail
             const AppTextWidget(
-              text: 'Subscription Detail', 
+              text: 'Subscription detail', 
               fontSize: 18,
               fontWeight: FontWeight.w500
             ),
@@ -85,48 +85,57 @@ class _PreOrderProductScreen extends State<PreOrderProductsScreen>{
               child: Column(
                 children: [
                   // Subscribed Product Name
-                  SubscriptionDetailWidget(title: "Product Name: ", value: preOrderData.productName),
+                  SubscriptionDetailWidget(title: "Product name", value: preOrderData.productName),
                   const SizedBox(height: 6,),
                   // Subscribed Method
-                  SubscriptionDetailWidget(title: "Subscribed Method: ", value: preOrderData.frequency),
+                  SubscriptionDetailWidget(title: "Subscribed method", value: preOrderData.frequency),
                   const SizedBox(height: 6,),
                   // Product Price
-                  SubscriptionDetailWidget(title: "Product Price: ", value: "₹${preOrderData.amount.toString()}"),
+                  SubscriptionDetailWidget(
+                    title: "Product price", 
+                    valueWeight: FontWeight.w500,
+                    value: "₹${preOrderData.amount.toString()}",
+                    valueColor: Theme.of(context).primaryColor,
+                  ),
                   const SizedBox(height: 6,),
                   // Subscription Status
                   SubscriptionDetailWidget(
                     title: "Subscription status: ", 
                     value: preOrderData.status,
+                    valueWeight: FontWeight.w500,
                     valueColor: preOrderData.status == "Active"
                       ? Theme.of(context).primaryColor
                       : Colors.red,
                   ),
                   const SizedBox(height: 6,),
                   // subscription Start Date
-                  SubscriptionDetailWidget(title: "Start date: ", value: DateFormat("dd MMM yyyy").format(DateTime.parse(preOrderData.startDate))),
+                  SubscriptionDetailWidget(title: "Start date", value: DateFormat("dd MMM yyyy").format(DateTime.parse(preOrderData.startDate))),
                   const SizedBox(height: 6,),
                   // Subscription End Date
-                  SubscriptionDetailWidget(title: "End date: ", value: DateFormat("dd MMM yyyy").format(DateTime.parse(preOrderData.endDate))),
+                  SubscriptionDetailWidget(title: "End date", value: DateFormat("dd MMM yyyy").format(DateTime.parse(preOrderData.endDate))),
                   const SizedBox(height: 6,),
                   // Subscription Grace Date
                   SubscriptionDetailWidget(
                     title: "Grace date: ", 
                     valueColor: Colors.orange,
-                    value: DateFormat("dd MMM yyyy").format(DateTime.parse(preOrderData.graceDate))),
+                    valueWeight: FontWeight.w500,
+                    value: DateFormat("dd MMM yyyy").format(DateTime.parse(preOrderData.graceDate))
+                  ),
                   const SizedBox(height: 6,),
                   // total Subscription amount
-                  SubscriptionDetailWidget(title: "Total Amount: ", value: "₹${preOrderData.total}"),
+                  SubscriptionDetailWidget(title: "Total amount", value: "₹${preOrderData.total}"),
                   const SizedBox(height: 6,),
                   // Subscription Days
-                  SubscriptionDetailWidget(title: "Total days: ", value: preOrderData.totDays == 1 ? "${preOrderData.totDays} day" : "${preOrderData.totDays} days"),
+                  SubscriptionDetailWidget(title: "Total days", value: preOrderData.totDays == 1 ? "${preOrderData.totDays} day" : "${preOrderData.totDays} days"),
                   const SizedBox(height: 6,),
                   // Total Quanity for entire month
-                  SubscriptionDetailWidget(title: "Total quantity: ", value: "${preOrderData.totalQuantity}"),
+                  SubscriptionDetailWidget(title: "Total quantity", value: "${preOrderData.totalQuantity}"),
                   const SizedBox(height: 6,),
                   // Payment Status
                   SubscriptionDetailWidget(
-                    title: "Payment Status: ", 
+                    title: "Payment Status", 
                     value: preOrderData.paymentStatus, 
+                    valueWeight: FontWeight.w500,
                     valueColor: preOrderData.paymentStatus == "Pending"
                     ? Colors.red
                     : Theme.of(context).primaryColor,

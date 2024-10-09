@@ -7,7 +7,6 @@ import 'package:app_3/screens/sub-screens/subscription/product_subscribe.dart';
 import 'package:app_3/service/api_service.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -124,8 +123,8 @@ class _HomeScreenProductsState extends State<HomeScreenProducts>{
                                     Expanded(
                                       child: AppTextWidget(
                                         text: product.name, 
-                                        fontSize: 16, 
-                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14, 
+                                        fontWeight: FontWeight.w400,
                                         maxLines: 1, 
                                         textOverflow: TextOverflow.ellipsis,
                                       ),
@@ -139,29 +138,29 @@ class _HomeScreenProductsState extends State<HomeScreenProducts>{
                                       children: [
                                         AppTextWidget(
                                           text: "${product.quantity} - ", 
-                                          fontSize: 12, 
-                                          fontColor: Colors.grey,
-                                          fontWeight: FontWeight.w500
+                                          fontSize: 14, 
+                                          // fontColor: Colors.grey,
+                                          fontWeight: FontWeight.w400
                                         ),
                                         Text(
                                           '₹${product.finalPrice}/',
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             fontSize: 12,
                                             fontWeight: FontWeight.w500,
-                                            color:  Colors.grey
+                                            color:  Theme.of(context).primaryColor
                                           ),
                                         ),
                                         const SizedBox(width: 4,),
                                         Text(
                                           "₹${product.price}",
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontSize: 12,
                                             color: Colors.grey,
                                             fontWeight: FontWeight.w400,
                                             decoration: TextDecoration.lineThrough,
-                                            decorationColor: Colors.red.withOpacity(0.8),
+                                            decorationColor: Colors.grey,
                                             decorationThickness: 2
                                           ),
                                         )
@@ -217,9 +216,9 @@ class _HomeScreenProductsState extends State<HomeScreenProducts>{
                                   AppTextWidget(
                                     text: cartProvider.cartQuantities[product.id] != null && cartProvider.cartQuantities[product.id]! > 99 
                                     ? "99+"
-                                    : "${cartProvider.cartQuantities[product.id]}", fontSize: 13, 
-                                    fontWeight: FontWeight.w500,
-                                    fontColor: Colors.black45,
+                                    : "${cartProvider.cartQuantities[product.id]}", fontSize: 12, 
+                                    fontWeight: FontWeight.w600,
+                                    fontColor: Colors.grey,
                                   ),
                                   const SizedBox(width: 8,),
                                   GestureDetector(

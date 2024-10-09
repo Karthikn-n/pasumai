@@ -1,4 +1,5 @@
 import 'package:app_3/helper/shared_preference_helper.dart';
+import 'package:app_3/model/vacation_model.dart';
 import 'package:app_3/providers/profile_provider.dart';
 import 'package:app_3/providers/vacation_provider.dart';
 import 'package:app_3/widgets/common_widgets.dart/button_widget.dart';
@@ -30,7 +31,7 @@ class VacationListWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         AppTextWidget(
-                          text: "Vacation Mode", 
+                          text: "Vacation mode", 
                           fontSize: 16, 
                           fontWeight: FontWeight.w500
                         ),
@@ -87,7 +88,7 @@ class VacationListWidget extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const AppTextWidget(
-                              text: "Vacation Mode", 
+                              text: "Vacation mode", 
                               fontSize: 16, 
                               fontWeight: FontWeight.w500
                             ),
@@ -129,7 +130,7 @@ class VacationListWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const AppTextWidget(
-                        text: "Vacation Mode", 
+                        text: "Vacation mode", 
                         fontSize: 16, 
                         fontWeight: FontWeight.w500
                       ),
@@ -172,11 +173,12 @@ class VacationListWidget extends StatelessWidget {
   Widget vacationList(Size size){
     return Consumer2<ProfileProvider, VacationProvider>(
       builder: (context, provider, vacation, child) {
+        List<VacationsModel> vacations = provider.vacations.reversed.toList();
         return CupertinoScrollbar(
           controller: _scrollController,
           child: ListView.builder(
             controller: _scrollController,
-            itemCount: provider.vacations.length,
+            itemCount: vacations.length,
             itemBuilder: (context, index) {
               return Column(
                 children: [
@@ -254,10 +256,10 @@ class VacationListWidget extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const AppTextWidget(text: "Start date", fontSize: 15, fontWeight: FontWeight.w500),
+                                  const AppTextWidget(text: "Start date", fontSize: 14, fontWeight: FontWeight.w500),
                                   AppTextWidget(
                                     text: DateFormat("dd/MM/yyyy").format(DateTime.parse(provider.vacations[index].startDate)), 
-                                    fontSize: 14, 
+                                    fontSize: 12, 
                                     fontWeight: FontWeight.w400
                                   )
                                 ],
@@ -267,10 +269,10 @@ class VacationListWidget extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const AppTextWidget(text: "End date", fontSize: 15, fontWeight: FontWeight.w500),
+                                  const AppTextWidget(text: "End date", fontSize: 14, fontWeight: FontWeight.w500),
                                   AppTextWidget(
                                     text: DateFormat("dd/MM/yyyy").format(DateTime.parse(provider.vacations[index].endDate)), 
-                                    fontSize: 14, 
+                                    fontSize: 12, 
                                     fontWeight: FontWeight.w400
                                   )
                                 ],
@@ -313,6 +315,7 @@ class VacationListWidget extends StatelessWidget {
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setState) {
+            bool isLoading = false;
             return Consumer<ProfileProvider>(
               builder: (context, profileProvider,child) {
                 return Container(
@@ -330,7 +333,7 @@ class VacationListWidget extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const AppTextWidget(text: "Start date", fontSize: 15, fontWeight: FontWeight.w500),
+                                const AppTextWidget(text: "Start date", fontSize: 14, fontWeight: FontWeight.w500),
                                 const SizedBox(height: 10,),
                                 Consumer<VacationProvider>(
                                     builder: (context, provider, child) {
@@ -369,7 +372,7 @@ class VacationListWidget extends StatelessWidget {
                                             text: isUpdating! 
                                             ? provider.updatedStartDate != null ? DateFormat("dd MMM yyyy").format(provider.updatedStartDate!) : DateFormat("dd MMM yyyy").format(updatedStartDate!)
                                             : provider.startDate != null ? DateFormat("dd MMM yyyy").format(provider.startDate!) : "Select date", 
-                                            fontSize: 13, 
+                                            fontSize: 12, 
                                             fontColor: Colors.black,
                                             fontWeight: FontWeight.w400
                                           ),
@@ -392,7 +395,7 @@ class VacationListWidget extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const AppTextWidget(text: "End date", fontSize: 15, fontWeight: FontWeight.w500),
+                                const AppTextWidget(text: "End date", fontSize: 14, fontWeight: FontWeight.w500),
                                 const SizedBox(height: 10,),
                                  Consumer<VacationProvider>(
                                     builder: (context, provider, child) {
@@ -431,7 +434,7 @@ class VacationListWidget extends StatelessWidget {
                                             text: isUpdating!
                                             ? provider.updatedEndDate != null ? DateFormat("dd MMM yyyy").format(provider.updatedEndDate!) : DateFormat("dd MMM yyyy").format(updatedEndDate!)
                                             : provider.endDate != null ? DateFormat("dd MMM yyyy").format(provider.endDate!) : "Select date", 
-                                            fontSize: 13, 
+                                            fontSize: 12, 
                                             fontColor: Colors.black,
                                             fontWeight: FontWeight.w400
                                           ),
@@ -451,7 +454,7 @@ class VacationListWidget extends StatelessWidget {
                         ],
                       ),
                       // Reasons for Vacation
-                      const AppTextWidget(text: "Reason", fontSize: 15, fontWeight: FontWeight.w500),
+                      const AppTextWidget(text: "Reason", fontSize: 14, fontWeight: FontWeight.w500),
                       const SizedBox(height: 10,),
                       Consumer<VacationProvider>(
                         builder: (context, provider, child) {
@@ -479,8 +482,8 @@ class VacationListWidget extends StatelessWidget {
                                       value: reason,
                                       child: AppTextWidget(
                                         text: reason, 
-                                        fontSize: 14, 
-                                        fontWeight: FontWeight.w500
+                                        fontSize: 12, 
+                                        fontWeight: FontWeight.w400
                                       )
                                     );
                                   },).toList(), 
@@ -501,41 +504,54 @@ class VacationListWidget extends StatelessWidget {
                         width: double.infinity,
                         child: Consumer<VacationProvider>(
                           builder: (context, provider, child) {
-                            return ButtonWidget(
+                            return isLoading
+                            ? const LoadingButton()
+                            : ButtonWidget(
                               fontSize: 15,
                               fontWeight: FontWeight.w500,
                               buttonName: isUpdating! ? "Update" : "Submit", 
                               onPressed: () async {
-                                if (isUpdating) {
-                                    await profileProvider.updateVacation(
-                                    {
-                                    "customer_id":prefs.getString('customerId'),
-                                    "vacation_id": id,
-                                    "start_date": DateFormat('yyyy-MM-dd').format(provider.updatedStartDate ?? updatedStartDate!),
-                                    "end_date": DateFormat('yyyy-MM-dd').format(provider.updatedEndDate ?? updatedEndDate!),
-                                    "comments": reason ?? provider.selectedReason
-                                    }, 
-                                    size, context
-                                  );
-                                  provider.cleatupdateDates();
-                                  Navigator.pop(context);
-                                }else{
-                                  if (provider.startDate == null || provider.endDate == null || provider.selectedReason.isEmpty) {
-                                    provider.validate(true);
-                                  }else{
-                                    print('Reason: ${provider.selectedReason}');
-                                    await profileProvider.addVacation(
+                                setState((){
+                                  isLoading = true;
+                                });
+                                try {
+                                  if (isUpdating) {
+                                      await profileProvider.updateVacation(
                                       {
                                       "customer_id":prefs.getString('customerId'),
-                                      "start_date": DateFormat('yyyy-MM-dd').format(provider.startDate ?? DateTime.now()),
-                                      "end_date": DateFormat('yyyy-MM-dd').format(provider.endDate ?? DateTime.now()),
-                                      "comments": provider.selectedReason
+                                      "vacation_id": id,
+                                      "start_date": DateFormat('yyyy-MM-dd').format(provider.updatedStartDate ?? updatedStartDate!),
+                                      "end_date": DateFormat('yyyy-MM-dd').format(provider.updatedEndDate ?? updatedEndDate!),
+                                      "comments": reason ?? provider.selectedReason
                                       }, 
                                       size, context
                                     );
-                                    provider.clearAddDates();
+                                    provider.cleatupdateDates();
                                     Navigator.pop(context);
+                                  }else{
+                                    if (provider.startDate == null || provider.endDate == null || provider.selectedReason.isEmpty) {
+                                      provider.validate(true);
+                                    }else{
+                                      print('Reason: ${provider.selectedReason}');
+                                      await profileProvider.addVacation(
+                                        {
+                                        "customer_id":prefs.getString('customerId'),
+                                        "start_date": DateFormat('yyyy-MM-dd').format(provider.startDate ?? DateTime.now()),
+                                        "end_date": DateFormat('yyyy-MM-dd').format(provider.endDate ?? DateTime.now()),
+                                        "comments": provider.selectedReason
+                                        }, 
+                                        size, context
+                                      );
+                                      provider.clearAddDates();
+                                      Navigator.pop(context);
+                                    }
                                   }
+                                } catch (e) {
+                                  print("Can't add / update vaction $e");
+                                } finally{
+                                  setState((){
+                                    isLoading = true;
+                                  });
                                 }
                               },
                             );

@@ -199,80 +199,68 @@ class _BottomBarState extends State<BottomBar> {
                   left: 0,
                   right: 0,
                   bottom: 0,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(20.0), // Adjust the corner radius
-                        topRight: Radius.circular(20.0),
+                  child: BottomNavigationBar(
+                    items: [
+                      buildBottomNavigationBarItem(
+                        0,  Icon(
+                          CupertinoIcons.home,
+                          color: apiProvider.bottomIndex == 0 ? Theme.of(context).primaryColor : Colors.grey.shade600,
+                          size: 24,
+                        ), 'Home',false
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.2),
-                          spreadRadius: 2,
-                          blurRadius: 1,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: BottomNavigationBar(
-                      items: [
-                        buildBottomNavigationBarItem(
-                          0,  Icon(
-                            CupertinoIcons.home,
-                            color: apiProvider.bottomIndex == 0 ? Theme.of(context).primaryColor : Colors.grey.shade600,
-                            size: 24,
-                          ), 'Home',false
-                        ),
-                        buildBottomNavigationBarItem(
-                          1, SizedBox(
-                            height: 24,
-                            width: 24,
-                            child: Image.asset(
-                              "assets/category/cart.png",
-                              fit: BoxFit.cover,
-                              // filterQuality: FilterQuality.high,
-                              color: apiProvider.bottomIndex == 1 ? Theme.of(context).primaryColor : Colors.grey.shade600,
-                             
-                            )
-                          ), 'Cart',false
-                        ),
-                        buildBottomNavigationBarItem(
-                          2,  const SizedBox(
-                              height: 28,
-                              width: 28,
-                          ), '',true
-                        ),
-                        buildBottomNavigationBarItem(
-                          3,  Icon(
-                            CupertinoIcons.bell,
+                      buildBottomNavigationBarItem(
+                        1, SizedBox(
+                          height: 24,
+                          width: 24,
+                          child: Image.asset(
+                            "assets/category/cart.png",
+                            fit: BoxFit.cover,
+                            // filterQuality: FilterQuality.high,
+                            color: apiProvider.bottomIndex == 1 ? Theme.of(context).primaryColor : Colors.grey.shade600,
+                           
+                          )
+                        ), 'Cart',false
+                      ),
+                      buildBottomNavigationBarItem(
+                        2,  const SizedBox(
+                            height: 28,
+                            width: 28,
+                        ), '',true
+                      ),
+                      buildBottomNavigationBarItem(
+                        3,  SizedBox(
+                          child: Image.asset(
+                            height: 28,
+                            width: 28,
+                            "assets/icons/crown.png",
                             color: apiProvider.bottomIndex == 3 ? Theme.of(context).primaryColor : Colors.grey.shade600,
-                            size: 24.0,
-                          ), 'Subscription',true
-                        ),
-                        buildBottomNavigationBarItem(
-                          4,  Icon(
-                            CupertinoIcons.person,
-                            color: apiProvider.bottomIndex == 4 ? Theme.of(context).primaryColor : Colors.grey.shade600,
-                            size: 24.0,
-                          ), 'Profile',true
-                        ),
-                      ],
-                      
-                      type: BottomNavigationBarType.fixed,
-                      showUnselectedLabels: true,
-                      currentIndex: apiProvider.bottomIndex,
-                      selectedItemColor: Theme.of(context).primaryColor,
-                      unselectedItemColor: Colors.grey.shade500,
-                      backgroundColor: Colors.transparent,
-                      elevation: 0, // No shadow for the BottomNavigationBar
-                      selectedFontSize: 12.0,
-                      unselectedFontSize: 12.0,
-                      onTap: (value) {
-                        apiProvider.setIndex(value);
-                        apiProvider.setQuick(false);
-                      },
-                    ),
+                            // size: 24.0,
+                          ),
+                        ), 'Subscription',true
+                      ),
+                      buildBottomNavigationBarItem(
+                        4,  Icon(
+                          CupertinoIcons.person,
+                          color: apiProvider.bottomIndex == 4 ? Theme.of(context).primaryColor : Colors.grey.shade600,
+                          size: 24.0,
+                        ), 'Profile',true
+                      ),
+                    ],
+                    
+                    type: BottomNavigationBarType.fixed,
+                    showUnselectedLabels: false,
+                    currentIndex: apiProvider.bottomIndex,
+                    showSelectedLabels: false,
+                    selectedItemColor: Theme.of(context).primaryColor,
+                    unselectedItemColor: Colors.grey.shade500,
+                    backgroundColor: Colors.white,
+                    elevation: 0, // No shadow for the BottomNavigationBar
+                    selectedFontSize: 12.0,
+                    unselectedFontSize: 12.0,
+                    onTap: (value) {
+                      apiProvider.setIndex(value);
+                      apiProvider.setQuick(false);
+                    },
                   ),
                 ),
               ],

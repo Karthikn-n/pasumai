@@ -44,8 +44,8 @@ class _RaiseAQueryWidgetState extends State<RaiseAQueryWidget> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const AppTextWidget(
-                        text: "Select Query", 
-                        fontSize: 16, 
+                        text: "Select query", 
+                        fontSize: 18, 
                         fontWeight: FontWeight.w500
                       ),
                       needQuery 
@@ -53,7 +53,7 @@ class _RaiseAQueryWidgetState extends State<RaiseAQueryWidget> {
                         : Container()
                     ],
                   ),
-                  const SizedBox(height: 10,),
+                  const SizedBox(height: 12,),
                   ...List.generate(provider.queryOptions.length, 
                     (index) {
                       return SizedBox(
@@ -71,20 +71,20 @@ class _RaiseAQueryWidgetState extends State<RaiseAQueryWidget> {
                           },
                           title: AppTextWidget(
                             text: provider.queryOptions[index], 
-                            fontSize: 13, 
+                            fontSize: 14, 
                             fontWeight: FontWeight.w400
                           ),
                         ),
                       );
                     },
                   ),
-                  const SizedBox(height: 20,),
+                  const SizedBox(height: 16,),
                   const AppTextWidget(
                     text: "More about query", 
                     fontSize: 16, 
                     fontWeight: FontWeight.w500
                   ),
-                  const SizedBox(height: 20,),
+                  const SizedBox(height: 12,),
                   Form(
                     key: formkey,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -109,11 +109,12 @@ class _RaiseAQueryWidgetState extends State<RaiseAQueryWidget> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20,),
+                  const SizedBox(height: 16,),
                   Center(
                     child: ButtonWidget(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                      width: double.infinity,
                       buttonName: "Raise a query", 
                       onPressed: () async {
                         print(provider.selectedQuery);

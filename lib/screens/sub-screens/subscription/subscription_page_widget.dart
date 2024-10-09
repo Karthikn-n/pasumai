@@ -60,10 +60,10 @@ class SubscriptionPageWidget extends StatelessWidget {
                                 // Product Name and Quantity
                                 AppTextWidget(
                                   text: "${provider.subscribeProducts[index].name}/${provider.subscribeProducts[index].quantity}", 
-                                  fontSize: 16, 
+                                  fontSize: 14, 
                                   maxLines: 2,
                                   textOverflow: TextOverflow.ellipsis,
-                                  fontWeight: FontWeight.w600
+                                  fontWeight: FontWeight.w400
                                 ),
                                 const SizedBox(height: 5,),
                                 // Product Description

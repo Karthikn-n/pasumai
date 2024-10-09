@@ -33,9 +33,15 @@ class _AddressSelectionScreenState extends State<AddressSelectionScreen> {
   @override
   void initState() {
     super.initState();
+    loadRegions();
     List<String> regionList = prefs.getStringList('regions') ?? [];
     regions = regionList.map((region) => RegionModel.fromMap(json.decode(region))).toList();
     // isCurrentAddress =  List.filled(AddressProvider.helper.getAddresses().length, false);
+  }
+
+  void loadRegions() async {
+    final addressProvider = Provider.of<AddressProvider>(context, listen: false);
+    await addressProvider.getRegionLocation();
   }
 
   @override

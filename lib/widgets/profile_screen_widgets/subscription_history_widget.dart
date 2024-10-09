@@ -112,7 +112,7 @@ class SubscriptionHistoryWidget extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             SizedBox(
-                              height: size.height * 0.13,
+                              height: size.height * 0.14,
                               width: size.width * 0.26,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(8),
@@ -143,9 +143,9 @@ class SubscriptionHistoryWidget extends StatelessWidget {
                                     children: [
                                       SizedBox(
                                         width: size.width * 0.35,
-                                        child: const AppTextWidget(text: "Price: ", fontSize: 14, fontWeight: FontWeight.w500)
+                                        child: const AppTextWidget(text: "Price", fontSize: 14, fontWeight: FontWeight.w500)
                                       ),
-                                      AppTextWidget(text:"₹${historyProducts[index].productPrice}", fontSize: 13, fontWeight: FontWeight.w400),
+                                      AppTextWidget(text:"₹${historyProducts[index].productPrice}", fontSize: 12, fontWeight: FontWeight.w500, fontColor: Theme.of(context).primaryColor,),
                                     ],
                                   ),
                                   const SizedBox(height: 4,),
@@ -153,9 +153,9 @@ class SubscriptionHistoryWidget extends StatelessWidget {
                                     children: [
                                       SizedBox(
                                         width: size.width * 0.35, 
-                                        child: const AppTextWidget(text: "Start date: ", fontSize: 14, fontWeight: FontWeight.w500)
+                                        child: const AppTextWidget(text: "Start date", fontSize: 14, fontWeight: FontWeight.w500)
                                       ),
-                                      AppTextWidget(text:historyProducts[index].startDate, fontSize: 13, fontWeight: FontWeight.w400),
+                                      AppTextWidget(text:historyProducts[index].startDate, fontSize: 12, fontWeight: FontWeight.w400),
                                     ],
                                   ),
                                   const SizedBox(height: 4,),
@@ -163,20 +163,20 @@ class SubscriptionHistoryWidget extends StatelessWidget {
                                     children: [
                                       SizedBox(
                                         width: size.width * 0.35, 
-                                        child: const AppTextWidget(text: "Frequency: ", fontSize: 14, fontWeight: FontWeight.w500)
+                                        child: const AppTextWidget(text: "Frequency", fontSize: 14, fontWeight: FontWeight.w500)
                                       ),
-                                      AppTextWidget(text: "${historyProducts[index].frequency[0].toUpperCase()}${historyProducts[index].frequency.substring(1)}", fontSize: 13, fontWeight: FontWeight.w400),
+                                      AppTextWidget(text: "${historyProducts[index].frequency[0].toUpperCase()}${historyProducts[index].frequency.substring(1)}", fontSize: 12, fontWeight: FontWeight.w400),
                                     ],
                                   ),
                                   Row(
                                     children: [
                                       SizedBox(
                                         width: size.width * 0.35, 
-                                        child: const AppTextWidget(text: "Status: ", fontSize: 14, fontWeight: FontWeight.w500)
+                                        child: const AppTextWidget(text: "Status", fontSize: 14, fontWeight: FontWeight.w500)
                                       ),
                                       AppTextWidget(
                                         text: historyProducts[index].status, 
-                                        fontSize: 13, fontWeight: FontWeight.w500,
+                                        fontSize: 12, fontWeight: FontWeight.w500,
                                         fontColor: historyProducts[index].status == "Active"
                                           ? Theme.of(context).primaryColor
                                           : Colors.orange,
@@ -191,9 +191,9 @@ class SubscriptionHistoryWidget extends StatelessWidget {
                                             children: [
                                               SizedBox(
                                                 width: size.width * 0.35, 
-                                                child: const AppTextWidget(text: "Morning quantity: ", fontSize: 14, fontWeight: FontWeight.w500)
+                                                child: const AppTextWidget(text: "Morning", fontSize: 14, fontWeight: FontWeight.w500)
                                               ),
-                                              AppTextWidget(text: "${historyProducts[index].frequencyMobData[0].mrgQuantity}", fontSize: 13, fontWeight: FontWeight.w400),
+                                              AppTextWidget(text: "${historyProducts[index].frequencyMobData[0].mrgQuantity}", fontSize: 12, fontWeight: FontWeight.w400),
                                             ],
                                           ),
                                           const SizedBox(height: 4,),
@@ -201,9 +201,9 @@ class SubscriptionHistoryWidget extends StatelessWidget {
                                             children: [
                                               SizedBox(
                                                 width: size.width * 0.35, 
-                                                child: const AppTextWidget(text: "Evening quantity: ", fontSize: 14, fontWeight: FontWeight.w500)
+                                                child: const AppTextWidget(text: "Evening", fontSize: 14, fontWeight: FontWeight.w500)
                                               ),
-                                              AppTextWidget(text: "${historyProducts[index].frequencyMobData[0].evgQuantity}", fontSize: 13, fontWeight: FontWeight.w400),
+                                              AppTextWidget(text: "${historyProducts[index].frequencyMobData[0].evgQuantity}", fontSize: 12, fontWeight: FontWeight.w400),
                                             ],
                                           ),
                                       ],
@@ -215,6 +215,7 @@ class SubscriptionHistoryWidget extends StatelessWidget {
                           ],
                         ),
                         // Subscription Detail
+                        historyProducts[index].frequency == "everyday" ? Container() : const SizedBox(height: 5,),
                         historyProducts[index].frequency == "everyday"
                         ? Container()
                         : Row(
@@ -226,11 +227,11 @@ class SubscriptionHistoryWidget extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    AppTextWidget(text: "Day: ", fontSize: 15, fontWeight: FontWeight.w500),
+                                    AppTextWidget(text: "Day", fontSize: 14, fontWeight: FontWeight.w500),
                                     // SizedBox(height: 4,),
-                                    AppTextWidget(text: "Morning: ", fontSize: 15, fontWeight: FontWeight.w500),
+                                    AppTextWidget(text: "Morning", fontSize: 14, fontWeight: FontWeight.w500),
                                     // SizedBox(height: 4,),
-                                    AppTextWidget(text: "Evening: ", fontSize: 15, fontWeight: FontWeight.w500),
+                                    AppTextWidget(text: "Evening", fontSize: 14, fontWeight: FontWeight.w500),
                                   ],
                                 ),
                               ),
@@ -249,13 +250,13 @@ class SubscriptionHistoryWidget extends StatelessWidget {
                                           children: [
                                             AppTextWidget(
                                               text: "${historyProducts[index].frequencyMobData[dayIndex].day[0].toUpperCase()}${historyProducts[index].frequencyMobData[dayIndex].day.substring(1, 3)}", 
-                                              fontSize: 15, 
+                                              fontSize: 14, 
                                               fontWeight: FontWeight.w500
                                             ),
                                             // const SizedBox(height: 7,),
-                                            AppTextWidget(text: historyProducts[index].frequencyMobData[dayIndex].mrgQuantity.toString(), fontSize: 14, fontWeight: FontWeight.w500),
+                                            AppTextWidget(text: historyProducts[index].frequencyMobData[dayIndex].mrgQuantity.toString(), fontSize: 12, fontWeight: FontWeight.w400),
                                             // const SizedBox(height: 7,),
-                                            AppTextWidget(text: historyProducts[index].frequencyMobData[dayIndex].evgQuantity.toString(), fontSize: 14, fontWeight: FontWeight.w500),
+                                            AppTextWidget(text: historyProducts[index].frequencyMobData[dayIndex].evgQuantity.toString(), fontSize: 12, fontWeight: FontWeight.w400),
                                           ],
                                         ),
                                         const SizedBox(width: 10,)

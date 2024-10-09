@@ -29,7 +29,7 @@ class OrdersHistoryWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       AppTextWidget(
-                        text: "Order History", 
+                        text: "Order history", 
                         fontSize: 18, 
                         fontWeight: FontWeight.w500
                       ),
@@ -69,7 +69,7 @@ class OrdersHistoryWidget extends StatelessWidget {
                           Row(
                             children: [
                               const AppTextWidget(
-                                text: "Order History", 
+                                text: "Order history", 
                                 fontSize: 18, 
                                 fontWeight: FontWeight.w500
                               ),
@@ -160,7 +160,7 @@ class OrdersHistoryWidget extends StatelessWidget {
                       Column(
                         children: [
                           const AppTextWidget(
-                            text: "Order History", 
+                            text: "Order history", 
                             fontSize: 16, 
                             fontWeight: FontWeight.w500
                           ),
@@ -272,17 +272,26 @@ class OrdersHistoryWidget extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            SizedBox(
-                              width: size.width * 0.6,
-                              child: AppTextWidget(
-                                text: "Order ID: ${orders[index].orderId}",
-                                // : "order" , 
-                                fontSize: 16, 
-                                fontWeight: FontWeight.w500,
-                                // maxLines: 1,
-                                textOverflow: TextOverflow.ellipsis,
-                              ),
+                            Row(
+                              children: [
+                                SizedBox(
+                                  width: size.width *0.3,
+                                  child: const AppTextWidget(text: 'Order ID', fontSize: 14, fontWeight: FontWeight.w500)
+                                ),
+                                AppTextWidget(text: '${orders[index].orderId}', fontSize: 12, fontWeight: FontWeight.w400),
+                              ],
                             ),
+                            // SizedBox(
+                            //   width: size.width * 0.6,
+                            //   child: AppTextWidget(
+                            //     text: "Order ID: ${orders[index].orderId}",
+                            //     // : "order" , 
+                            //     fontSize: 16, 
+                            //     fontWeight: FontWeight.w500,
+                            //     // maxLines: 1,
+                            //     textOverflow: TextOverflow.ellipsis,
+                            //   ),
+                            // ),
                             GestureDetector(
                               onTap: () async {
                                 print("Order ID: ${orders[index].orderId}");
@@ -305,9 +314,9 @@ class OrdersHistoryWidget extends StatelessWidget {
                           children: [
                             SizedBox(
                               width: size.width *0.3,
-                              child: const AppTextWidget(text: 'Products: ', fontSize: 14, fontWeight: FontWeight.w500)
+                              child: const AppTextWidget(text: 'Products', fontSize: 14, fontWeight: FontWeight.w500)
                             ),
-                            AppTextWidget(text: '${orders[index].quantity}', fontSize: 14, fontWeight: FontWeight.w400),
+                            AppTextWidget(text: '${orders[index].quantity}', fontSize: 12, fontWeight: FontWeight.w400),
                           ],
                         ),
                         const SizedBox(height: 5,),
@@ -315,9 +324,9 @@ class OrdersHistoryWidget extends StatelessWidget {
                           children: [
                             SizedBox(
                               width: size.width *0.29,
-                              child: const AppTextWidget(text: 'Ordered on: ', fontSize: 14, fontWeight: FontWeight.w500)
+                              child: const AppTextWidget(text: 'Ordered on', fontSize: 14, fontWeight: FontWeight.w500)
                             ),
-                            AppTextWidget(text: orders[index].orderOn, fontSize: 14, fontWeight: FontWeight.w400),
+                            AppTextWidget(text: orders[index].orderOn, fontSize: 12, fontWeight: FontWeight.w400),
                           ],
                         ),
                         const SizedBox(height: 5,),
@@ -326,9 +335,9 @@ class OrdersHistoryWidget extends StatelessWidget {
                           children: [
                             SizedBox(
                               width: size.width *0.3,
-                              child: const AppTextWidget(text: 'Address: ', fontSize: 14, fontWeight: FontWeight.w500)
+                              child: const AppTextWidget(text: 'Address', fontSize: 14, fontWeight: FontWeight.w500)
                             ),
-                            Expanded(child: AppTextWidget(text: orders[index].address, fontSize: 14, fontWeight: FontWeight.w400)),
+                            Expanded(child: AppTextWidget(text: orders[index].address, fontSize: 12, fontWeight: FontWeight.w400)),
                           ],
                         ),
                         const SizedBox(height: 5,),
@@ -337,9 +346,9 @@ class OrdersHistoryWidget extends StatelessWidget {
                           children: [
                             SizedBox(
                               width: size.width *0.3,
-                              child: const AppTextWidget(text: 'Total: ', fontSize: 14, fontWeight: FontWeight.w500)
+                              child: const AppTextWidget(text: 'Total', fontSize: 14, fontWeight: FontWeight.w500)
                             ),
-                            Expanded(child: AppTextWidget(text: '₹${orders[index].total}', fontSize: 14, fontWeight: FontWeight.w400)),
+                            Expanded(child: AppTextWidget(text: '₹${orders[index].total}', fontSize: 12, fontWeight: FontWeight.w400)),
                           ],
                         ),
                         const SizedBox(height: 5,),
@@ -348,11 +357,11 @@ class OrdersHistoryWidget extends StatelessWidget {
                           children: [
                              SizedBox(
                                width: size.width *0.3,
-                               child: const AppTextWidget(text: 'Status: ', fontSize: 14, fontWeight: FontWeight.w500)),
+                               child: const AppTextWidget(text: 'Status', fontSize: 14, fontWeight: FontWeight.w500)),
                             Expanded(
                                 child: AppTextWidget(
                                 text: orders[index].status, 
-                                fontSize: 14, 
+                                fontSize: 12, 
                                 fontWeight: FontWeight.w400,
                                 fontColor: orders[index].status == "Pending" || orders[index].status == "Cancelled"
                                   ? Colors.orange

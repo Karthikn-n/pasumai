@@ -69,6 +69,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget homePage(BuildContext context){
     final addressProvider = Provider.of<AddressProvider>(context);
+    
     final localeProvider = Provider.of<LocaleProvider>(context);
     Size size = MediaQuery.sizeOf(context);
     return Consumer<ApiProvider>(
@@ -128,7 +129,7 @@ class _HomePageState extends State<HomePage> {
                 : InkWell(
                     splashColor: Colors.transparent.withOpacity(0.1),
                     onTap: () async {
-                      await addressProvider.getRegionLocation();
+                      // await addressProvider.getRegionLocation();
                       Navigator.push(context, downToTop(screen: const AddressSelectionScreen()));
                     },
                     child: Row(
@@ -145,7 +146,7 @@ class _HomePageState extends State<HomePage> {
                                 fontSize: 16, 
                                 maxLines: 1,
                                 textOverflow: TextOverflow.ellipsis,
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.w500,
                                 fontColor: Colors.black.withOpacity(0.8),
                               ),
                             ),
@@ -153,7 +154,7 @@ class _HomePageState extends State<HomePage> {
                               width:size.width * 0.65,
                               child: AppTextWidget(
                                 text: '${addressProvider.currentAddress!.address} ${addressProvider.currentAddress!.location.toString()}, ${addressProvider.currentAddress!.region.toString()}, ${addressProvider.currentAddress!.landmark}, ${addressProvider.currentAddress!.pincode}', 
-                                fontSize: 14, 
+                                fontSize: 12, 
                                 maxLines: 1,
                                 textOverflow: TextOverflow.ellipsis,
                                 fontColor: Colors.black.withOpacity(0.5),
@@ -264,7 +265,7 @@ class _HomePageState extends State<HomePage> {
                                 isObseure: false, 
                                 textInputAction: TextInputAction.done,
                                 readOnly: true,
-                                suffixIcon: const Icon(CupertinoIcons.search),
+                                suffixIcon: const Icon(CupertinoIcons.search, color: Colors.grey,),
                                 onTap: (){
                                   Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen(focusNode: FocusNode(),)));
                                 },
@@ -319,7 +320,7 @@ class _HomePageState extends State<HomePage> {
                                                   text: provider.categories[index].categoryName, 
                                                   fontSize: 14, 
                                                   maxLines: 1,
-                                                  fontWeight: FontWeight.w500,
+                                                  fontWeight: FontWeight.w400,
                                                   textOverflow: TextOverflow.ellipsis,
                                                 )
                                               ],
@@ -332,7 +333,7 @@ class _HomePageState extends State<HomePage> {
                                   }
                                 ),
                               ),
-                              const SizedBox(height: 25,),
+                              const SizedBox(height: 16,),
                               // Subscribe products Heading
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -378,7 +379,7 @@ class _HomePageState extends State<HomePage> {
                                 ],
                               ),
                               // Subscription Products List
-                              const SizedBox(height: 15,),
+                              const SizedBox(height: 12,),
                               Consumer<SubscriptionProvider>(
                                 builder: (context, value, child) {
                                   return  value.subscribeProducts.isEmpty
@@ -434,14 +435,15 @@ class _HomePageState extends State<HomePage> {
                                   );
                                 },
                               ),
-                              const SizedBox(height: 20,),
+                              const SizedBox(height: 16,),
+                              // Featured Products Heading
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   AppTextWidget(
                                     text: localeProvider.of(context).featuredProducts, 
                                     fontSize: 18, 
-                                    fontWeight: FontWeight.w600
+                                    fontWeight: FontWeight.w500
                                   ),
                                   // GestureDetector(
                                   //   onTap: () {
@@ -483,52 +485,50 @@ class _HomePageState extends State<HomePage> {
                                   ));
                                 },
                               ),
-                              const SizedBox(height: 12,),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  // crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    SizedBox(
-                                      width: size.width * 0.7,
-                                      child: AppTextWidget(
-                                        text: localeProvider.of(context).bestseller, 
-                                        fontSize: 18, 
-                                        textOverflow: TextOverflow.fade,
-                                        fontWeight: FontWeight.w600
-                                      ),
+                              const SizedBox(height: 16,),
+                              // Best Seller Heading
+                              Row(
+                                // crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    width: size.width * 0.7,
+                                    child: AppTextWidget(
+                                      text: localeProvider.of(context).bestseller, 
+                                      fontSize: 18, 
+                                      textOverflow: TextOverflow.fade,
+                                      fontWeight: FontWeight.w500
                                     ),
-                                    // View all Button
-                                    // GestureDetector(
-                                    //   onTap: () {
-                                    //     print("Best Seller: ${provider.bestSellerProducts.length}");
-                                    //      Navigator.of(context).push(MaterialPageRoute(
-                                    //       builder: (context) => const CategoryProductsListWidget(categoryName: "Best Seller", isBestSellerProduct: true,)
-                                    //     ));
-                                    //   },
-                                    //   child: Row(
-                                    //     mainAxisAlignment: MainAxisAlignment.center,
-                                    //     children: [
-                                    //       Text(
-                                    //         'View all',
-                                    //         style: TextStyle(
-                                    //           fontSize: 14,
-                                    //           color: Theme.of(context).primaryColor,
-                                    //           fontWeight: FontWeight.w500
-                                    //         ),
-                                    //       ),
-                                    //       Icon(
-                                    //         Icons.arrow_forward_ios_sharp,
-                                    //         color: Theme.of(context).primaryColor,
-                                    //         size:  size.width > 600 ?  size.height * 0.034: size.height * 0.014,
-                                    //       )
-                                    //     ],
-                                    //   ),
-                                    // )
-                                  
-                                  ],
-                                ),
+                                  ),
+                                  // View all Button
+                                  // GestureDetector(
+                                  //   onTap: () {
+                                  //     print("Best Seller: ${provider.bestSellerProducts.length}");
+                                  //      Navigator.of(context).push(MaterialPageRoute(
+                                  //       builder: (context) => const CategoryProductsListWidget(categoryName: "Best Seller", isBestSellerProduct: true,)
+                                  //     ));
+                                  //   },
+                                  //   child: Row(
+                                  //     mainAxisAlignment: MainAxisAlignment.center,
+                                  //     children: [
+                                  //       Text(
+                                  //         'View all',
+                                  //         style: TextStyle(
+                                  //           fontSize: 14,
+                                  //           color: Theme.of(context).primaryColor,
+                                  //           fontWeight: FontWeight.w500
+                                  //         ),
+                                  //       ),
+                                  //       Icon(
+                                  //         Icons.arrow_forward_ios_sharp,
+                                  //         color: Theme.of(context).primaryColor,
+                                  //         size:  size.width > 600 ?  size.height * 0.034: size.height * 0.014,
+                                  //       )
+                                  //     ],
+                                  //   ),
+                                  // )
+                                
+                                ],
                               ),
                               const SizedBox(height: 12,),
                               // Best Seller Products List

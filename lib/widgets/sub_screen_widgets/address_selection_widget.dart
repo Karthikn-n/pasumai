@@ -24,15 +24,16 @@ Widget locationSelectButton({
             AppTextWidget(
               text: title, 
               fontSize: 16, 
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w500,
               fontColor: Theme.of(context).primaryColor,
             )
           ],
         ),
+        // Convert the Icons to charcodes to Bold it
         Text(String.fromCharCode(suffixIcon.codePoint),
           style: TextStyle(
             inherit: false,
-            fontSize: 17,
+            fontSize: 18,
             fontWeight: FontWeight.w800,
             fontFamily: suffixIcon.fontFamily,
             package: suffixIcon.fontPackage,

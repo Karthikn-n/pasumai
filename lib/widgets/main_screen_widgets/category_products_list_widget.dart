@@ -148,9 +148,9 @@ class _CategoryProductsListWidgetState extends State<CategoryProductsListWidget>
                                         TextSpan(
                                           text: "${products[index].name}/${products[index].quantity}", 
                                           style: const TextStyle(
-                                            fontSize: 16, 
+                                            fontSize: 14, 
                                             color: Colors.black,
-                                            fontWeight: FontWeight.w600
+                                            fontWeight: FontWeight.w400
                                           )
                                         )
                                       ]
@@ -164,7 +164,7 @@ class _CategoryProductsListWidgetState extends State<CategoryProductsListWidget>
                                 text: products[index].description.replaceAll("<p>", ""), 
                                 fontSize: 12, 
                                 maxLines: 2,
-                                fontColor: Colors.black54,
+                                fontColor: Colors.grey,
                                 textOverflow: TextOverflow.ellipsis,
                                 fontWeight: FontWeight.w300
                               ),

@@ -7,12 +7,14 @@ class SubscriptionDetailWidget extends StatelessWidget {
   final Color? valueColor;
   final Color? titleColor;
   final double? width;
+  final FontWeight? valueWeight;
   const SubscriptionDetailWidget({
     super.key, 
     required this.title, 
     required this.value,
     this.titleColor,
     this.width,
+    this.valueWeight,
     this.valueColor
   });
 
@@ -20,7 +22,7 @@ class SubscriptionDetailWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      // crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
           width: width ?? size.width * 0.44,
@@ -35,9 +37,9 @@ class SubscriptionDetailWidget extends StatelessWidget {
             text: value,
             maxLines: 2,
             textOverflow: TextOverflow.ellipsis, 
-            fontSize: 14, 
+            fontSize: 12, 
             fontColor: valueColor,
-            fontWeight: FontWeight.w400
+            fontWeight: valueWeight ?? FontWeight.w400
           ),
         ),
       ],

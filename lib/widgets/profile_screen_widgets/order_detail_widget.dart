@@ -28,7 +28,7 @@ class OrderDetailWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const AppTextWidget(
-                    text: "Order Detail", 
+                    text: "Order detail", 
                     fontSize: 18 , 
                     fontWeight: FontWeight.w500
                   ),
@@ -48,8 +48,8 @@ class OrderDetailWidget extends StatelessWidget {
                           SizedBox(
                             width: size.width * 0.33,
                             child: const AppTextWidget(
-                              text: "Ordered ID: ", 
-                              fontSize: 16, 
+                              text: "Ordered ID", 
+                              fontSize: 14, 
                               fontWeight: FontWeight.w500,
                               // maxLines: 1,
                               textOverflow: TextOverflow.ellipsis,
@@ -57,8 +57,8 @@ class OrderDetailWidget extends StatelessWidget {
                           ),
                           AppTextWidget(
                             text: orderDetail.orderId.toString(), 
-                            fontSize: 16, 
-                            fontWeight: FontWeight.w500,
+                            fontSize: 12, 
+                            fontWeight: FontWeight.w400,
                           )
                         ],
                         ),
@@ -67,9 +67,9 @@ class OrderDetailWidget extends StatelessWidget {
                           children: [
                             SizedBox(
                               width: size.width *0.33,
-                              child: const AppTextWidget(text: 'Quantity: ', fontSize: 14, fontWeight: FontWeight.w500)
+                              child: const AppTextWidget(text: 'Quantity', fontSize: 14, fontWeight: FontWeight.w500)
                             ),
-                            AppTextWidget(text: '${orderDetail.quantity}', fontSize: 14, fontWeight: FontWeight.w400),
+                            AppTextWidget(text: '${orderDetail.quantity}', fontSize: 12, fontWeight: FontWeight.w400),
                           ],
                         ),
                         const SizedBox(height: 5,),
@@ -77,9 +77,9 @@ class OrderDetailWidget extends StatelessWidget {
                           children: [
                             SizedBox(
                               width: size.width * 0.32,
-                              child: const AppTextWidget(text: 'Ordered on: ', fontSize: 14, fontWeight: FontWeight.w500)
+                              child: const AppTextWidget(text: 'Ordered on', fontSize: 14, fontWeight: FontWeight.w500)
                             ),
-                            AppTextWidget(text: orderDetail.orderOn, fontSize: 14, fontWeight: FontWeight.w400),
+                            AppTextWidget(text: orderDetail.orderOn, fontSize: 12, fontWeight: FontWeight.w400),
                           ],
                         ),
                         const SizedBox(height: 5,),
@@ -88,9 +88,9 @@ class OrderDetailWidget extends StatelessWidget {
                           children: [
                             SizedBox(
                               width: size.width *0.33,
-                              child: const AppTextWidget(text: 'Address: ', fontSize: 14, fontWeight: FontWeight.w500)
+                              child: const AppTextWidget(text: 'Address', fontSize: 14, fontWeight: FontWeight.w500)
                             ),
-                            Expanded(child: AppTextWidget(text: orderDetail.address, fontSize: 14, fontWeight: FontWeight.w400)),
+                            Expanded(child: AppTextWidget(text: orderDetail.address, fontSize: 12, fontWeight: FontWeight.w400)),
                           ],
                         ),
                         // Discount Amount
@@ -102,9 +102,9 @@ class OrderDetailWidget extends StatelessWidget {
                           children: [
                             SizedBox(
                               width: size.width *0.33,
-                              child: const AppTextWidget(text: 'Discount: ', fontSize: 14, fontWeight: FontWeight.w500)
+                              child: const AppTextWidget(text: 'Discount', fontSize: 14, fontWeight: FontWeight.w500)
                             ),
-                            Expanded(child: AppTextWidget(text: "₹${provider.discountAmount}", fontSize: 14, fontWeight: FontWeight.w400)),
+                            Expanded(child: AppTextWidget(text: "₹${provider.discountAmount}", fontSize: 12, fontWeight: FontWeight.w400)),
                           ],
                         ),
                         provider.discountAmount == 0.0 ? Container() : const SizedBox(height: 5,),
@@ -113,25 +113,28 @@ class OrderDetailWidget extends StatelessWidget {
                           children: [
                             SizedBox(
                               width: size.width *0.33,
-                              child: const AppTextWidget(text: 'Total: ', fontSize: 14, fontWeight: FontWeight.w500)
+                              child: const AppTextWidget(text: 'Total', fontSize: 14, fontWeight: FontWeight.w500)
                             ),
                             Expanded(
                               child: Row(
                                 children: [
                                   AppTextWidget(text: provider.discountAmount == 0.0 
                                     ? '₹${double.parse(orderDetail.total)}'
-                                    : '₹${double.parse(orderDetail.total)} / ', fontSize: 14, fontWeight: FontWeight.w400),
+                                    : '₹${double.parse(orderDetail.total)} / ', 
+                                    fontSize: 12, fontWeight: FontWeight.w500,
+                                    fontColor: Theme.of(context).primaryColor,
+                                  ),
                                   Text(
                                     provider.discountAmount == 0.0
                                     ? ""
                                     : "₹${(double.parse(orderDetail.total) + provider.discountAmount)}",
                                     style: const TextStyle(
                                       fontSize: 12,
-                                      fontWeight: FontWeight.w400,
+                                      fontWeight: FontWeight.w500,
                                       decoration: TextDecoration.lineThrough,
-                                      decorationColor: Colors.red,
+                                      decorationColor: Colors.grey,
                                       decorationThickness: 2,
-                                      color: Colors.black54
+                                      color: Colors.grey
                                     ),
                                   )
                                 ],
@@ -146,7 +149,7 @@ class OrderDetailWidget extends StatelessWidget {
                             SizedBox(
                               width: size.width *0.33,
                               child: const AppTextWidget(
-                                text: 'Status: ', 
+                                text: 'Status', 
                                 fontSize: 14, 
                                 fontWeight: FontWeight.w500
                               )
@@ -154,8 +157,8 @@ class OrderDetailWidget extends StatelessWidget {
                             Expanded(
                                 child: AppTextWidget(
                                 text: orderDetail.status, 
-                                fontSize: 14, 
-                                fontWeight: FontWeight.w400,
+                                fontSize: 12, 
+                                fontWeight: FontWeight.w500,
                                 fontColor: orderDetail.status == "Pending"
                                   ? Colors.red
                                   : Theme.of(context).primaryColor,
@@ -168,8 +171,8 @@ class OrderDetailWidget extends StatelessWidget {
                   ),
                   const SizedBox(height: 16,),
                   const AppTextWidget(
-                    text: "Ordered Products", 
-                    fontSize: 16 , 
+                    text: "Ordered products", 
+                    fontSize: 18 , 
                     fontWeight: FontWeight.w500
                   ),
                   const SizedBox(height: 12,),
@@ -190,30 +193,30 @@ class OrderDetailWidget extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(color: Colors.black26)
                                   ),
-                                  height: size.height * 0.16,
+                                  // height: size.height * 0.16,
                                   padding: const EdgeInsets.all(10),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       AppTextWidget(
                                         text: product.productName,
-                                        fontSize: 16, 
-                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14, 
+                                        fontWeight: FontWeight.w600,
                                       ),
                                       // total count
                                       Row(
                                         children: [
                                           SizedBox(
-                                            width: size.width * 0.3,
+                                            width: size.width * 0.4,
                                             child: const AppTextWidget(
-                                              text: 'Item count: ',
+                                              text: 'Item count',
                                               fontSize: 14, 
                                               fontWeight: FontWeight.w500,
                                             ),
                                           ),
                                           AppTextWidget(
                                             text: '${product.quantity} item',
-                                            fontSize: 14, 
+                                            fontSize: 12, 
                                             fontWeight: FontWeight.w400,
                                           )
                                         ],
@@ -223,17 +226,18 @@ class OrderDetailWidget extends StatelessWidget {
                                       Row(
                                         children: [
                                           SizedBox(
-                                            width: size.width * 0.3,
+                                            width: size.width * 0.4,
                                             child: const AppTextWidget(
-                                              text: 'Product price: ',
+                                              text: 'Product price',
                                               fontSize: 14, 
                                               fontWeight: FontWeight.w500,
                                             ),
                                           ),
                                           AppTextWidget(
                                             text: '₹${provider.orderedProducts[index].price}',
-                                            fontSize: 14, 
-                                            fontWeight: FontWeight.w400,
+                                            fontSize: 12, 
+                                            fontColor: Theme.of(context).primaryColor,
+                                            fontWeight: FontWeight.w500,
                                           )
                                         ],
                                       ),
@@ -242,21 +246,21 @@ class OrderDetailWidget extends StatelessWidget {
                                       Row(
                                         children: [
                                           SizedBox(
-                                            width: size.width * 0.3,
+                                            width: size.width * 0.4,
                                             child: const AppTextWidget(
-                                              text: 'Product total: ',
+                                              text: 'Total for product',
                                               fontSize: 14, 
                                               fontWeight: FontWeight.w500,
                                             ),
                                           ),
                                           AppTextWidget(
                                             text: '₹${provider.orderedProducts[index].total}',
-                                            fontSize: 14, 
+                                            fontSize: 12, 
                                             fontWeight: FontWeight.w400,
                                           )
                                         ],
                                       ),
-                                      const SizedBox(height: 4,),
+                                      // const SizedBox(height: 4,),
                                     ],
                                   ),
                                 ),

@@ -68,10 +68,10 @@ class WishlistProducts extends StatelessWidget {
                               children: [
                                 AppTextWidget(
                                   text: product.title, 
-                                  fontSize: 16, 
+                                  fontSize: 14, 
                                   maxLines: 2,
                                   textOverflow: TextOverflow.ellipsis,
-                                  fontWeight: FontWeight.w600
+                                  fontWeight: FontWeight.w400
                                 ),
                                 const SizedBox(height: 5,),
                                 AppTextWidget(
@@ -88,7 +88,7 @@ class WishlistProducts extends StatelessWidget {
                                     AppTextWidget(
                                       text: '₹${product.finalPrice} /', 
                                       fontSize: 14, 
-                                      fontWeight: FontWeight.w500,
+                                      fontWeight: FontWeight.w400,
                                       fontColor: Theme.of(context).primaryColor,
                                     ),
                                     const SizedBox(width: 5,),

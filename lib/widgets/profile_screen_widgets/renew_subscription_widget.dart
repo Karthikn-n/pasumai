@@ -47,8 +47,8 @@ class _RenewSubscriptionWidgetState extends State<RenewSubscriptionWidget> {
                 children: [
                   // Product Detail
                   const SizedBox(height: 20,),
-                  const AppTextWidget(text: 'Product Detail', fontSize: 17, fontWeight: FontWeight.w500), 
-                  const SizedBox(height: 20,),
+                  const AppTextWidget(text: 'Product detail', fontSize: 18, fontWeight: FontWeight.w500), 
+                  const SizedBox(height: 12,),
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
@@ -80,7 +80,7 @@ class _RenewSubscriptionWidgetState extends State<RenewSubscriptionWidget> {
                               // Product name
                               AppTextWidget(
                                 text: widget.product.productName,
-                                fontSize: 16, fontWeight: FontWeight.w500,
+                                fontSize: 14, fontWeight: FontWeight.w500,
                                 maxLines: 2,
                               ),
                               const SizedBox(height: 4,),
@@ -88,9 +88,9 @@ class _RenewSubscriptionWidgetState extends State<RenewSubscriptionWidget> {
                                 children: [
                                   SizedBox(
                                     width: size.width * 0.3, 
-                                    child: const AppTextWidget(text: "Final price: ", fontSize: 15, fontWeight: FontWeight.w500)
+                                    child: const AppTextWidget(text: "Final price", fontSize: 14, fontWeight: FontWeight.w400)
                                   ),
-                                  AppTextWidget(text:"₹${widget.product.productPrice}", fontSize: 14, fontWeight: FontWeight.w400),
+                                  AppTextWidget(text:"₹${widget.product.productPrice}", fontSize: 12, fontWeight: FontWeight.w500, fontColor: Theme.of(context).primaryColor,),
                                 ],
                               ),
                               // const SizedBox(height: 4,),
@@ -109,18 +109,18 @@ class _RenewSubscriptionWidgetState extends State<RenewSubscriptionWidget> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20,),
+                  const SizedBox(height: 16,),
                   // Subscription Detail
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const AppTextWidget(text: 'Subscription Detail', fontSize: 17, fontWeight: FontWeight.w500),
+                      const AppTextWidget(text: 'Subscription detail', fontSize: 18, fontWeight: FontWeight.w500),
                       needStartDate 
-                        ? const AppTextWidget(text: "* start date is required", fontSize: 13, fontWeight: FontWeight.w400, fontColor: Colors.red,)
+                        ? const AppTextWidget(text: "* start date is required", fontSize: 12, fontWeight: FontWeight.w400, fontColor: Colors.red,)
                         : Container()
                     ],
                   ), 
-                  const SizedBox(height: 20,),
+                  const SizedBox(height: 12,),
                   // Subscription Detail Box
                   Container(
                     padding: const EdgeInsets.all(10),
@@ -136,8 +136,11 @@ class _RenewSubscriptionWidgetState extends State<RenewSubscriptionWidget> {
                           children: [
                             Row(
                               children: [
-                                const AppTextWidget(text: "Subscription ID: ", fontSize: 16, fontWeight: FontWeight.w500),
-                                AppTextWidget(text: "${widget.product.subId} ", fontSize: 15, fontWeight: FontWeight.w500),
+                                SizedBox(
+                                  width: size.width * 0.44,
+                                  child: const AppTextWidget(text: "Subscription ID", fontSize: 14, fontWeight: FontWeight.w500)
+                                ),
+                                AppTextWidget(text: "${widget.product.subId} ", fontSize: 12, fontWeight: FontWeight.w400),
                               ],
                             ),
                             AppTextWidget(
@@ -156,10 +159,10 @@ class _RenewSubscriptionWidgetState extends State<RenewSubscriptionWidget> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(
-                              width: size.width * 0.42,
+                              width: size.width * 0.44,
                               child: const AppTextWidget(
                                 text: "Start date", 
-                                fontSize: 15, 
+                                fontSize: 14, 
                                 fontWeight: FontWeight.w500
                               ),
                             ),
@@ -172,7 +175,7 @@ class _RenewSubscriptionWidgetState extends State<RenewSubscriptionWidget> {
                                     : "Pick a date",
                                     maxLines: 2,
                                     textOverflow: TextOverflow.ellipsis, 
-                                    fontSize: 14, 
+                                    fontSize: 12, 
                                     fontColor: needStartDate ? Colors.red : null,
                                     fontWeight: FontWeight.w400
                                   ),
@@ -220,7 +223,7 @@ class _RenewSubscriptionWidgetState extends State<RenewSubscriptionWidget> {
                         const SizedBox(height: 4,),
                         // Subscription End Date
                         SubscriptionDetailWidget(
-                          title: 'End date: ', 
+                          title: 'End date', 
                           value: renewProvider.renewSubscriptionResponse?[widget.index] != null 
                           ? DateFormat("dd MMM yyyy").format(DateTime.parse(renewProvider.renewSubscriptionResponse![widget.index]!.endDate))
                           : "End date"),
@@ -242,19 +245,19 @@ class _RenewSubscriptionWidgetState extends State<RenewSubscriptionWidget> {
                         const SizedBox(height: 4,),
                         // Plan
                         SubscriptionDetailWidget(
-                          title: 'Subscription plan: ', 
+                          title: 'Subscription plan', 
                           value: "${widget.product.frequency[0].toUpperCase()}${widget.product.frequency.substring(1)}",
                         ),
                         const SizedBox(height: 4,),
                         SubscriptionDetailWidget(
-                          title: 'Total days: ', 
+                          title: 'Total days', 
                           value: renewProvider.renewSubscriptionResponse![widget.index] == null 
                           ? "0 day"
                           : "${renewProvider.renewSubscriptionResponse![widget.index]!.totalDays} days",
                         ),
                         const SizedBox(height: 4,),
                         SubscriptionDetailWidget(
-                          title: 'Total Quantity: ', 
+                          title: 'Total Quantity', 
                           value: renewProvider.renewSubscriptionResponse![widget.index] == null 
                           ? "0"
                           : renewProvider.renewSubscriptionResponse![widget.index]!.totalQty,
@@ -262,13 +265,13 @@ class _RenewSubscriptionWidgetState extends State<RenewSubscriptionWidget> {
                         const SizedBox(height: 4,),
                         // payment status
                         SubscriptionDetailWidget(
-                          title: 'Your Balance: ', 
+                          title: 'Your Balance', 
                           value: "₹${widget.product.customerBalacne}",
                         ),
                         const SizedBox(height: 4,),
                         // total amount
                         SubscriptionDetailWidget(
-                          title: 'Total: ', 
+                          title: 'Total', 
                           value: renewProvider.renewSubscriptionResponse![widget.index] == null 
                           ? "₹0"
                           : "₹${renewProvider.renewSubscriptionResponse![widget.index]!.finalTotal}"),
@@ -277,20 +280,20 @@ class _RenewSubscriptionWidgetState extends State<RenewSubscriptionWidget> {
                     ),
                   ),
                   // Address Detail
-                  const SizedBox(height: 20,),
+                  const SizedBox(height: 16,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const AppTextWidget(text: 'Address Detail', fontSize: 17, fontWeight: FontWeight.w500),
+                      const AppTextWidget(text: 'Delivery details', fontSize: 18, fontWeight: FontWeight.w500),
                       GestureDetector(
                         onTap: () {
                         Navigator.push(context, downToTop(screen: const AddressSelectionScreen()));
                       },
-                       child: AppTextWidget(text: "Change Address", fontSize: 13, fontWeight: FontWeight.w500, fontColor: Theme.of(context).primaryColor,)
+                       child: AppTextWidget(text: "Change Address", fontSize: 12, fontWeight: FontWeight.w500, fontColor: Theme.of(context).primaryColor,)
                       )
                     ],
                   ), 
-                  const SizedBox(height: 20,),
+                  const SizedBox(height: 12,),
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
@@ -311,7 +314,7 @@ class _RenewSubscriptionWidgetState extends State<RenewSubscriptionWidget> {
                                     width: size.width * 0.7,
                                     child: AppTextWidget(
                                       text: addressProvider.currentAddress!.location, 
-                                      fontSize: 15, 
+                                      fontSize: 14, 
                                       fontWeight: FontWeight.w500
                                     ),
                                   ),
@@ -327,15 +330,15 @@ class _RenewSubscriptionWidgetState extends State<RenewSubscriptionWidget> {
                             '${addressProvider.currentAddress!.landmark}, '
                             '${addressProvider.currentAddress!.location}, ' 
                             '${addressProvider.currentAddress!.region}, ',
-                            fontSize: 14, 
+                            fontSize: 12, 
                             maxLines: 5,
-                            fontWeight: FontWeight.w400
+                            fontWeight: FontWeight.w300
                           ),
                         ],
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20,),
+                  const SizedBox(height: 16,),
                   SizedBox(
                     width: double.infinity,
                     child: isLoading

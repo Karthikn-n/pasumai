@@ -29,6 +29,8 @@ class SubscriptionProvider extends ChangeNotifier{
   List<ActiveSubscriptionModel> historyProducts = [];
   List<List<String>> options = [];
   bool isCancellingSubscription = false;
+  bool isSubscriped = false;
+  
   // Get all the Subscribe Product in Login Page
   Future<void> getSubscribProducts() async {
      // Call SubScribe Product API
@@ -110,7 +112,7 @@ class SubscriptionProvider extends ChangeNotifier{
   }
 
   // Pre-order Subscription products
-  Future<void> preorderAPi(BuildContext context, Size size) async {
+  Future<void> preorderAPi(BuildContext context, Size size,) async {
     Map<String, dynamic> preOrderData = {
       "customer_id": prefs.getString("customerId")
     };
@@ -129,9 +131,9 @@ class SubscriptionProvider extends ChangeNotifier{
     if (response.statusCode == 200 && decodedResponse["status"] == "success") {
       confirmSubscriptionMessage(context, size, decodedResponse["message"], "assets/icons/happy-face.png");
       Future.delayed(const Duration(seconds: 2), (){
-          Navigator.pop(context);
-          Navigator.pop(context);
-          Navigator.pop(context);
+        Navigator.pop(context);
+        Navigator.pop(context);
+        // Navigator.pushAndRemoveUntil(context, downToTop(screen: const BottomAppBar()), (route) => false,);
       });
       // ScaffoldMessenger.of(context).showSnackBar(renewsubscriptionMessage).closed.then((value) {
       // },);
@@ -329,7 +331,7 @@ class SubscriptionProvider extends ChangeNotifier{
                   child: Column(
                     children: [
                       Center(
-                        child: AppTextWidget(text: "Cancel Subscription", fontSize: 20, fontWeight: FontWeight.w600),
+                        child: AppTextWidget(text: "Cancel Subscription", fontSize: 18, fontWeight: FontWeight.w600),
                       ),
                       SizedBox(height: 16,),
                       Center(
@@ -337,7 +339,7 @@ class SubscriptionProvider extends ChangeNotifier{
                            "Do you want to cancel this subscription?",
                            textAlign: TextAlign.center,
                            style: TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.w400
+                            fontSize: 14, fontWeight: FontWeight.w400
                            ),
                         ),
                       ),
@@ -433,7 +435,7 @@ class SubscriptionProvider extends ChangeNotifier{
                 Center(child: AppTextWidget(
                   text: message, 
                   textAlign: TextAlign.center,
-                  fontSize: 18, fontWeight: FontWeight.w500, fontColor: Theme.of(context).primaryColorDark,)),
+                  fontSize: 18, fontWeight: FontWeight.w600, fontColor: Theme.of(context).primaryColorDark,)),
                 // const SizedBox(height: 10,),
                 AppTextWidget(text: "Thank you!", fontSize: 16, fontWeight: FontWeight.w400, fontColor: Theme.of(context).primaryColorDark,),
                 const SizedBox(height: 30,),
@@ -444,5 +446,6 @@ class SubscriptionProvider extends ChangeNotifier{
       },
     );
   }
+
 
 }

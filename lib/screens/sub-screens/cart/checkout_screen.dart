@@ -35,6 +35,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   // Payment Detail
   String? selectedPaymentOption;
   List<String> paymentOptions = ['Cash on delivery','Pay using UPI','Pay using credit/debit card'];
+  List<String> paymentIamges = [
+    'assets/icons/checkout/cash-on-delivery.png',
+    'assets/icons/checkout/google-pay.png',
+    'assets/icons/checkout/debit-card.png',
+  ];
 
   // check conditions
   bool isdeliveryDateSelected = false;
@@ -49,7 +54,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     if (!connectivityService.isConnected) {
       return Scaffold(
         appBar: AppBarWidget(
-          title: 'Quick order',
+          title: 'Checkout',
           needBack: true,
           onBack: () => Navigator.pop(context),
         ),
@@ -133,8 +138,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                 text: widget.fromCart ?? true 
                                                   ? "${provider.selectedProducts[index].quantity}x "
                                                   : "${cartProvider.cartQuantities[cartProvider.cartItems[index].id]}x ", 
-                                                fontSize: 16, 
-                                                fontWeight: FontWeight.w600,
+                                                fontSize: 14, 
+                                                fontWeight: FontWeight.w500,
                                                 fontColor: Theme.of(context).primaryColor,
                                               ),
                                               SizedBox(
@@ -143,10 +148,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                   text: widget.fromCart ?? true 
                                                   ? provider.selectedProducts[index].productName
                                                   : cartProvider.cartItems[index].name, 
-                                                  fontSize: 16, 
+                                                  fontSize: 14, 
                                                   maxLines: 1,
                                                   textOverflow: TextOverflow.ellipsis,
-                                                  fontWeight: FontWeight.w600
+                                                  fontWeight: FontWeight.w500
                                                 ),
                                               ),
                                             ],
@@ -165,7 +170,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                 ? "${provider.selectedProducts[index].productQuantity} "
                                                 : "₹${int.parse(cartProvider.cartItems[index].price)} ", 
                                                 fontSize: 14, 
-                                                // fontColor: Theme.of(context).primaryColor,
+                                                fontColor: Theme.of(context).primaryColor,
                                                 fontWeight: FontWeight.w500
                                               ),
                                               AppTextWidget(
@@ -290,9 +295,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           fontWeight: FontWeight.w500
                         ),
                         isdeliveryDateSelected
-                        ? const AppTextWidget(text: "* delivery date is required", fontSize: 13, fontWeight: FontWeight.w400, fontColor: Colors.red,)
+                        ? const AppTextWidget(text: "* delivery date is required", fontSize: 12, fontWeight: FontWeight.w400, fontColor: Colors.red,)
                         : isDeliveryTimeSelected
-                          ? const AppTextWidget(text: "* delivery time is required", fontSize: 13, fontWeight: FontWeight.w400, fontColor: Colors.red,)
+                          ? const AppTextWidget(text: "* delivery time is required", fontSize: 12, fontWeight: FontWeight.w400, fontColor: Colors.red,)
                           : Container()
                       ],
                     ),
@@ -348,12 +353,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 width: size.width * 0.35,
                                 child: DropdownButton(
                                   isExpanded: true,
+                                  padding: EdgeInsets.zero,
                                   elevation: 1,
                                   value: expectedDeliveryTime,
                                   underline: Container(),
                                   // icon: Container(),
                                   dropdownColor: Colors.white,
-                                  hint: const AppTextWidget(text: "Pick a time", fontSize: 13, fontWeight: FontWeight.w500),
+                                  hint: const AppTextWidget(text: "Pick a time", fontSize: 12, fontWeight: FontWeight.w500),
                                   items: deliveryTimes.map((option) {
                                     return DropdownMenuItem(
                                       value: option,
@@ -390,7 +396,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         isPaymentoptionSelected 
                          ? const AppTextWidget(
                           text: "* required", 
-                          fontSize: 13, fontWeight: FontWeight.w400, fontColor: Colors.red,)
+                          fontSize: 12, fontWeight: FontWeight.w400, fontColor: Colors.red,)
                          : Container()
                       ],
                     ),
@@ -399,7 +405,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 0),
                       child: Container(
-                        height: kToolbarHeight * paymentOptions.length,
+                        height: (kToolbarHeight -6) * paymentOptions.length,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
                           border: Border.all(
@@ -410,38 +416,79 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           itemCount: paymentOptions.length,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
-                            return  RadioListTile(
-                              contentPadding: const EdgeInsets.all(0),
-                              
-                              shape: RoundedRectangleBorder(
-                                borderRadius: index == 0
-                                ? const BorderRadius.only(
-                                  topLeft: Radius.circular(10), topRight: Radius.circular(10)
-                                )
-                                : index == 2
-                                  ? const BorderRadius.only(
-                                    bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)
-                                  )
-                                  : BorderRadius.zero
-                              ),
-                              title: AppTextWidget(
-                                text: paymentOptions[index], 
-                                fontSize: 14, 
-                                fontWeight: FontWeight.w400
-                              ),
-                              value: paymentOptions[index], 
-                              groupValue: selectedPaymentOption, 
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedPaymentOption = value;
+                            return ListTile(
+                              onTap: () {
+                                 setState(() {
+                                  selectedPaymentOption = paymentOptions[index];
                                   isPaymentoptionSelected = false;
                                 });
-                                print("Selected poption: $selectedPaymentOption");
                               },
-                              activeColor: selectedPaymentOption == paymentOptions[index]
-                                ? Theme.of(context).primaryColor
-                                : null,
+                              minTileHeight: kToolbarHeight - 6,
+                              trailing: selectedPaymentOption == paymentOptions[index] 
+                                ? Icon(CupertinoIcons.check_mark_circled, size: 20, color: Theme.of(context).primaryColor,)
+                                : null ,
+                              title: Row(
+                                children: [
+                                  Container(
+                                    height: 24,
+                                    width: 24,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Image.asset(paymentIamges[index], fit: BoxFit.cover,),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  AppTextWidget(
+                                    text: paymentOptions[index], 
+                                    fontSize: 14, 
+                                    fontWeight: FontWeight.w400
+                                  ),
+                                ],
+                              ),
                             );
+                            // RadioListTile(
+                            //   contentPadding: const EdgeInsets.all(0),
+                              
+                            //   shape: RoundedRectangleBorder(
+                            //     borderRadius: index == 0
+                            //     ? const BorderRadius.only(
+                            //       topLeft: Radius.circular(10), topRight: Radius.circular(10)
+                            //     )
+                            //     : index == 2
+                            //       ? const BorderRadius.only(
+                            //         bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)
+                            //       )
+                            //       : BorderRadius.zero
+                            //   ),
+                            //   title: Row(
+                            //     children: [
+                            //       Container(
+                            //         height: 24,
+                            //         width: 24,
+                            //         decoration: const BoxDecoration(
+                            //           shape: BoxShape.circle,
+                            //         ),
+                            //         child: Image.asset(paymentIamges[index], fit: BoxFit.cover,),
+                            //       ),
+                            //       const SizedBox(width: 5),
+                            //       AppTextWidget(
+                            //         text: paymentOptions[index], 
+                            //         fontSize: 14, 
+                            //         fontWeight: FontWeight.w400
+                            //       ),
+                            //     ],
+                            //   ),
+                            //   value: paymentOptions[index], 
+                            //   groupValue: selectedPaymentOption, 
+                            //   onChanged: (value) {
+                            //    
+                            //     print("Selected poption: $selectedPaymentOption");
+                            //   },
+                            //   activeColor: selectedPaymentOption == paymentOptions[index]
+                            //     ? Theme.of(context).primaryColor
+                            //     : null,
+                            // );
+                          
                           },
                         ),
                       ),
@@ -469,10 +516,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               Row(
                                 children: [
                                   SizedBox(
-                                    height: 20,
-                                    width: 20,
+                                    height: 24,
+                                    width: 24,
                                     child: Image.asset(
-                                      "assets/icons/profile/features.png",
+                                      "assets/icons/checkout/delivery-box.png",
                                       filterQuality: FilterQuality.high,
                                     ),
                                   ),
@@ -500,11 +547,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               Row(
                                 children: [
                                   SizedBox(
-                                    height: 20,
-                                    width: 20,
+                                    height: 24,
+                                    width: 24,
                                     child: Image.asset(
                                       filterQuality: FilterQuality.high,
-                                      "assets/icons/profile/invoice.png"
+                                      "assets/icons/checkout/bill.png"
                                     ),
                                   ),
                                   const SizedBox(width: 10,),
@@ -531,8 +578,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   Row(
                                     children: [
                                       SizedBox(
-                                        height: 20,
-                                        width: 20,
+                                        height: 24,
+                                        width: 24,
                                         child: Image.asset(
                                           "assets/icons/checkout/discount.png",
                                           color: const Color.fromARGB(255, 255, 191, 0),
@@ -577,7 +624,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const AppTextWidget(text: 'Address Detail', fontSize: 18, fontWeight: FontWeight.w500),
+                        const AppTextWidget(text: 'Delivery details', fontSize: 18, fontWeight: FontWeight.w500),
                         GestureDetector(
                           onTap: () {
                           Navigator.push(context, downToTop(screen: const AddressSelectionScreen()));
@@ -747,7 +794,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   ),
                   child: const AppTextWidget(
                     text: "Checkout", 
-                    fontSize: 15, 
+                    fontSize: 16, 
                     fontColor: Colors.white,
                     fontWeight: FontWeight.w500
                   )

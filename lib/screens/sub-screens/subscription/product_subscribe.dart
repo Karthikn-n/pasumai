@@ -78,12 +78,12 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                           AppTextWidget(
                             text: "${widget.product.name}/", 
                             fontSize: 16, 
-                            fontWeight: FontWeight.w600
+                            fontWeight: FontWeight.w500
                           ),
                           AppTextWidget(
                             text: widget.product.quantity, 
                             fontSize: 16, 
-                            fontWeight: FontWeight.w600
+                            fontWeight: FontWeight.w500
                           ),
                         ],
                       ),
@@ -139,12 +139,12 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                  children: [
                    const AppTextWidget(
                      text: 'Subscription start from: ', 
-                     fontSize: 14, 
-                     fontWeight: FontWeight.w500
+                     fontSize: 12, 
+                     fontWeight: FontWeight.w400
                    ),
                    AppTextWidget(
                      text: DateFormat('dd MMM yyyy').format(subscriptionDate!).toString(), 
-                     fontSize: 14, 
+                     fontSize: 12, 
                      fontWeight: FontWeight.w500,
                      fontColor: Theme.of(context).primaryColor,
                    )
@@ -211,7 +211,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                     }, 
                     child: AppTextWidget(
                       text: buttonNames[index], 
-                      fontSize: 14, 
+                      fontSize: 12, 
                       fontColor: isSelected? Colors.white : Colors.black,
                       fontWeight: FontWeight.w500
                     )
@@ -294,7 +294,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 10,),
+                      const SizedBox(width: 5,),
                       SizedBox(
                         height: 40,
                         width: 40,
@@ -306,7 +306,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 10,),
+                      const SizedBox(width: 5,),
                       GestureDetector(
                         onTap: () {
                           sheetState(() {
@@ -370,7 +370,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 10,),
+                      const SizedBox(width: 5,),
                       SizedBox(
                         height: 40,
                         width: 40,
@@ -382,7 +382,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 10,),
+                      const SizedBox(width: 5,),
                       GestureDetector(
                         onTap: () {
                           sheetState(() {
@@ -443,6 +443,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                               });
                               Navigator.pop(sheetContext);
                             }
+                            
                           },
                         );
                       }
@@ -542,7 +543,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(width: 10),
+                                    const SizedBox(width: 5),
                                     SizedBox(
                                       height: 30,
                                       width: 40,
@@ -551,7 +552,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                                         // child: Text('${morningQuantities[index]}'),
                                       ),
                                     ),
-                                    const SizedBox(width: 10),
+                                    const SizedBox(width: 5),
                                     GestureDetector(
                                       onTap: () {
                                         sheetState(() {
@@ -615,7 +616,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(width: 10),
+                                    const SizedBox(width: 5),
                                     SizedBox(
                                       height: 30,
                                       width: 40,
@@ -623,7 +624,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                                         child: AppTextWidget(text: "${quantities[index][1]}", fontSize: 14, fontWeight: FontWeight.w500),
                                       ),
                                     ),
-                                    const SizedBox(width: 10),
+                                    const SizedBox(width: 5),
                                     GestureDetector(
                                       onTap: () {
                                         sheetState(() {
@@ -809,7 +810,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(width: 10),
+                                    const SizedBox(width: 5),
                                     SizedBox(
                                       height: 30,
                                       width: 40,
@@ -817,7 +818,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                                         child: AppTextWidget(text: "${quantities[index][0]}", fontSize: 14, fontWeight: FontWeight.w500),
                                       ),
                                     ),
-                                    const SizedBox(width: 10),
+                                    const SizedBox(width: 5),
                                     GestureDetector(
                                       onTap: () {
                                         sheetState(() {
@@ -883,7 +884,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(width: 10),
+                                    const SizedBox(width: 5),
                                     SizedBox(
                                       height: 30,
                                       width: 40,
@@ -891,7 +892,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                                         child: AppTextWidget(text: "${quantities[index][1]}", fontSize: 14, fontWeight: FontWeight.w500),
                                       ),
                                     ),
-                                    const SizedBox(width: 10),
+                                    const SizedBox(width: 5),
                                     GestureDetector(
                                       onTap: () {
                                         sheetState(() {

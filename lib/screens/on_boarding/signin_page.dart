@@ -77,7 +77,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
             height: imageHeight, // Dynamically change height based on keyboard
             width: size.width,
             child: Image.asset(
-              "assets/icons/App Login Photo.png",
+              "assets/icons/on-boarding/login_banner.png",
               fit: BoxFit.cover,
             ),
           ),
@@ -165,9 +165,10 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                   if(isKeyboard)
                     Container()
                   else
+                    // Or Widget
                     Column(
                       children: [
-                         Row(
+                        Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               SizedBox(
@@ -193,29 +194,30 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                               ),
                             ],
                           ),
-                          const SizedBox(height: 20,),
-                          Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const AppTextWidget(text: "Create a account ", fontWeight: FontWeight.w500, fontSize: 14,),
-                        Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            splashFactory: InkRipple.splashFactory,
-                            splashColor: Colors.transparent.withOpacity(0.1),
-                            onTap: () {
-                              Navigator.pushReplacement(context, SideTransistionRoute(screen: const RegisterationPage(), ));
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 2),
-                              child: AppTextWidget(text: "Sign up", fontWeight: FontWeight.w500, fontSize: 14, fontColor: Theme.of(context).primaryColor,),
-                            )
+                        const SizedBox(height: 20,),
+                        Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // Sign up Button
+                              const AppTextWidget(text: "Create a account ", fontWeight: FontWeight.w500, fontSize: 14,),
+                              Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  splashFactory: InkRipple.splashFactory,
+                                  splashColor: Colors.transparent.withOpacity(0.1),
+                                  onTap: () {
+                                    Navigator.pushReplacement(context, SideTransistionRoute(screen: const RegisterationPage(), ));
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                                    child: AppTextWidget(text: "Sign up", fontWeight: FontWeight.w500, fontSize: 14, fontColor: Theme.of(context).primaryColor,),
+                                  )
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                  )
+                        )
                 
                       ],
                     )

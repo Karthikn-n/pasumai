@@ -31,7 +31,7 @@ class ActiveSubscriptionWidget extends StatelessWidget {
                   child: Column(
                     children: [
                       AppTextWidget(
-                        text: "Active Subscriptions", 
+                        text: "Active subscriptions", 
                         fontSize: 16, 
                         fontWeight: FontWeight.w500
                       ),
@@ -43,7 +43,7 @@ class ActiveSubscriptionWidget extends StatelessWidget {
               }else if(!snapshot.hasData){
                 return const Center(
                   child: AppTextWidget(
-                    text: "No Active Subscriptions",
+                    text: "No active subscriptions",
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),
@@ -54,7 +54,7 @@ class ActiveSubscriptionWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const AppTextWidget(
-                        text: "Active Subscriptions", 
+                        text: "Active subscriptions", 
                         fontSize: 16, 
                         fontWeight: FontWeight.w500
                       ),
@@ -73,7 +73,7 @@ class ActiveSubscriptionWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const AppTextWidget(
-                    text: "Active Subscriptions", 
+                    text: "Active subscriptions", 
                     fontSize: 16, 
                     fontWeight: FontWeight.w500
                   ),
@@ -144,7 +144,7 @@ class ActiveSubscriptionWidget extends StatelessWidget {
                                         width: size.width * 0.42,
                                         child: AppTextWidget(
                                           text: subscripedProducts[index].productName, 
-                                          fontSize: 15, fontWeight: FontWeight.w500,
+                                          fontSize: 16, fontWeight: FontWeight.w500,
                                           maxLines: 2,
                                         ),
                                       ),
@@ -220,9 +220,14 @@ class ActiveSubscriptionWidget extends StatelessWidget {
                                     children: [
                                       SizedBox(
                                         width: size.width * 0.35,
-                                        child: const AppTextWidget(text: "Price: ", fontSize: 14, fontWeight: FontWeight.w500)
+                                        child: const AppTextWidget(text: "Price", fontSize: 14, fontWeight: FontWeight.w500)
                                       ),
-                                      AppTextWidget(text:"₹${subscripedProducts[index].productPrice}", fontSize: 13, fontWeight: FontWeight.w400),
+                                      AppTextWidget(
+                                        text:"₹${subscripedProducts[index].productPrice}", 
+                                        fontSize: 12, 
+                                        fontWeight: FontWeight.w500,
+                                        fontColor: Theme.of(context).primaryColor,
+                                      ),
                                     ],
                                   ),
                                   const SizedBox(height: 4,),
@@ -230,9 +235,9 @@ class ActiveSubscriptionWidget extends StatelessWidget {
                                     children: [
                                       SizedBox(
                                         width: size.width * 0.35, 
-                                        child: const AppTextWidget(text: "Start date: ", fontSize: 14, fontWeight: FontWeight.w500)
+                                        child: const AppTextWidget(text: "Start date", fontSize: 14, fontWeight: FontWeight.w500)
                                       ),
-                                      AppTextWidget(text:subscripedProducts[index].startDate, fontSize: 13, fontWeight: FontWeight.w400),
+                                      AppTextWidget(text:subscripedProducts[index].startDate, fontSize: 12, fontWeight: FontWeight.w400),
                                     ],
                                   ),
                                   const SizedBox(height: 4,),
@@ -240,9 +245,9 @@ class ActiveSubscriptionWidget extends StatelessWidget {
                                     children: [
                                       SizedBox(
                                         width: size.width * 0.35, 
-                                        child: const AppTextWidget(text: "Frequency: ", fontSize: 14, fontWeight: FontWeight.w500)
+                                        child: const AppTextWidget(text: "Frequency", fontSize: 14, fontWeight: FontWeight.w500)
                                       ),
-                                      AppTextWidget(text: "${subscripedProducts[index].frequency[0].toUpperCase()}${subscripedProducts[index].frequency.substring(1)}", fontSize: 13, fontWeight: FontWeight.w400),
+                                      AppTextWidget(text: "${subscripedProducts[index].frequency[0].toUpperCase()}${subscripedProducts[index].frequency.substring(1)}", fontSize: 12, fontWeight: FontWeight.w400),
                                     ],
                                   ),
                                   const SizedBox(height: 4,),
@@ -250,11 +255,11 @@ class ActiveSubscriptionWidget extends StatelessWidget {
                                     children: [
                                       SizedBox(
                                         width: size.width * 0.35, 
-                                        child: const AppTextWidget(text: "Status: ", fontSize: 14, fontWeight: FontWeight.w500)
+                                        child: const AppTextWidget(text: "Status", fontSize: 14, fontWeight: FontWeight.w500)
                                       ),
                                       AppTextWidget(
                                         text: subscripedProducts[index].status, 
-                                        fontSize: 13, fontWeight: FontWeight.w500,
+                                        fontSize: 12, fontWeight: FontWeight.w500,
                                         fontColor: subscripedProducts[index].status == "Active"
                                           ? Theme.of(context).primaryColor
                                           : Colors.orange,
@@ -269,9 +274,9 @@ class ActiveSubscriptionWidget extends StatelessWidget {
                                             children: [
                                               SizedBox(
                                                 width: size.width * 0.35, 
-                                                child: const AppTextWidget(text: "Morning quantity: ", fontSize: 14, fontWeight: FontWeight.w500)
+                                                child: const AppTextWidget(text: "Morning", fontSize: 14, fontWeight: FontWeight.w500)
                                               ),
-                                              AppTextWidget(text: "${subscripedProducts[index].frequencyMobData[0].mrgQuantity}", fontSize: 13, fontWeight: FontWeight.w400),
+                                              AppTextWidget(text: "${subscripedProducts[index].frequencyMobData[0].mrgQuantity}", fontSize: 12, fontWeight: FontWeight.w400),
                                             ],
                                           ),
                                           const SizedBox(height: 4,),
@@ -279,9 +284,9 @@ class ActiveSubscriptionWidget extends StatelessWidget {
                                             children: [
                                               SizedBox(
                                                 width: size.width * 0.35, 
-                                                child: const AppTextWidget(text: "Evening quantity: ", fontSize: 14, fontWeight: FontWeight.w500)
+                                                child: const AppTextWidget(text: "Evening", fontSize: 14, fontWeight: FontWeight.w500)
                                               ),
-                                              AppTextWidget(text: "${subscripedProducts[index].frequencyMobData[0].evgQuantity}", fontSize: 13, fontWeight: FontWeight.w400),
+                                              AppTextWidget(text: "${subscripedProducts[index].frequencyMobData[0].evgQuantity}", fontSize: 12, fontWeight: FontWeight.w400),
                                             ],
                                           ),
                                       ],
@@ -303,11 +308,11 @@ class ActiveSubscriptionWidget extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    AppTextWidget(text: "Day: ", fontSize: 15, fontWeight: FontWeight.w500),
+                                    AppTextWidget(text: "Day", fontSize: 14, fontWeight: FontWeight.w500),
                                     // SizedBox(height: 4,),
-                                    AppTextWidget(text: "Morning: ", fontSize: 15, fontWeight: FontWeight.w500),
+                                    AppTextWidget(text: "Morning", fontSize: 14, fontWeight: FontWeight.w500),
                                     // SizedBox(height: 4,),
-                                    AppTextWidget(text: "Evening: ", fontSize: 15, fontWeight: FontWeight.w500),
+                                    AppTextWidget(text: "Evening", fontSize: 14, fontWeight: FontWeight.w500),
                                   ],
                                 ),
                               ),
@@ -327,13 +332,13 @@ class ActiveSubscriptionWidget extends StatelessWidget {
                                           children: [
                                             AppTextWidget(
                                               text: "${subscripedProducts[index].frequencyMobData[dayIndex].day[0].toUpperCase()}${subscripedProducts[index].frequencyMobData[dayIndex].day.substring(1,3)}", 
-                                              fontSize: 15, 
+                                              fontSize: 14, 
                                               fontWeight: FontWeight.w500
                                             ),
                                             // const SizedBox(height: 7,),
-                                            AppTextWidget(text: subscripedProducts[index].frequencyMobData[dayIndex].mrgQuantity.toString(), fontSize: 14, fontWeight: FontWeight.w500),
+                                            AppTextWidget(text: subscripedProducts[index].frequencyMobData[dayIndex].mrgQuantity.toString(), fontSize: 12, fontWeight: FontWeight.w400),
                                             // const SizedBox(height: 7,),
-                                            AppTextWidget(text: subscripedProducts[index].frequencyMobData[dayIndex].evgQuantity.toString(), fontSize: 14, fontWeight: FontWeight.w500),
+                                            AppTextWidget(text: subscripedProducts[index].frequencyMobData[dayIndex].evgQuantity.toString(), fontSize: 12, fontWeight: FontWeight.w400),
                                           ],
                                         ),
                                         // SizedBox(

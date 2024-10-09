@@ -72,7 +72,7 @@ class InvoiceListWidget extends StatelessWidget {
                     fontSize: 16, 
                     fontWeight: FontWeight.w500
                   ),
-                  const SizedBox(height: 15,),
+                  const SizedBox(height: 12,),
                   Expanded(
                     child: invoicesList(size, provider.invoices)
                   )
@@ -111,31 +111,33 @@ class InvoiceListWidget extends StatelessWidget {
                       child: Column(
                         children: [
                           // Invoice Id and download Button
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  const AppTextWidget(
-                                    text: "Invoice No: ", 
-                                    fontSize: 15, 
-                                    fontWeight: FontWeight.w500
-                                  ),
-                                  AppTextWidget(
-                                    text: invoices[index].invoiceNo.toString(), 
-                                    fontSize: 14, 
-                                    fontWeight: FontWeight.w400
-                                  )
-                                ],
-                              ),
-                              // Icon(
-                              //   CupertinoIcons.down_arrow, 
-                              //   size: 20, 
-                              //   color: Theme.of(context).primaryColor,
-                              // )
+                          SubscriptionDetailWidget(title: 'Invoice No ', value: invoices[index].invoiceNo.toString()),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //   children: [
+                          //     // Row(
+                          //     //   children: [
+                          //     //     const AppTextWidget(
+                          //     //       text: "Invoice No: ", 
+                          //     //       fontSize: 14, 
+                          //     //       fontWeight: FontWeight.w500
+                          //     //     ),
+                          //     //     AppTextWidget(
+                          //     //       text: , 
+                          //     //       fontSize: 12, 
+                          //     //       fontWeight: FontWeight.w400
+                          //     //     )
+                          //     //   ],
+                          //     // ),
+                          //     // Icon(
+                          //     //   CupertinoIcons.down_arrow, 
+                          //     //   size: 20, 
+                          //     //   color: Theme.of(context).primaryColor,
+                          //     // )
                               
-                            ],
-                          ),
+                          //   ],
+                          // ),
+                          
                           // Order ID
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -145,12 +147,12 @@ class InvoiceListWidget extends StatelessWidget {
                                 width: size.width * 0.65,
                                 child: Column(
                                   children: [
-                                    SubscriptionDetailWidget(title: 'Order ID: ', value: invoices[index].orderId),
+                                    SubscriptionDetailWidget(title: 'Order ID ', value: invoices[index].orderId),
                                     // Invoice Date
-                                    SubscriptionDetailWidget(title: 'Invoice Date: ', value: invoices[index].invoiceDate),
+                                    SubscriptionDetailWidget(title: 'Invoice Date ', value: invoices[index].invoiceDate),
                                     // Invoice Status
                                     SubscriptionDetailWidget(
-                                      title: 'Invoice Status: ', 
+                                      title: 'Invoice Status ', 
                                       value: invoices[index].status,
                                       valueColor: invoices[index].status == "Pending"
                                       ? Colors.orange

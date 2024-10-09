@@ -3,15 +3,22 @@ import 'package:app_3/providers/api_provider.dart';
 import 'package:app_3/providers/cart_items_provider.dart';
 import 'package:app_3/service/connectivity_helper.dart';
 import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
+import 'package:app_3/widgets/common_widgets.dart/button_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
 
+  @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  bool isLoading  = false;
   @override
   Widget build(BuildContext context) {
     final connectivityService = Provider.of<ConnectivityService>(context);
@@ -207,7 +214,7 @@ class CartScreen extends StatelessWidget {
                                                 onPressed: () async {
                                                   // Decrease the quantity of the product
                                                   if (cartProvider.cartQuantities[cartProvider.cartItems[index].id]  == 1) {
-                                                    confirmDelete(cartProvider.cartItems[index].id, size, index, context);
+                                                    cartProvider.confirmDelete(cartProvider.cartItems[index].id, size, index, context);
                                                     } else {
                                                     cartProvider.incrementQuantity(productId: cartProvider.cartItems[index].id);
                                                     List<Map<String, dynamic>> cartProductData = [];
@@ -262,21 +269,36 @@ class CartScreen extends StatelessWidget {
                     Positioned(
                       top: size.height * 0.74,
                       child: cartProvider.totalCartProduct >= 1 
-                      ? GestureDetector(
+                      ? isLoading
+                      ? LoadingButton(
+                        width: size.width * 0.94,
+                      )
+                      : GestureDetector(
                         onTap: () async {
-                          if (addressProvider.addresses.isEmpty) {
-                            addressProvider.addnewAddress(context, size);
-                          }else{
-                            List<Map<String, dynamic>> cartProductData = [];
-                            cartProvider.cartQuantities.forEach((key, value) {
-                              cartProductData.add({
-                                "prdt_id": key,
-                                "prdt_qty": value,
-                                "prdt_total": value * int.parse(cartProvider.cartItems.firstWhere((element) => element.id == key,).price)
-                              });
-                            },);
-                            apiProvider.clearCoupon();
-                            await cartProvider.updateCart(size, context, cartProductData, true);
+                          setState(() {
+                            isLoading = true;
+                          });
+                          try {
+                            if (addressProvider.addresses.isEmpty) {
+                              addressProvider.addnewAddress(context, size);
+                            }else{
+                              List<Map<String, dynamic>> cartProductData = [];
+                              cartProvider.cartQuantities.forEach((key, value) {
+                                cartProductData.add({
+                                  "prdt_id": key,
+                                  "prdt_qty": value,
+                                  "prdt_total": value * int.parse(cartProvider.cartItems.firstWhere((element) => element.id == key,).price)
+                                });
+                              },);
+                              apiProvider.clearCoupon();
+                              await cartProvider.updateCart(size, context, cartProductData, true);
+                            }
+                          } catch (e) {
+                            print("Can't add to cart $e");
+                          } finally {
+                            setState(() {
+                              isLoading = false;
+                            });
                           }
                         },
                         child: Container(
@@ -331,103 +353,6 @@ class CartScreen extends StatelessWidget {
       
       );
     }
-  }
-
-  // Delete the product from cart
-  void confirmDelete( int id, Size size, int index, BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0), // Set your desired border radius
-          ),
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          child: Container(
-            // padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            height: 200,
-            child: Column(
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Column(
-                    children: [
-                      Center(
-                        child: AppTextWidget(text: "Remove item", fontSize: 20, fontWeight: FontWeight.w600),
-                      ),
-                      SizedBox(height: 16,),
-                      Center(
-                        child: Text(
-                           "Do you want to remove this item from the cart?",
-                           textAlign: TextAlign.center,
-                           style: TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.w400
-                           ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 40,
-                  width: double.infinity,
-                  child: Consumer<CartProvider>(
-                    builder: (context, provider, child) {
-                      return ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.zero
-                          ),
-                          backgroundColor: Colors.transparent.withOpacity(0.0),
-                          shadowColor: Colors.transparent.withOpacity(0.0),
-                          elevation: 0,
-                          overlayColor: Colors.transparent.withOpacity(0.1)
-                        ),
-                        onPressed: () async{
-                          await provider.removeCart(id, size, context, index).then((value) => Navigator.pop(context),);
-                        }, 
-                        child: const AppTextWidget(
-                          text: "Confirm", 
-                          fontSize: 14, fontWeight: FontWeight.w400, 
-                          fontColor: Colors.red,)
-                      );
-                    }
-                  ),
-                ),
-                
-                SizedBox(
-                  height: 40,
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent.withOpacity(0.0),
-                      shadowColor: Colors.transparent.withOpacity(0.0),
-                      elevation: 0,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.zero
-                      ),
-                      overlayColor: Colors.transparent.withOpacity(0.1)
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    }, 
-                    child: const AppTextWidget(text: "Cancel", fontSize: 14, fontWeight: FontWeight.w400, fontColor: Colors.grey,)
-                  ),
-                ),
-                const SizedBox(height: 10,)
-              ],
-            ),
-          )
-        );
-      },
-    );
-  
   }
 
 }

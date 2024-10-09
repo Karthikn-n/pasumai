@@ -34,7 +34,6 @@ class AppTextWidget extends StatelessWidget{
       maxLines: maxLines,
       textAlign: textAlign,
       style: TextStyle(
-        
         color: fontColor, 
         decoration: TextDecoration.none,
         fontSize: fontSize,

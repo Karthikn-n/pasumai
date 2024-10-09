@@ -29,7 +29,7 @@ SnackBar snackBarMessage({
         child: AppTextWidget(
           text: message, 
           fontWeight: FontWeight.w400,
-          fontSize: 14,
+          fontSize: 12,
           fontColor: Colors.white,
         ),
       ),

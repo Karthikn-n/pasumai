@@ -250,7 +250,7 @@ class AddressProvider extends ChangeNotifier{
                   child: Column(
                     children: [
                       Center(
-                        child: AppTextWidget(text: "Delete address", fontSize: 20, fontWeight: FontWeight.w600),
+                        child: AppTextWidget(text: "Delete address", fontSize: 18, fontWeight: FontWeight.w600),
                       ),
                       SizedBox(height: 16,),
                       Center(
@@ -258,7 +258,7 @@ class AddressProvider extends ChangeNotifier{
                            "Do you want to remove this address from the list?",
                            textAlign: TextAlign.center,
                            style: TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.w400
+                            fontSize: 14, fontWeight: FontWeight.w400
                            ),
                         ),
                       ),
@@ -343,7 +343,7 @@ class AddressProvider extends ChangeNotifier{
                   child: Column(
                     children: [
                       Center(
-                        child: AppTextWidget(text: "Default address", fontSize: 20, fontWeight: FontWeight.w600),
+                        child: AppTextWidget(text: "Default address", fontSize: 18, fontWeight: FontWeight.w600),
                       ),
                       SizedBox(height: 16,),
                       Center(
@@ -351,7 +351,7 @@ class AddressProvider extends ChangeNotifier{
                            "Do you want set this address default?",
                            textAlign: TextAlign.center,
                            style: TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.w400
+                            fontSize: 14, fontWeight: FontWeight.w400
                            ),
                         ),
                       ),

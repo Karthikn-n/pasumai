@@ -143,7 +143,7 @@ class _QuickOrderScreenState extends State<QuickOrderScreen> {
                                       text: TextSpan(
                                         text: "${productProvider.quickOrderQuantites[productProvider.quickOrderProductsList[index].id]}x ",
                                         style: TextStyle(
-                                          fontSize: 16,
+                                          fontSize: 14,
                                           fontWeight: FontWeight.w600,
                                           color: Theme.of(context).primaryColor
                                         ),
@@ -151,7 +151,7 @@ class _QuickOrderScreenState extends State<QuickOrderScreen> {
                                           TextSpan(
                                             text: "${productProvider.quickOrderProductsList[index].name}/${productProvider.quickOrderProductsList[index].quantity}",
                                             style: const TextStyle(
-                                              fontSize: 16,
+                                              fontSize: 14,
                                               fontWeight: FontWeight.w600,
                                               color: Colors.black
                                             )
@@ -163,10 +163,10 @@ class _QuickOrderScreenState extends State<QuickOrderScreen> {
                                     )
                                     : AppTextWidget(
                                       text: "${productProvider.quickOrderProductsList[index].name}/${productProvider.quickOrderProductsList[index].quantity}", 
-                                      fontSize: 16, 
+                                      fontSize: 14, 
                                       maxLines: 2,
                                       textOverflow: TextOverflow.ellipsis,
-                                      fontWeight: FontWeight.w600
+                                      fontWeight: FontWeight.w500
                                     ),
                                     const SizedBox(height: 5,),
                                     // Product Description
@@ -174,7 +174,7 @@ class _QuickOrderScreenState extends State<QuickOrderScreen> {
                                       text: productProvider.quickOrderProductsList[index].description.replaceAll("<p>", ""), 
                                       fontSize: 12, 
                                       maxLines: 2,
-                                      fontColor: Colors.black54,
+                                      fontColor: Colors.grey,
                                       textOverflow: TextOverflow.ellipsis,
                                       fontWeight: FontWeight.w300
                                     ),

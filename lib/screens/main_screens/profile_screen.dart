@@ -181,15 +181,15 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
                 ],
               ),
             ),
-            body: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Column(
-                children: [
-                  UserProfileWidget(prefs: prefs),
-                  const SizedBox(height: 20,),
-                  optionsBody[prefs.getInt('selectedOptionIndex') ?? selectedbody],
-                ],
-              ),
+            body: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: UserProfileWidget(prefs: prefs),
+                ),
+                const SizedBox(height: 16,),
+                optionsBody[prefs.getInt('selectedOptionIndex') ?? selectedbody],
+              ],
             ),
           );
         }
@@ -200,9 +200,9 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
   List<Widget> optionsBody = [
     OrdersHistoryWidget(),
     ActiveSubscriptionWidget(),
-    SubscriptionHistoryWidget(),
+    const SubscriptionHistoryWidget(),
     const YourAddressWidget(),
-    InvoiceListWidget(),
+    const InvoiceListWidget(),
     VacationListWidget(),
   ];
 

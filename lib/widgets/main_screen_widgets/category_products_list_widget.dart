@@ -84,15 +84,15 @@ class _CategoryProductsListWidgetState extends State<CategoryProductsListWidget>
         needBack: true,
         onBack: () => Navigator.pop(context),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        child: products.isEmpty
-        ? const Center(
-          child: AppTextWidget(text: "No Products", fontSize: 15, fontWeight: FontWeight.w500),
-        )
-        : CupertinoScrollbar(
-          controller: _scrollController,
-          child: ListView.builder(
+      body: CupertinoScrollbar(
+        controller: _scrollController,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: products.isEmpty
+          ? const Center(
+            child: AppTextWidget(text: "No Products", fontSize: 15, fontWeight: FontWeight.w500),
+          )
+          : ListView.builder(
             controller: _scrollController,
             itemCount: products.length,
             itemBuilder: (context, index) {

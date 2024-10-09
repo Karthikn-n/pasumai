@@ -7,9 +7,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class YourAddressWidget extends StatelessWidget {
+class YourAddressWidget extends StatefulWidget {
   const YourAddressWidget({super.key});
 
+  @override
+  State<YourAddressWidget> createState() => _YourAddressWidgetState();
+}
+
+class _YourAddressWidgetState extends State<YourAddressWidget> {
+  final ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
@@ -22,10 +28,13 @@ class YourAddressWidget extends StatelessWidget {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Column(
                   children: [
-                    const AppTextWidget(
-                      text: "My Addresses", 
-                      fontSize: 16, 
-                      fontWeight: FontWeight.w500
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      child: AppTextWidget(
+                        text: "My Addresses", 
+                        fontSize: 16, 
+                        fontWeight: FontWeight.w500
+                      ),
                     ),
                     const SizedBox(height: 15,),
                     LinearProgressIndicator(
@@ -41,10 +50,13 @@ class YourAddressWidget extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const AppTextWidget(
-                          text: "My Addresses", 
-                          fontSize: 16, 
-                          fontWeight: FontWeight.w500
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          child: AppTextWidget(
+                            text: "My Addresses", 
+                            fontSize: 16, 
+                            fontWeight: FontWeight.w500
+                          ),
                         ),
                          IconButton(
                           tooltip: "Add Address",
@@ -75,10 +87,13 @@ class YourAddressWidget extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const AppTextWidget(
-                            text: "My Addresses", 
-                            fontSize: 16, 
-                            fontWeight: FontWeight.w500
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 12),
+                            child: AppTextWidget(
+                              text: "My Addresses", 
+                              fontSize: 16, 
+                              fontWeight: FontWeight.w500
+                            ),
                           ),
                           IconButton(
                             tooltip: "Add Address",
@@ -111,16 +126,19 @@ class YourAddressWidget extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const AppTextWidget(
-                        text: "My Addresses", 
-                        fontSize: 16, 
-                        fontWeight: FontWeight.w500
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 12),
+                        child: AppTextWidget(
+                          text: "My Addresses", 
+                          fontSize: 16, 
+                          fontWeight: FontWeight.w500
+                        ),
                       ),
                        IconButton(
                         tooltip: "Add Address",
                         style: IconButton.styleFrom(
-                              padding: const EdgeInsets.all(0)
-                            ),
+                            padding: const EdgeInsets.all(0)
+                          ),
                         onPressed: (){
                           Navigator.push(context, downToTop(screen: const NewAddressFormWidget()));
                         },
@@ -145,101 +163,108 @@ class YourAddressWidget extends StatelessWidget {
   Widget addressList(Size size, List<AddressModel> addressList, int currentAddressId){
     return Consumer<AddressProvider>(
       builder: (context, provider, child) {
-        return ListView.builder(
-          itemCount: addressList.length,
-          itemBuilder: (context, index) {
-            return Column(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    provider.setCurrentAddress(address: provider.addresses[index]);
-                  },
-                  child: Container(
-                    // height: size.height * 0.22,
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        width: provider.addresses[index].id == provider.currentAddress!.id ? 2 : 1,
-                        color: provider.addresses[index].id == provider.currentAddress!.id
-                        ? Theme.of(context).primaryColor
-                        : Colors.grey.shade300 
-                      )
-                    ),
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+        return CupertinoScrollbar(
+          controller: _scrollController,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: ListView.builder(
+              controller: _scrollController,
+              itemCount: addressList.length,
+              itemBuilder: (context, index) {
+                return Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        provider.setCurrentAddress(address: provider.addresses[index]);
+                      },
+                      child: Container(
+                        // height: size.height * 0.22,
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            width: provider.addresses[index].id == provider.currentAddress!.id ? 2 : 1,
+                            color: provider.addresses[index].id == provider.currentAddress!.id
+                            ? Theme.of(context).primaryColor
+                            : Colors.grey.shade300 
+                          )
+                        ),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SizedBox(
-                                width: size.width * 0.7,
-                                child: AppTextWidget(
-                                  text: addressList[index].location, 
-                                  fontSize: 16, 
-                                  fontWeight: FontWeight.w500
-                                ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    width: size.width * 0.7,
+                                    child: AppTextWidget(
+                                      text: addressList[index].location, 
+                                      fontSize: 16, 
+                                      fontWeight: FontWeight.w500
+                                    ),
+                                  ),
+                                  PopupMenuButton(
+                                    color: Colors.white,
+                                    itemBuilder: (context) {
+                                      return [
+                                        PopupMenuItem(
+                                          onTap: () {
+                                              Navigator.push(context, SideTransistionRoute(
+                                              screen: NewAddressFormWidget(
+                                                needUpdate: true, 
+                                                updateAddress: provider.addresses[index], 
+                                                updateFormKey: GlobalKey<FormState>() 
+                                              ,)
+                                            ));
+                                          },
+                                          child: const AppTextWidget(text: "Edit", fontSize: 14, fontWeight: FontWeight.w500)
+                                        ),
+                                        PopupMenuItem(
+                                          onTap: () {
+                                            provider.confirmDelete(context, size, provider.addresses[index].id, index);
+                                          },
+                                          child: const AppTextWidget(text: "Delete", fontSize: 14, fontWeight: FontWeight.w500)
+                                        ),
+                                        PopupMenuItem(
+                                          onTap: () {
+                                            provider.setAddressDefault(context, size, provider.addresses[index].id);
+                                          },
+                                          child: const AppTextWidget(text: "Set as default", fontSize: 14, fontWeight: FontWeight.w500)
+                                        ),
+                                      ];
+                                    },
+                                  )
+                                
+                                ],
                               ),
-                              PopupMenuButton(
-                                color: Colors.white,
-                                itemBuilder: (context) {
-                                  return [
-                                    PopupMenuItem(
-                                      onTap: () {
-                                          Navigator.push(context, SideTransistionRoute(
-                                          screen: NewAddressFormWidget(
-                                            needUpdate: true, 
-                                            updateAddress: provider.addresses[index], 
-                                            updateFormKey: GlobalKey<FormState>() 
-                                          ,)
-                                        ));
-                                      },
-                                      child: const AppTextWidget(text: "Edit", fontSize: 14, fontWeight: FontWeight.w500)
-                                    ),
-                                    PopupMenuItem(
-                                      onTap: () {
-                                        provider.confirmDelete(context, size, provider.addresses[index].id, index);
-                                      },
-                                      child: const AppTextWidget(text: "Delete", fontSize: 14, fontWeight: FontWeight.w500)
-                                    ),
-                                    PopupMenuItem(
-                                      onTap: () {
-                                        provider.setAddressDefault(context, size, provider.addresses[index].id);
-                                      },
-                                      child: const AppTextWidget(text: "Set as default", fontSize: 14, fontWeight: FontWeight.w500)
-                                    ),
-                                  ];
-                                },
-                              )
-                            
+                              const SizedBox(height: 5,),
+                              AppTextWidget(
+                                text: '${addressList[index].flatNo}, ' 
+                                '${addressList[index].floorNo}, ' 
+                                '${addressList[index].address}, '
+                                '${addressList[index].landmark}, '
+                                '${addressList[index].location}, ' 
+                                '${addressList[index].region}, '
+                                '${addressList[index].pincode}, ',
+                                fontSize: 12, 
+                                maxLines: 5,
+                                fontWeight: FontWeight.w300
+                              ),
+                              const SizedBox(height: 5,),
                             ],
                           ),
-                          const SizedBox(height: 5,),
-                          AppTextWidget(
-                            text: '${addressList[index].flatNo}, ' 
-                            '${addressList[index].floorNo}, ' 
-                            '${addressList[index].address}, '
-                            '${addressList[index].landmark}, '
-                            '${addressList[index].location}, ' 
-                            '${addressList[index].region}, '
-                            '${addressList[index].pincode}, ',
-                            fontSize: 12, 
-                            maxLines: 5,
-                            fontWeight: FontWeight.w300
-                          ),
-                          const SizedBox(height: 5,),
-                        ],
+                        ),
+                      
                       ),
                     ),
-                  
-                  ),
-                ),
-                SizedBox(height: addressList.length -1 == index ? 70 : 10,)
-              ],
-            );
-          },
+                    SizedBox(height: addressList.length -1 == index ? 70 : 10,)
+                  ],
+                );
+              },
+            ),
+          ),
         );
       }
     );

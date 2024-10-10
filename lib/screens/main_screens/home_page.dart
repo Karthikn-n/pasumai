@@ -13,7 +13,7 @@ import 'package:app_3/screens/sub-screens/wishlist_products.dart';
 import 'package:app_3/service/connectivity_helper.dart';
 import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
 import 'package:app_3/widgets/common_widgets.dart/input_field_widget.dart';
-import 'package:app_3/widgets/common_widgets.dart/shimmer_widget.dart';
+import 'package:app_3/widgets/shimmer_widgets/shimmer_carousel_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/snackbar_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:app_3/widgets/main_screen_widgets/category_products_list_widget.dart';

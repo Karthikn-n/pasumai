@@ -644,7 +644,7 @@ class ApiProvider extends ChangeNotifier{
                   child: Column(
                     children: [
                       Center(
-                        child: AppTextWidget(text: "Remove wishlist", fontSize: 20, fontWeight: FontWeight.w600),
+                        child: AppTextWidget(text: "Remove wishlist", fontSize: 18, fontWeight: FontWeight.w600),
                       ),
                       SizedBox(height: 16,),
                       Center(
@@ -652,7 +652,7 @@ class ApiProvider extends ChangeNotifier{
                            "Do you want remove this product from wishlist?",
                            textAlign: TextAlign.center,
                            style: TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.w400
+                            fontSize: 14, fontWeight: FontWeight.w400
                            ),
                         ),
                       ),
@@ -740,9 +740,9 @@ class ApiProvider extends ChangeNotifier{
                   ),
                 ),
                 
-                AppTextWidget(text: "Order Placed Successfully", fontSize: 20, fontWeight: FontWeight.w500, fontColor: Theme.of(context).primaryColorDark,),
+                AppTextWidget(text: "Order Placed Successfully", fontSize: 18, fontWeight: FontWeight.w500, fontColor: Theme.of(context).primaryColorDark,),
                 // const SizedBox(height: 10,),
-                AppTextWidget(text: "Thank you!", fontSize: 16, fontWeight: FontWeight.w400, fontColor: Theme.of(context).primaryColorDark,),
+                AppTextWidget(text: "Thank you!", fontSize: 14, fontWeight: FontWeight.w400, fontColor: Theme.of(context).primaryColorDark,),
                 const SizedBox(height: 30,),
               ],
             ),

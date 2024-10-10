@@ -1,17 +1,15 @@
 import 'package:app_3/data/constants.dart';
-import 'package:app_3/helper/shared_preference_helper.dart';
 import 'package:app_3/model/vacation_model.dart';
 import 'package:app_3/providers/profile_provider.dart';
 import 'package:app_3/providers/vacation_provider.dart';
 import 'package:app_3/widgets/common_widgets.dart/button_widget.dart';
-import 'package:app_3/widgets/common_widgets.dart/shimmer_profile_widget.dart';
+import 'package:app_3/widgets/shimmer_widgets/shimmer_profile_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/snackbar_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class VacationListWidget extends StatelessWidget {
   const VacationListWidget({super.key});
@@ -26,17 +24,20 @@ class VacationListWidget extends StatelessWidget {
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AppTextWidget(
-                          text: "Vacation mode", 
-                          fontSize: 16, 
-                          fontWeight: FontWeight.w500
-                        ),
-                        SizedBox(height: 15,),
-                        Expanded(child: ShimmerProfileWidget())
-                      ],
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AppTextWidget(
+                            text: "Vacation mode", 
+                            fontSize: 16, 
+                            fontWeight: FontWeight.w500
+                          ),
+                          SizedBox(height: 15,),
+                          Expanded(child: ShimmerProfileWidget())
+                        ],
+                      ),
                     ),
                   );
                 }else if(!snapshot.hasData || snapshot.hasError){

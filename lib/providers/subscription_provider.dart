@@ -150,13 +150,12 @@ class SubscriptionProvider extends ChangeNotifier{
     final decodedResponse = json.decode(decrptedData.replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), ''));
     debugPrint('Add Subscription Response: $decodedResponse, Code: ${response.statusCode}');
     if(response.statusCode == 200 && decodedResponse['status'] == "success"){
-      
       // await activeSubscription().then((value) {
-        final preOrderData = PreOrderModel.fromJson(decodedResponse["data"]);
-        Navigator.push(context, SideTransistionRoute(
-          screen: const PreOrderProductsScreen(),
-          args: {'preOrderData': preOrderData}
-        ));
+      final preOrderData = PreOrderModel.fromJson(decodedResponse["data"]);
+      Navigator.push(context, SideTransistionRoute(
+        screen: const PreOrderProductsScreen(),
+        args: {'preOrderData': preOrderData}
+      ));
       // },);
     }else{
       print('Success: ${response.body}');
@@ -437,7 +436,7 @@ class SubscriptionProvider extends ChangeNotifier{
                   textAlign: TextAlign.center,
                   fontSize: 18, fontWeight: FontWeight.w600, fontColor: Theme.of(context).primaryColorDark,)),
                 // const SizedBox(height: 10,),
-                AppTextWidget(text: "Thank you!", fontSize: 16, fontWeight: FontWeight.w400, fontColor: Theme.of(context).primaryColorDark,),
+                AppTextWidget(text: "Thank you!", fontSize: 14, fontWeight: FontWeight.w400, fontColor: Theme.of(context).primaryColorDark,),
                 const SizedBox(height: 30,),
               ],
             ),

@@ -1,7 +1,7 @@
 import 'package:app_3/data/constants.dart';
 import 'package:app_3/model/invoice_model.dart';
 import 'package:app_3/providers/profile_provider.dart';
-import 'package:app_3/widgets/common_widgets.dart/shimmer_profile_widget.dart';
+import 'package:app_3/widgets/shimmer_widgets/shimmer_profile_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:app_3/widgets/subscription_widgets/subscription_detail_widget.dart';
 import 'package:flutter/cupertino.dart';

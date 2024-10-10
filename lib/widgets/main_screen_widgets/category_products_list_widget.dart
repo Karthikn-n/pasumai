@@ -4,7 +4,7 @@ import 'package:app_3/model/products_model.dart';
 import 'package:app_3/providers/api_provider.dart';
 import 'package:app_3/service/connectivity_helper.dart';
 import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
-import 'package:app_3/widgets/common_widgets.dart/shimmer_profile_widget.dart';
+import 'package:app_3/widgets/shimmer_widgets/shimmer_list_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -40,7 +40,7 @@ class CategoryProductsListWidget extends StatelessWidget {
                       needBack: true,
                       onBack: () => Navigator.pop(context),
                     ),
-                    body: const ShimmerProfileWidget()
+                    body: const ShimmerListWidget()
                   );
                 }else{
                   return productListing(categoryProvider.categoryProducts, size, context);
@@ -66,7 +66,7 @@ class CategoryProductsListWidget extends StatelessWidget {
 
   // Product List Widget
   Widget productListing(List<Products> products, Size size, BuildContext context){
-    final _scrollController = Provider.of<Constants>(context).categoriesController;
+    final scrollController = Provider.of<Constants>(context).categoriesController;
     return Scaffold(
       appBar: AppBarWidget(
         title: categoryName,
@@ -74,7 +74,7 @@ class CategoryProductsListWidget extends StatelessWidget {
         onBack: () => Navigator.pop(context),
       ),
       body: CupertinoScrollbar(
-        controller: _scrollController,
+        controller: scrollController,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: products.isEmpty
@@ -82,7 +82,7 @@ class CategoryProductsListWidget extends StatelessWidget {
             child: AppTextWidget(text: "No Products", fontSize: 15, fontWeight: FontWeight.w500),
           )
           : ListView.builder(
-            controller: _scrollController,
+            controller: scrollController,
             itemCount: products.length,
             itemBuilder: (context, index) {
               return Column(

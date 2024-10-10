@@ -7,6 +7,7 @@ class SubscriptionDetailWidget extends StatelessWidget {
   final Color? valueColor;
   final Color? titleColor;
   final double? width;
+  final Widget? shimmerValue;
   final FontWeight? valueWeight;
   const SubscriptionDetailWidget({
     super.key, 
@@ -14,6 +15,7 @@ class SubscriptionDetailWidget extends StatelessWidget {
     required this.value,
     this.titleColor,
     this.width,
+    this.shimmerValue,
     this.valueWeight,
     this.valueColor
   });
@@ -32,7 +34,7 @@ class SubscriptionDetailWidget extends StatelessWidget {
             fontWeight: FontWeight.w500
           ),
         ),
-        Expanded(
+        shimmerValue ?? Expanded(
           child: AppTextWidget(
             text: value,
             maxLines: 2,

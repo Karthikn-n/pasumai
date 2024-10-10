@@ -77,7 +77,7 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
         builder: (context, provider, child,) {
           return Scaffold(
             key: _scaffoldStateKey,
-            resizeToAvoidBottomInset: false,
+            resizeToAvoidBottomInset: true,
             appBar: AppBarWidget(
               title: 'Profile',
               needBack: true,

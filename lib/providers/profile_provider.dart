@@ -631,7 +631,7 @@ class ProfileProvider extends ChangeNotifier{
                   child: Column(
                     children: [
                       Center(
-                        child: AppTextWidget(text: "Delete vacation", fontSize: 20, fontWeight: FontWeight.w600),
+                        child: AppTextWidget(text: "Delete vacation", fontSize: 18, fontWeight: FontWeight.w600),
                       ),
                       SizedBox(height: 16,),
                       Center(
@@ -639,7 +639,7 @@ class ProfileProvider extends ChangeNotifier{
                            "Do you want to delete this vacation?",
                            textAlign: TextAlign.center,
                            style: TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.w400
+                            fontSize: 14, fontWeight: FontWeight.w400
                            ),
                         ),
                       ),
@@ -725,7 +725,7 @@ class ProfileProvider extends ChangeNotifier{
                       const Center(
                         child: AppTextWidget(
                           text: "Update profile", 
-                          fontSize: 20, 
+                          fontSize: 18, 
                           fontWeight: FontWeight.w600),
                       ),
                       const SizedBox(height: 16,),
@@ -734,7 +734,7 @@ class ProfileProvider extends ChangeNotifier{
                           child: Text(
                             "Are you sure to update profile?",
                             style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.w400
+                              fontSize: 14, fontWeight: FontWeight.w400
                             ),
                           ),
                         )
@@ -744,13 +744,13 @@ class ProfileProvider extends ChangeNotifier{
                              const Text(
                               "OTP sent to your new mobile number",
                               style: TextStyle(
-                                fontSize: 15, fontWeight: FontWeight.w400
+                                fontSize: 14, fontWeight: FontWeight.w400
                               ),
                             ),
                             Text(
                               profileData["mobile_no"],
                               style:  TextStyle(
-                                fontSize: 15, fontWeight: FontWeight.w500,
+                                fontSize: 14, fontWeight: FontWeight.w500,
                                 color: Theme.of(context).primaryColor
                               ),
                             )
@@ -837,7 +837,7 @@ class ProfileProvider extends ChangeNotifier{
                   child: Column(
                     children: [
                       Center(
-                        child: AppTextWidget(text: "Logout", fontSize: 20, fontWeight: FontWeight.w600),
+                        child: AppTextWidget(text: "Logout", fontSize: 18, fontWeight: FontWeight.w600),
                       ),
                       SizedBox(height: 16,),
                       Center(
@@ -845,7 +845,7 @@ class ProfileProvider extends ChangeNotifier{
                            "Do you want logout?",
                            textAlign: TextAlign.center,
                            style: TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.w400
+                            fontSize: 14, fontWeight: FontWeight.w400
                            ),
                         ),
                       ),
@@ -962,7 +962,7 @@ class ProfileProvider extends ChangeNotifier{
                   textAlign: TextAlign.center,
                   fontSize: 18, fontWeight: FontWeight.w500, fontColor: Theme.of(context).primaryColorDark,)),
                 // const SizedBox(height: 10,),
-                AppTextWidget(text: "Thank you!", fontSize: 16, fontWeight: FontWeight.w400, fontColor: Theme.of(context).primaryColorDark,),
+                AppTextWidget(text: "Thank you!", fontSize: 14, fontWeight: FontWeight.w400, fontColor: Theme.of(context).primaryColorDark,),
                 const SizedBox(height: 30,),
               ],
             ),

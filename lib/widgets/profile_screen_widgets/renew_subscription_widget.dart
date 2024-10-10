@@ -6,6 +6,7 @@ import 'package:app_3/screens/sub-screens/address_selection_screen.dart';
 import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
 import 'package:app_3/widgets/common_widgets.dart/button_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
+import 'package:app_3/widgets/shimmer_widgets/shimmer_parent.dart';
 import 'package:app_3/widgets/subscription_widgets/subscription_detail_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -26,6 +27,7 @@ class _RenewSubscriptionWidgetState extends State<RenewSubscriptionWidget> {
 
   bool needStartDate = false;
   bool isLoading = false;
+  bool isFetching = false;
 
   @override
   Widget build(BuildContext context) {
@@ -60,8 +62,8 @@ class _RenewSubscriptionWidgetState extends State<RenewSubscriptionWidget> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(
-                          height: size.height * 0.13,
-                          width: size.width * 0.26,
+                          height: size.height * 0.08,
+                          width: size.width * 0.16,
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(8),
                             child: CachedNetworkImage(
@@ -87,8 +89,8 @@ class _RenewSubscriptionWidgetState extends State<RenewSubscriptionWidget> {
                               Row(
                                 children: [
                                   SizedBox(
-                                    width: size.width * 0.3, 
-                                    child: const AppTextWidget(text: "Final price", fontSize: 14, fontWeight: FontWeight.w400)
+                                    width: size.width * 0.15, 
+                                    child: const AppTextWidget(text: "Price", fontSize: 14, fontWeight: FontWeight.w400)
                                   ),
                                   AppTextWidget(text:"₹${widget.product.productPrice}", fontSize: 12, fontWeight: FontWeight.w500, fontColor: Theme.of(context).primaryColor,),
                                 ],
@@ -145,8 +147,8 @@ class _RenewSubscriptionWidgetState extends State<RenewSubscriptionWidget> {
                             ),
                             AppTextWidget(
                               text: widget.product.status, 
-                              fontSize: 15, 
-                              fontWeight: FontWeight.w400,
+                              fontSize: 12, 
+                              fontWeight: FontWeight.w500,
                               fontColor: widget.product.status == "Active"
                                 ? Theme.of(context).primaryColor
                                 : Colors.orange,
@@ -166,21 +168,23 @@ class _RenewSubscriptionWidgetState extends State<RenewSubscriptionWidget> {
                                 fontWeight: FontWeight.w500
                               ),
                             ),
-                            Expanded(
-                              child: Row(
-                                children: [
-                                  AppTextWidget(
-                                    text: renewProvider.renewStartDate![widget.index] != null
-                                    ? DateFormat("dd MMM yyyy").format(renewProvider.renewStartDate![widget.index]!)
-                                    : "Pick a date",
-                                    maxLines: 2,
-                                    textOverflow: TextOverflow.ellipsis, 
-                                    fontSize: 12, 
-                                    fontColor: needStartDate ? Colors.red : null,
-                                    fontWeight: FontWeight.w400
-                                  ),
-                                  const SizedBox(width: 8,),
-                                  GestureDetector(
+                            isFetching
+                              ? const ShimmerParent(height: 10, width: 35)
+                              : Expanded(
+                                child: Row(
+                                  children: [
+                                    AppTextWidget(
+                                      text: renewProvider.renewStartDate![widget.index] != null
+                                      ? DateFormat("dd MMM yyyy").format(renewProvider.renewStartDate![widget.index]!)
+                                      : "Pick a date",
+                                      maxLines: 2,
+                                      textOverflow: TextOverflow.ellipsis, 
+                                      fontSize: 12, 
+                                      fontColor: needStartDate ? Colors.red : null,
+                                      fontWeight: FontWeight.w400
+                                    ),
+                                    const SizedBox(width: 8,),
+                                    GestureDetector(
                                     onTap: () async {
                                       DateTime? renewDate = await showDatePicker(
                                         context: context, 
@@ -193,14 +197,26 @@ class _RenewSubscriptionWidgetState extends State<RenewSubscriptionWidget> {
                                         renewProvider.setStartDate(renewDate, widget.index);
                                         setState(() {
                                           needStartDate = false;
+                                          isFetching = true;
                                         });
-                                        await renewProvider.renewSubscriptionApi(
-                                        {
-                                        "sub_id": widget.product.subId, 
-                                        "bal_amt": widget.product.customerBalacne,
-                                        "renewal_date": DateFormat("yyyy-MM-dd").format(renewDate),
-                                        "prdt_price": widget.product.productPrice,
-                                      }, context, size, widget.index);
+                                        try {
+                                          await renewProvider.renewSubscriptionApi(
+                                          {
+                                            "sub_id": widget.product.subId, 
+                                            "bal_amt": widget.product.customerBalacne,
+                                            "renewal_date": DateFormat("yyyy-MM-dd").format(renewDate),
+                                            "prdt_price": widget.product.productPrice,
+                                          }, context, 
+                                            size, 
+                                            widget.index
+                                          );
+                                        } catch (e) {
+                                          print("Can't Renew subscription: $e");
+                                        } finally {
+                                          setState(() {
+                                            isFetching = false;
+                                          });
+                                        }
                                       }else{
                                         renewProvider.setStartDate(null, widget.index);
                                         setState(() {
@@ -214,28 +230,31 @@ class _RenewSubscriptionWidgetState extends State<RenewSubscriptionWidget> {
                                       color: Theme.of(context).primaryColor,
                                     ),
                                   )
-                                ],
-                              ),
+                                  ],
+                                ),
                             ),
                           ],
                         ),
-  
                         const SizedBox(height: 4,),
                         // Subscription End Date
                         SubscriptionDetailWidget(
                           title: 'End date', 
+                          shimmerValue:  isFetching ? const ShimmerParent(height: 10, width: 35) : null,
                           value: renewProvider.renewSubscriptionResponse?[widget.index] != null 
                           ? DateFormat("dd MMM yyyy").format(DateTime.parse(renewProvider.renewSubscriptionResponse![widget.index]!.endDate))
-                          : "End date"),
+                          : "End date"
+                        ),
                         const SizedBox(height: 4,),
                         // Subscription grace date
                         SubscriptionDetailWidget(
-                          title: 'Grace date: ', 
-                          value: renewProvider.renewSubscriptionResponse![widget.index] != null 
-                          ? DateFormat("dd MMM yyyy").format(DateTime.parse(renewProvider.renewSubscriptionResponse![widget.index]!.graceDate))
-                          : "No date",
-                          valueColor: Colors.orange,
-                        ),
+                            title: 'Grace date: ', 
+                            shimmerValue:  isFetching ? const ShimmerParent(height: 10, width: 35) : null,
+                            value: renewProvider.renewSubscriptionResponse![widget.index] != null 
+                            ? DateFormat("dd MMM yyyy").format(DateTime.parse(renewProvider.renewSubscriptionResponse![widget.index]!.graceDate))
+                            : "No date",
+                            valueWeight: FontWeight.w500,
+                            valueColor: Colors.orange,
+                          ),
                         // const SizedBox(height: 4,),
                         // // subscription product price
                         // SubscriptionDetailWidget(
@@ -251,13 +270,15 @@ class _RenewSubscriptionWidgetState extends State<RenewSubscriptionWidget> {
                         const SizedBox(height: 4,),
                         SubscriptionDetailWidget(
                           title: 'Total days', 
+                          shimmerValue:  isFetching ? const ShimmerParent(height: 10, width: 35) : null,
                           value: renewProvider.renewSubscriptionResponse![widget.index] == null 
                           ? "0 day"
                           : "${renewProvider.renewSubscriptionResponse![widget.index]!.totalDays} days",
                         ),
                         const SizedBox(height: 4,),
                         SubscriptionDetailWidget(
-                          title: 'Total Quantity', 
+                          title: 'Total quantity', 
+                          shimmerValue:  isFetching ? const ShimmerParent(height: 10, width: 15) : null,
                           value: renewProvider.renewSubscriptionResponse![widget.index] == null 
                           ? "0"
                           : renewProvider.renewSubscriptionResponse![widget.index]!.totalQty,
@@ -265,16 +286,20 @@ class _RenewSubscriptionWidgetState extends State<RenewSubscriptionWidget> {
                         const SizedBox(height: 4,),
                         // payment status
                         SubscriptionDetailWidget(
-                          title: 'Your Balance', 
+                          title: 'Your balance', 
                           value: "₹${widget.product.customerBalacne}",
                         ),
                         const SizedBox(height: 4,),
                         // total amount
                         SubscriptionDetailWidget(
-                          title: 'Total', 
-                          value: renewProvider.renewSubscriptionResponse![widget.index] == null 
-                          ? "₹0"
-                          : "₹${renewProvider.renewSubscriptionResponse![widget.index]!.finalTotal}"),
+                            title: 'Total', 
+                            shimmerValue: isFetching ? const ShimmerParent(height: 10, width: 35) : null,
+                            valueColor: Theme.of(context).primaryColor,
+                            valueWeight: FontWeight.w500,
+                            value: renewProvider.renewSubscriptionResponse![widget.index] == null 
+                            ? "₹0"
+                            : "₹${renewProvider.renewSubscriptionResponse![widget.index]!.finalTotal}"
+                          ),
                         const SizedBox(height: 4,),
                       ],
                     ),
@@ -289,7 +314,7 @@ class _RenewSubscriptionWidgetState extends State<RenewSubscriptionWidget> {
                         onTap: () {
                         Navigator.push(context, downToTop(screen: const AddressSelectionScreen()));
                       },
-                       child: AppTextWidget(text: "Change Address", fontSize: 12, fontWeight: FontWeight.w500, fontColor: Theme.of(context).primaryColor,)
+                       child: AppTextWidget(text: "Change address", fontSize: 12, fontWeight: FontWeight.w500, fontColor: Theme.of(context).primaryColor,)
                       )
                     ],
                   ), 

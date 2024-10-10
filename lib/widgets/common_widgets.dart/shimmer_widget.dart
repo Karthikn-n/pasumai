@@ -7,28 +7,95 @@ class ShimmerCarosouelView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
-    return SizedBox(
-      height: size.height * 0.25,
-      child:  ListView.builder(
-        itemCount: 3,
-        scrollDirection: Axis.horizontal, // Number of shimmer items
-        itemBuilder: (context, index) {
-          return Shimmer.fromColors(
-            baseColor: Colors.grey[300]!,
-            highlightColor: Colors.grey[100]!,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                height: size.height * 0.05,
-                width: size.width * 0.45,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(),
+      body: SizedBox(
+        height: size.height * 0.4,
+        child:  ListView.builder(
+          itemCount: 3,
+          scrollDirection: Axis.horizontal, // Number of shimmer items
+          itemBuilder: (context, index) {
+            return Row(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Shimmer.fromColors(
+                      baseColor: Colors.grey[300]!,
+                      highlightColor: Colors.grey[100]!,
+                      child: Container(
+                        height: size.height * 0.3,
+                        width:  size.width * 0.7,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8,),
+                    SizedBox(
+                      width: size.width  *0.7,
+                      child: Row(
+                        // crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Shimmer.fromColors(
+                                baseColor: Colors.grey[300]!,
+                                highlightColor: Colors.grey[100]!,
+                                child: Container(
+                                  decoration:  BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  height: 25,
+                                  width: size.width * 0.4,
+                                ), 
+                              ),
+                              const SizedBox(height: 4,),
+                              Shimmer.fromColors(
+                                baseColor: Colors.grey[300]!,
+                                highlightColor: Colors.grey[100]!,
+                                child: Container(
+                                  decoration:  BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  height: 25,
+                                  width: size.width * 0.25,
+                                ), 
+                              )
+                            ],
+                          ),
+                          Shimmer.fromColors(
+                            baseColor: Colors.grey[300]!,
+                            highlightColor: Colors.grey[100]!,
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration:  BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              // height: 25,
+                              // width: 60,
+                              child: const Text("Subscribe"),
+                            ), 
+                          )
+                            
+                        ],
+                      ),
+                    ),
+                   
+                  ],
                 ),
-              ),
-            ),
-          );
-        },
+                const SizedBox(width: 10,)
+              ],
+            );
+          },
+        ),
       ),
     );
   }

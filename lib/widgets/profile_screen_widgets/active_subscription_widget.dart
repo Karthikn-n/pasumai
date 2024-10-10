@@ -1,11 +1,10 @@
 import 'package:app_3/data/constants.dart';
 import 'package:app_3/helper/page_transition_helper.dart';
-import 'package:app_3/helper/shared_preference_helper.dart';
 import 'package:app_3/model/active_subscription_model.dart';
 import 'package:app_3/providers/subscription_provider.dart';
-import 'package:app_3/widgets/common_widgets.dart/shimmer_profile_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:app_3/widgets/profile_screen_widgets/renew_subscription_widget.dart';
+import 'package:app_3/widgets/shimmer_widgets/shimmer_subscription_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +26,7 @@ class ActiveSubscriptionWidget extends StatelessWidget {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Expanded(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 12),
@@ -37,7 +37,7 @@ class ActiveSubscriptionWidget extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 15,),
-                      Expanded(child: ShimmerProfileWidget())
+                      Expanded(child: ShimmerSubscriptionWidget())
                     ],
                   ),
                 );
@@ -155,8 +155,10 @@ class ActiveSubscriptionWidget extends StatelessWidget {
                                             maxLines: 2,
                                           ),
                                         ),
+                                        // More Options
                                         PopupMenuButton(
                                           color: Colors.white,
+                                          tooltip: "Show menu",
                                           child: const Icon(CupertinoIcons.ellipsis_vertical, size: 20,),
                                           itemBuilder: (popUpcontext) {
                                             return options.map((option) {
@@ -223,6 +225,7 @@ class ActiveSubscriptionWidget extends StatelessWidget {
                                       ],
                                     ),
                                     const SizedBox(height: 4,),
+                                    // Product Price
                                     Row(
                                       children: [
                                         SizedBox(
@@ -238,6 +241,7 @@ class ActiveSubscriptionWidget extends StatelessWidget {
                                       ],
                                     ),
                                     const SizedBox(height: 4,),
+                                    // Subscription start date
                                     Row(
                                       children: [
                                         SizedBox(
@@ -248,6 +252,7 @@ class ActiveSubscriptionWidget extends StatelessWidget {
                                       ],
                                     ),
                                     const SizedBox(height: 4,),
+                                    // Frequency subscription
                                     Row(
                                       children: [
                                         SizedBox(
@@ -258,6 +263,7 @@ class ActiveSubscriptionWidget extends StatelessWidget {
                                       ],
                                     ),
                                     const SizedBox(height: 4,),
+                                    // Current status
                                     Row(
                                       children: [
                                         SizedBox(
@@ -273,6 +279,7 @@ class ActiveSubscriptionWidget extends StatelessWidget {
                                         ),
                                       ],
                                     ),
+                                    // Subscription quantity
                                     subscripedProducts[index].frequency == "everyday"
                                     ? Column(
                                         children: [
@@ -304,7 +311,7 @@ class ActiveSubscriptionWidget extends StatelessWidget {
                               ),
                             ],
                           ),
-                          // Subscription Detail
+                          // Subscription quantity 
                           subscripedProducts[index].frequency == "everyday"
                           ? Container()
                           : Row(

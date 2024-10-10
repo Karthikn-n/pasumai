@@ -3,7 +3,7 @@ import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/providers/api_provider.dart';
 import 'package:app_3/service/connectivity_helper.dart';
 import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
-import 'package:app_3/widgets/common_widgets.dart/shimmer_list_widget.dart';
+import 'package:app_3/widgets/shimmer_widgets/shimmer_list_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';

@@ -1,8 +1,8 @@
 import 'package:app_3/data/constants.dart';
 import 'package:app_3/model/active_subscription_model.dart';
 import 'package:app_3/providers/subscription_provider.dart';
-import 'package:app_3/widgets/common_widgets.dart/shimmer_profile_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
+import 'package:app_3/widgets/shimmer_widgets/shimmer_subscription_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +23,7 @@ class SubscriptionHistoryWidget extends StatelessWidget {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Expanded(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 12),
@@ -33,12 +34,7 @@ class SubscriptionHistoryWidget extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 15,),
-                      // LinearProgressIndicator(
-                      //   // minHeight: 1,
-                      //   color: Theme.of(context).primaryColor,
-                      //   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                      // ),
-                       Expanded(child: ShimmerProfileWidget())
+                       Expanded(child: ShimmerSubscriptionWidget())
                     ],
                   ),
                 );

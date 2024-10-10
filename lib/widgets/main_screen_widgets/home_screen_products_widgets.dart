@@ -172,7 +172,7 @@ class _HomeScreenProductsState extends State<HomeScreenProducts>{
                             ),
                           ),
                           // Add a Product to Cart 
-                          cartProvider.cartQuantities[product.id] != null
+                          cartProvider.cartQuantities[product.id] != null && widget.icon == null
                           ? Container(
                               padding: const EdgeInsets.all(5),
                               decoration: BoxDecoration(
@@ -319,7 +319,6 @@ class _HomeScreenProductsState extends State<HomeScreenProducts>{
     );
   }
 
-  
 
 }
 

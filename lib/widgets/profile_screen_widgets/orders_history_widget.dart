@@ -3,7 +3,7 @@ import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/model/orders_model.dart';
 import 'package:app_3/providers/profile_provider.dart';
 import 'package:app_3/widgets/common_widgets.dart/button_widget.dart';
-import 'package:app_3/widgets/common_widgets.dart/shimmer_profile_widget.dart';
+import 'package:app_3/widgets/shimmer_widgets/shimmer_profile_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/snackbar_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:app_3/widgets/profile_screen_widgets/order_detail_widget.dart';
@@ -317,7 +317,7 @@ class OrdersHistoryWidget extends StatelessWidget {
                                   child: AppTextWidget(
                                     text: "See detail", 
                                     fontSize: 12, 
-                                    fontWeight: FontWeight.w400,
+                                    fontWeight: FontWeight.w500,
                                     fontColor: Theme.of(context).primaryColor,
                                   ),
                                 ),

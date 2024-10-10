@@ -60,6 +60,7 @@ class TextFields extends StatelessWidget {
         maxLines: maxLine,
         focusNode: focusNode,
         // expands: false,
+        
         keyboardType: keyboardType,
         readOnly: readOnly ?? false,
         onTap: onTap,
@@ -84,7 +85,7 @@ class TextFields extends StatelessWidget {
             color:Colors.grey.withOpacity(0.5)
           ),
           floatingLabelStyle: TextStyle(
-            fontSize: 17,
+            fontSize: 14,
             fontWeight: FontWeight.w500,
             color:Colors.grey.withOpacity(0.5)
           ),

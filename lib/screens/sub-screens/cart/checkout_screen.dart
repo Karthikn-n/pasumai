@@ -255,34 +255,41 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       suffixIcon:  provider.isCouponApplied 
                         ? Icon(CupertinoIcons.check_mark_circled, size: 24, color: Theme.of(context).primaryColor,)
                         : TextButton(
-                        onPressed: () async {
-                          if (couponController.text.isEmpty) {
-                            final appliedMessage = snackBarMessage(
-                              context: context, 
-                              message: 'Enter a coupon code', 
-                              backgroundColor: Theme.of(context).primaryColor, 
-                              sidePadding: size.width * 0.1, 
-                              bottomPadding: size.height * 0.05
-                            );
-                            ScaffoldMessenger.of(context).showSnackBar(appliedMessage);
-                          }else{
-                            if (widget.fromCart ?? true) {
-                              await provider.applyCouponQuickOrder(couponController.text, size, provider.totalQuickOrderAmount.toString(), context);
-                            }else{
-                              await provider.applyCoupon(couponController.text, size, cartProvider.totalCartAmount.toString(), context);
-                            }
-                          }
-                        }, 
-                        style: ButtonStyle(
-                          overlayColor: WidgetStatePropertyAll(Colors.grey.withOpacity(0.1))
-                        ),
-                        child: AppTextWidget(
-                          text:  'Apply', 
-                          fontSize: 12, 
-                          fontColor: Theme.of(context).primaryColor,
-                          fontWeight: FontWeight.w500
-                        )
-                      ),
+                            onPressed: () async {
+                              if (couponController.text.isEmpty) {
+                                final appliedMessage = snackBarMessage(
+                                  context: context, 
+                                  message: 'Enter a coupon code', 
+                                  backgroundColor: Theme.of(context).primaryColor, 
+                                  sidePadding: size.width * 0.1, 
+                                  bottomPadding: size.height * 0.05
+                                );
+                                ScaffoldMessenger.of(context).showSnackBar(appliedMessage);
+                              }else{
+                                if (widget.fromCart ?? true) {
+                                  await provider.applyCouponQuickOrder(couponController.text, size, provider.totalQuickOrderAmount.toString(), context);
+                                }else{
+                                  await provider.applyCoupon(couponController.text, size, cartProvider.totalCartAmount.toString(), context);
+                                }
+                              }
+                            }, 
+                            style: ElevatedButton.styleFrom(
+                              splashFactory: InkRipple.splashFactory,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(10),
+                                  topRight: Radius.circular(10)
+                                )
+                              ),
+                              overlayColor: Colors.grey.withOpacity(0.1)
+                            ),
+                            child: AppTextWidget(
+                              text:  'Apply', 
+                              fontSize: 12, 
+                              fontColor: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.w500
+                            )
+                          ),
                     ),
                     const SizedBox(height: 16,),
                     // Schedule Delivery detail

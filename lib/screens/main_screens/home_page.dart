@@ -178,20 +178,8 @@ class _HomePageState extends State<HomePage> {
                           // overlayColor: Colors.grey.shade400
                         ),
                         onPressed: () async {
-                          await wishlistProductProvider.wishlistProductsAPI();
-                          
-                          if (wishlistProductProvider.wishlistProducts.isEmpty) {
-                            SnackBar? wishlistMessage = snackBarMessage(
-                              context: context, 
-                              message: wishlistProductProvider.message!, 
-                              backgroundColor: Theme.of(context).primaryColor, 
-                              sidePadding: size.width * 0.1, 
-                              bottomPadding: size.height * 0.05
-                            );
-                            ScaffoldMessenger.of(context).showSnackBar(wishlistMessage);
-                          }else {
-                            Navigator.push(context, downToTop(screen: const WishlistProducts()));
-                          }
+                          wishlistProductProvider.wishlistProductsAPI();
+                          Navigator.push(context, downToTop(screen: const WishlistProducts()));
                         },
                         icon:  Icon(
                           CupertinoIcons.heart_fill, 
@@ -435,7 +423,7 @@ class _HomePageState extends State<HomePage> {
                                   );
                                 },
                               ),
-                              const SizedBox(height: 16,),
+                              const SizedBox(height: 6,),
                               // Featured Products Heading
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -485,7 +473,7 @@ class _HomePageState extends State<HomePage> {
                                   ));
                                 },
                               ),
-                              const SizedBox(height: 16,),
+                              const SizedBox(height: 6,),
                               // Best Seller Heading
                               Row(
                                 // crossAxisAlignment: CrossAxisAlignment.center,

@@ -1,3 +1,4 @@
+import 'package:app_3/data/constants.dart';
 import 'package:app_3/model/active_subscription_model.dart';
 import 'package:app_3/providers/subscription_provider.dart';
 import 'package:app_3/widgets/common_widgets.dart/shimmer_profile_widget.dart';
@@ -7,15 +8,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class SubscriptionHistoryWidget extends StatefulWidget {
+class SubscriptionHistoryWidget extends StatelessWidget {
   const SubscriptionHistoryWidget({super.key});
-
-  @override
-  State<SubscriptionHistoryWidget> createState() => _SubscriptionHistoryWidgetState();
-}
-
-class _SubscriptionHistoryWidgetState extends State<SubscriptionHistoryWidget> {
-  final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -104,15 +98,15 @@ class _SubscriptionHistoryWidgetState extends State<SubscriptionHistoryWidget> {
 
 // History product List
   Widget subscripitionHistoryList(Size size, List<ActiveSubscriptionModel> historyProductsList){
-    return Consumer<SubscriptionProvider>(
-      builder: (context, activeSub, child) {
+    return Consumer2<SubscriptionProvider, Constants>(
+      builder: (context, activeSub, scrollController, child) {
         List<ActiveSubscriptionModel> historyProducts = historyProductsList.reversed.toList();
         return CupertinoScrollbar(
-          controller: _scrollController,
+          controller: scrollController.subHistoryScrollController,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: ListView.builder(
-              controller: _scrollController,
+              controller: scrollController.subHistoryScrollController,
               itemCount: historyProducts.length,
               itemBuilder: (context, index) {
                 return Column(

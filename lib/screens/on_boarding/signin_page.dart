@@ -76,9 +76,24 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
             duration: const Duration(milliseconds: 10),
             height: imageHeight, // Dynamically change height based on keyboard
             width: size.width,
-            child: Image.asset(
-              "assets/icons/on-boarding/login_banner.png",
-              fit: BoxFit.cover,
+            child: Stack(
+              fit: StackFit.expand,
+              alignment: Alignment.center,
+              children: [
+                Image.asset(
+                  "assets/icons/on-boarding/login_banner_bg.png",
+                  fit: BoxFit.cover,
+                ),
+                Positioned(
+                  bottom: -10,
+                  right: 0,
+                  left: 0,
+                  child: Image.asset(
+                    "assets/icons/on-boarding/login_banner2.png",
+                    fit: BoxFit.cover,
+                  ),
+                )
+              ],
             ),
           ),
             //Login content

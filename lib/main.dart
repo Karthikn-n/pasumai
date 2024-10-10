@@ -1,3 +1,4 @@
+import 'package:app_3/data/constants.dart';
 import 'package:app_3/helper/firebase_analytics_helper.dart';
 import 'package:app_3/providers/api_provider.dart';
 import 'package:app_3/providers/locale_provider.dart';
@@ -39,7 +40,8 @@ void main() async {
           ChangeNotifierProvider(create: (_) => LocaleProvider()),
           ChangeNotifierProvider(create: (_) => ProfileProvider(),),
           ChangeNotifierProvider(create: (_) => VacationProvider()),
-          ChangeNotifierProvider(create: (_) => ApiProvider(),)
+          ChangeNotifierProvider(create: (_) => ApiProvider(),),
+          ChangeNotifierProvider(create: (_) => Constants(),)
         ],
         child: const MyApp()
       )

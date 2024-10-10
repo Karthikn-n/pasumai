@@ -1,6 +1,8 @@
 import 'package:app_3/providers/api_provider.dart';
 import 'package:app_3/providers/cart_items_provider.dart';
 import 'package:app_3/helper/shared_preference_helper.dart';
+import 'package:app_3/providers/profile_provider.dart';
+import 'package:app_3/providers/subscription_provider.dart';
 import 'package:app_3/repository/app_repository.dart';
 import 'package:app_3/screens/main_screens/cart_screen.dart';
 import 'package:app_3/screens/main_screens/profile_screen.dart';
@@ -33,6 +35,11 @@ class _BottomBarState extends State<BottomBar> {
   bool _isInitialized = false;
   bool isQuickOrderSelected = false;
 
+  @override
+  void initState() {
+    super.initState();
+    preloadApi();
+  }
 
   @override
   void didChangeDependencies() {
@@ -95,10 +102,15 @@ class _BottomBarState extends State<BottomBar> {
                           ), 'Home',false
                         ),
                         buildBottomNavigationBarItem(
-                          1,  Icon(
-                            CupertinoIcons.shopping_cart,
-                            color: apiProvider.bottomIndex == 1 ? Theme.of(context).primaryColor : Colors.grey.shade400,
-                            size: 28.0,
+                          1, SizedBox(
+                            height: 24,
+                            width: 24,
+                            child: Image.asset(
+                              "assets/category/cart.png",
+                              fit: BoxFit.cover,
+                              // filterQuality: FilterQuality.high,
+                              color: apiProvider.bottomIndex == 1 ? Theme.of(context).primaryColor : Colors.grey.shade600,
+                            )
                           ), 'Cart',false
                         ),
                         buildBottomNavigationBarItem(
@@ -124,7 +136,8 @@ class _BottomBarState extends State<BottomBar> {
                       ],
                       
                       type: BottomNavigationBarType.fixed,
-                      showUnselectedLabels: true,
+                      showUnselectedLabels: false,
+                      showSelectedLabels: false,
                       currentIndex: apiProvider.bottomIndex,
                       selectedItemColor: Theme.of(context).primaryColor,
                       unselectedItemColor: Colors.grey.shade500,
@@ -228,14 +241,13 @@ class _BottomBarState extends State<BottomBar> {
                         ), '',true
                       ),
                       buildBottomNavigationBarItem(
-                        3,  SizedBox(
-                          child: Image.asset(
-                            height: 28,
-                            width: 28,
-                            "assets/icons/crown.png",
-                            color: apiProvider.bottomIndex == 3 ? Theme.of(context).primaryColor : Colors.grey.shade600,
-                            // size: 24.0,
-                          ),
+                        3,  Image.asset(
+                          height: 28,
+                          width: 28,
+                          fit: BoxFit.cover,
+                          "assets/icons/crown.png",
+                          color: apiProvider.bottomIndex == 3 ? Theme.of(context).primaryColor : Colors.grey.shade600,
+                          // size: 24.0,
                         ), 'Subscription',true
                       ),
                       buildBottomNavigationBarItem(
@@ -331,6 +343,17 @@ class _BottomBarState extends State<BottomBar> {
         tooltip: label,
       );
     }
+  }
+
+  void preloadApi() async {
+    final subscription = Provider.of<SubscriptionProvider>(context, listen: false);
+    final wishlist = Provider.of<ApiProvider>(context, listen: false);
+    final orders = Provider.of<ProfileProvider>(context, listen: false);
+    await subscription.activeSubscription().then((value) async {
+      await wishlist.wishlistProductsAPI().then((value) async {
+        await orders.orderList();
+      },);
+    });
   }
 }
 

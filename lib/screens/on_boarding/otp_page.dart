@@ -141,10 +141,30 @@ class _OtpPageState extends State<OtpPage> with WidgetsBindingObserver{
                       // OTP Field
                       Center(
                         child: SizedBox(
-                          width: size.width * 0.8,
-                          height: kToolbarHeight - 6,
+                          width: size.width,
+                          height: kToolbarHeight,
                           child: Pinput(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            focusedPinTheme: PinTheme(
+                              height: kToolbarHeight,
+                              width: kToolbarHeight + 10,
+                              decoration: BoxDecoration(
+                              border: Border.all(color: Theme.of(context).primaryColor),
+                              borderRadius: BorderRadius.circular(5),
+                              // color: 
+                             )
+                            ),
+                            defaultPinTheme: PinTheme(
+                             height:  kToolbarHeight,
+                             width: kToolbarHeight + 10,
+                             decoration: BoxDecoration(
+                              border: Border.all(
+                                color: const Color.fromRGBO(222, 231, 240, .57)
+                              ),
+                              borderRadius: BorderRadius.circular(5),
+                              // color: 
+                             )
+                            ),
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                             controller: otpController,
                             length: 4,
                           ),
@@ -267,7 +287,7 @@ class _OtpPageState extends State<OtpPage> with WidgetsBindingObserver{
                           ],
                         ),
                         
-                      const SizedBox(height: 16,),
+                      const SizedBox(height: 14,),
                       // OTP Timing
                       if(!isKeyboard)
                         Center(

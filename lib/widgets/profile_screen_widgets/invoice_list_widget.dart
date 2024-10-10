@@ -1,3 +1,4 @@
+import 'package:app_3/data/constants.dart';
 import 'package:app_3/model/invoice_model.dart';
 import 'package:app_3/providers/profile_provider.dart';
 import 'package:app_3/widgets/common_widgets.dart/shimmer_profile_widget.dart';
@@ -7,15 +8,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class InvoiceListWidget extends StatefulWidget {
+class InvoiceListWidget extends StatelessWidget {
   const InvoiceListWidget({super.key});
-
-  @override
-  State<InvoiceListWidget> createState() => _InvoiceListWidgetState();
-}
-
-class _InvoiceListWidgetState extends State<InvoiceListWidget> {
-  final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -100,19 +94,19 @@ class _InvoiceListWidgetState extends State<InvoiceListWidget> {
 
   // Invoice Listing page
   Widget invoicesList(Size size, List<InvoiceModel> invoices){
-    return Consumer<ProfileProvider>(
-      builder: (context, provider, child) {
+    return Consumer2<ProfileProvider, Constants>(
+      builder: (context, provider, scrollController, child) {
         invoices = invoices.reversed.toList();
         return GestureDetector(
           onTap: () {
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
           },
           child: CupertinoScrollbar(
-            controller: _scrollController,
+            controller: scrollController.invoiceController,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: ListView.builder(
-                controller: _scrollController,
+                controller: scrollController.invoiceController,
                 itemCount: invoices.length,
                 itemBuilder: (context, index) {
                   return Column(

@@ -82,7 +82,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     // Product Detail Heading
                     const AppTextWidget(
                       text: 'Product detail',
-                      fontSize: 18, 
+                      fontSize: 16, 
                       fontWeight: FontWeight.w500
                     ),
                     const SizedBox(height: 12,),
@@ -240,7 +240,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     // Coupon Detail,
                     const AppTextWidget(
                       text: 'Coupon detail',
-                      fontSize: 18, 
+                      fontSize: 16, 
                       fontWeight: FontWeight.w500
                     ),
                     const SizedBox(height: 12,),
@@ -249,7 +249,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       isObseure: false, 
                       textInputAction: TextInputAction.done,
                       controller: couponController,
-                      borderRadius: 5,
+                      // borderRadius: 5,
                       readOnly: provider.isCouponApplied ? true : false,
                       hintText: "Have a coupon code?",
                       suffixIcon:  provider.isCouponApplied 
@@ -262,7 +262,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               message: 'Enter a coupon code', 
                               backgroundColor: Theme.of(context).primaryColor, 
                               sidePadding: size.width * 0.1, 
-                              bottomPadding: size.height * 0.75
+                              bottomPadding: size.height * 0.05
                             );
                             ScaffoldMessenger.of(context).showSnackBar(appliedMessage);
                           }else{
@@ -278,7 +278,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         ),
                         child: AppTextWidget(
                           text:  'Apply', 
-                          fontSize: 13, 
+                          fontSize: 12, 
                           fontColor: Theme.of(context).primaryColor,
                           fontWeight: FontWeight.w500
                         )
@@ -291,7 +291,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       children: [
                         const AppTextWidget(
                           text: 'Schedule delivery',
-                          fontSize: 18, 
+                          fontSize: 16, 
                           fontWeight: FontWeight.w500
                         ),
                         isdeliveryDateSelected
@@ -315,7 +315,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const AppTextWidget(text: "Expected Delivery date: ", fontSize: 14, fontWeight: FontWeight.w400),
+                              const AppTextWidget(text: "Expected delivery date: ", fontSize: 14, fontWeight: FontWeight.w500),
                               // Date Picker
                               GestureDetector(
                                 onTap: () async {
@@ -334,7 +334,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   text: expectedDeliverydate != null
                                     ? DateFormat("dd MMM yyyy").format(expectedDeliverydate!)
                                     : "Pick a date", 
-                                  fontSize: 13, 
+                                  fontSize: 12, 
                                   fontColor:  Theme.of(context).primaryColor,
                                   fontWeight: FontWeight.w500
                                 ),
@@ -346,7 +346,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const AppTextWidget(text: "Expected Delivery time: ", fontSize: 14, fontWeight: FontWeight.w400),
+                              const AppTextWidget(text: "Expected delivery time: ", fontSize: 14, fontWeight: FontWeight.w500),
                               // Delivery time drop down
                               SizedBox(
                                 height: 30,
@@ -390,7 +390,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       children: [
                         const AppTextWidget(
                           text: 'Payment option',
-                          fontSize: 18, 
+                          fontSize: 16, 
                           fontWeight: FontWeight.w500
                         ),
                         isPaymentoptionSelected 
@@ -497,7 +497,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     // Bil Details
                     const AppTextWidget(
                       text: 'Bill detail',
-                      fontSize: 18, 
+                      fontSize: 16, 
                       fontWeight: FontWeight.w500
                     ),
                     const SizedBox(height: 12,),
@@ -524,7 +524,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     ),
                                   ),
                                   const SizedBox(width: 10,),
-                                  const AppTextWidget(text: "Total item", fontSize: 14, fontWeight: FontWeight.w400),
+                                  const AppTextWidget(text: "Total item", fontSize: 14, fontWeight: FontWeight.w500),
                                 ],
                               ),
                               AppTextWidget(
@@ -535,7 +535,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 : cartProvider.totalCartProduct > 1
                                   ? "${cartProvider.totalCartProduct} items"
                                   : "${cartProvider.totalCartProduct} item", 
-                                fontSize: 15, 
+                                fontSize: 14, 
                                 fontWeight: FontWeight.w400
                               )
                             ],
@@ -555,7 +555,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     ),
                                   ),
                                   const SizedBox(width: 10,),
-                                  const AppTextWidget(text: "Total bill", fontSize: 14, fontWeight: FontWeight.w400),
+                                  const AppTextWidget(text: "Total bill", fontSize: 14, fontWeight: FontWeight.w500),
                                 ],
                               ),
                               AppTextWidget(text: 
@@ -609,7 +609,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       AppTextWidget(text: "To pay", fontSize: 14, fontWeight: FontWeight.w500),
                                     ],
                                   ),
-                                  AppTextWidget(text: "₹${provider.newTotal}", fontSize: 15, fontWeight: FontWeight.w700),
+                                  AppTextWidget(text: "₹${provider.newTotal}", fontSize: 16, fontWeight: FontWeight.w600),
                                 ],
                               ),
 
@@ -624,12 +624,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const AppTextWidget(text: 'Delivery details', fontSize: 18, fontWeight: FontWeight.w500),
+                        const AppTextWidget(text: 'Delivery details', fontSize: 16, fontWeight: FontWeight.w500),
                         GestureDetector(
                           onTap: () {
                           Navigator.push(context, downToTop(screen: const AddressSelectionScreen()));
                         },
-                        child: AppTextWidget(text: "Change Address", fontSize: 14, fontWeight: FontWeight.w500, fontColor: Theme.of(context).primaryColor,)
+                        child: AppTextWidget(text: "Change Address", fontSize: 12, fontWeight: FontWeight.w400, fontColor: Theme.of(context).primaryColor,)
                         )
                       ],
                     ), 

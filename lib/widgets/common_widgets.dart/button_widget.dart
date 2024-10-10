@@ -11,6 +11,7 @@ class ButtonWidget extends StatelessWidget {
   final FontWeight? fontWeight;
   final double? borderRadius;
   final Color? bordercolor;
+  final Color? splashColor;
   final VoidCallback onPressed;
   const ButtonWidget({
     super.key, 
@@ -19,6 +20,7 @@ class ButtonWidget extends StatelessWidget {
     this.fontSize, 
     this.icon,
     this.fontWeight,
+    this.splashColor,
     this.borderRadius,
     this.fontColor,
     this.bordercolor,
@@ -38,7 +40,7 @@ class ButtonWidget extends StatelessWidget {
           backgroundColor: buttonColor ?? Theme.of(context).primaryColor,
           surfaceTintColor: Colors.transparent.withOpacity(0.0),
           shadowColor: Colors.transparent.withOpacity(0.0),
-          overlayColor: Colors.white38,
+          overlayColor: splashColor ?? Colors.white38,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius ?? 10),
             side: BorderSide(

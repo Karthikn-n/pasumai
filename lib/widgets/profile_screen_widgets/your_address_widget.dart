@@ -1,3 +1,4 @@
+import 'package:app_3/data/constants.dart';
 import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/model/address_model.dart';
 import 'package:app_3/providers/address_provider.dart';
@@ -7,15 +8,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class YourAddressWidget extends StatefulWidget {
+class YourAddressWidget extends StatelessWidget {
   const YourAddressWidget({super.key});
 
-  @override
-  State<YourAddressWidget> createState() => _YourAddressWidgetState();
-}
-
-class _YourAddressWidgetState extends State<YourAddressWidget> {
-  final ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
@@ -161,14 +156,14 @@ class _YourAddressWidgetState extends State<YourAddressWidget> {
   }
 
   Widget addressList(Size size, List<AddressModel> addressList, int currentAddressId){
-    return Consumer<AddressProvider>(
-      builder: (context, provider, child) {
+    return Consumer2<AddressProvider, Constants>(
+      builder: (context, provider, scrollController, child) {
         return CupertinoScrollbar(
-          controller: _scrollController,
+          controller: scrollController.addressScrollController,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: ListView.builder(
-              controller: _scrollController,
+              controller: scrollController.addressScrollController,
               itemCount: addressList.length,
               itemBuilder: (context, index) {
                 return Column(

@@ -63,6 +63,7 @@ class _RegisterationPageState extends State<RegisterationPage> {
               const AppTextWidget(
                 text: 'Join now for exclusive deals & benifits',
                 fontSize: 14, 
+                fontColor: Colors.grey,
                 fontWeight: FontWeight.w300,
               ),
               
@@ -77,7 +78,7 @@ class _RegisterationPageState extends State<RegisterationPage> {
                     isObseure: false, 
                     // borderRadius: 8,
                     textInputAction: TextInputAction.next,
-                    prefixIcon: const Icon(CupertinoIcons.person_fill),
+                    prefixIcon: const Icon(CupertinoIcons.person, color: Colors.grey),
                     controller: firstNameController,
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -94,7 +95,7 @@ class _RegisterationPageState extends State<RegisterationPage> {
                     hintText: 'Enter your last name',
                     isObseure: false, 
                     textInputAction: TextInputAction.next,
-                    prefixIcon: const Icon(CupertinoIcons.person_fill),
+                    prefixIcon: const Icon(CupertinoIcons.person, color: Colors.grey),
                     controller: lastNameController,
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -111,7 +112,7 @@ class _RegisterationPageState extends State<RegisterationPage> {
                     hintText: 'Enter your email address',
                     isObseure: false, 
                     textInputAction: TextInputAction.next,
-                    prefixIcon: const Icon(CupertinoIcons.mail_solid),
+                    prefixIcon: const Icon(CupertinoIcons.mail, color: Colors.grey,),
                     controller: emailController,
                     validator: (value) {
                       if (value == null && value!.isEmpty) {
@@ -128,7 +129,7 @@ class _RegisterationPageState extends State<RegisterationPage> {
                     hintText: 'Enter your Mobile number',
                     isObseure: false, 
                     textInputAction: TextInputAction.done,
-                    prefixIcon: const Icon(Icons.phone_android_sharp),
+                    prefixIcon: const Icon(Icons.phone_android_sharp, color: Colors.grey),
                     controller: mobileController,
                     keyboardType: TextInputType.phone,
                     validator: (value) {
@@ -155,7 +156,9 @@ class _RegisterationPageState extends State<RegisterationPage> {
               Consumer<ApiProvider>(
                 builder: (context, provider, child) {
                   return isLoading
-                  ? const LoadingButton()
+                  ? const LoadingButton(
+                    width: double.infinity,
+                  )
                   : ButtonWidget(
                     width: double.infinity,
                     buttonName: 'Signup', 

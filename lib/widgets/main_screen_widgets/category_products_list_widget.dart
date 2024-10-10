@@ -1,3 +1,4 @@
+import 'package:app_3/data/constants.dart';
 import 'package:app_3/providers/cart_items_provider.dart';
 import 'package:app_3/model/products_model.dart';
 import 'package:app_3/providers/api_provider.dart';
@@ -10,25 +11,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CategoryProductsListWidget extends StatefulWidget {
+class CategoryProductsListWidget extends StatelessWidget {
   final String categoryName;
   final bool? isFeaturedProduct;
   final bool? isBestSellerProduct;
   final int? categoryId;
   const CategoryProductsListWidget({super.key, required this.categoryName, this.isFeaturedProduct, this.isBestSellerProduct, this.categoryId});
-
-  @override
-  State<CategoryProductsListWidget> createState() => _CategoryProductsListWidgetState();
-}
-
-class _CategoryProductsListWidgetState extends State<CategoryProductsListWidget> {
-  final ScrollController _scrollController = ScrollController();
-
-  @override
-  void dispose() {
-   _scrollController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,18 +25,18 @@ class _CategoryProductsListWidgetState extends State<CategoryProductsListWidget>
     if (connectivityCheck.isConnected) {
       return Consumer<ApiProvider>(
         builder: (context, categoryProvider, child) {
-          if (widget.isFeaturedProduct ?? false) {
+          if (isFeaturedProduct ?? false) {
             return productListing(categoryProvider.featuredproductData, size, context);
-          }else if(widget.isBestSellerProduct ?? false){
+          }else if(isBestSellerProduct ?? false){
             return productListing(categoryProvider.bestSellerProducts, size, context);
           }else{
             return FutureBuilder(
-              future: categoryProvider.allProducts(widget.categoryId!), 
+              future: categoryProvider.allProducts(categoryId!), 
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Scaffold(
                     appBar: AppBarWidget(
-                      title: widget.categoryName,
+                      title: categoryName,
                       needBack: true,
                       onBack: () => Navigator.pop(context),
                     ),
@@ -78,9 +66,10 @@ class _CategoryProductsListWidgetState extends State<CategoryProductsListWidget>
 
   // Product List Widget
   Widget productListing(List<Products> products, Size size, BuildContext context){
+    final _scrollController = Provider.of<Constants>(context).categoriesController;
     return Scaffold(
       appBar: AppBarWidget(
-        title: widget.categoryName,
+        title: categoryName,
         needBack: true,
         onBack: () => Navigator.pop(context),
       ),

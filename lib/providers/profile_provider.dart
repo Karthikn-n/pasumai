@@ -397,6 +397,8 @@ class ProfileProvider extends ChangeNotifier{
 
   // Add Vacation
   Future<void> addVacation(Map<String, dynamic> addData, Size size, BuildContext context) async {
+    addData["customer_id"] = prefs.getString('customerId');
+    print(addData);
     final response = await profileRepository.addVacation(addData);
     String decryptedData = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
     final decodedResponse = json.decode(decryptedData);
@@ -455,6 +457,8 @@ class ProfileProvider extends ChangeNotifier{
 
   // Update vacation
   Future<void> updateVacation(Map<String, dynamic> updateData, Size size, BuildContext context) async {
+    updateData["customer_id"] = prefs.getString('customerId');
+    print(updateData);
     final response = await profileRepository.updateVacation(updateData);
     String decryptedData = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
     final decodedResponse = json.decode(decryptedData);
@@ -535,7 +539,7 @@ class ProfileProvider extends ChangeNotifier{
                   child: Column(
                     children: [
                       Center(
-                        child: AppTextWidget(text: "Cancel order", fontSize: 20, fontWeight: FontWeight.w600),
+                        child: AppTextWidget(text: "Cancel order", fontSize: 18, fontWeight: FontWeight.w600),
                       ),
                       SizedBox(height: 16,),
                       Center(
@@ -543,7 +547,7 @@ class ProfileProvider extends ChangeNotifier{
                            "Do you want to cancel this order?",
                            textAlign: TextAlign.center,
                            style: TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.w400
+                            fontSize: 14, fontWeight: FontWeight.w400
                            ),
                         ),
                       ),

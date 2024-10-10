@@ -1,3 +1,4 @@
+import 'package:app_3/data/constants.dart';
 import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/helper/shared_preference_helper.dart';
 import 'package:app_3/model/active_subscription_model.dart';
@@ -9,14 +10,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../screens/sub-screens/profile/edit_subscription.dart';
 
 class ActiveSubscriptionWidget extends StatelessWidget {
-  ActiveSubscriptionWidget({super.key});
-  SharedPreferences prefs = SharedPreferencesHelper.getSharedPreferences();
-  final ScrollController _controller = ScrollController();
+  const ActiveSubscriptionWidget({super.key});
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
@@ -99,15 +97,16 @@ class ActiveSubscriptionWidget extends StatelessWidget {
 
   // Active subscription Widget
   Widget activeSubscriptionList(Size size, List<ActiveSubscriptionModel> subscritionProducts){
-    return Consumer<SubscriptionProvider>(
-      builder: (context, activeSub,  child) {
+    return Consumer2<SubscriptionProvider, Constants>(
+      builder: (context, activeSub, scrollController, child) {
         List<ActiveSubscriptionModel> subscripedProducts = subscritionProducts.reversed.toList();
         return CupertinoScrollbar(
-          controller: _controller,
+          thumbVisibility: true,
+          controller: scrollController.activeSubScrollController,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: ListView.builder(
-              controller: _controller,
+              controller: scrollController.activeSubScrollController,
               itemCount: subscripedProducts.length,
               itemBuilder: (context, index) {
                 List<String> options = subscripedProducts[index].status == "Cancelled" ? ["Resume"] : ["Edit", "Renew", "Cancel"];

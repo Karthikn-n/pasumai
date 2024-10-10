@@ -16,19 +16,20 @@ class UserProfileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
-    return Container(
-      // padding: const EdgeInsets.all(10),
-      // height: size.height * 0.1,
-      width: double.infinity,
-      
-      child: Column(
-        children: [
-          Row(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Row(
             children: [
-              Icon(
-                CupertinoIcons.person_circle,
-                size: 50,
-                color: Theme.of(context).primaryColorDark,
+              SizedBox(
+                height: 72,
+                width: 72,
+                child: Image.asset(
+                  "assets/icons/profile/man.png",
+                  fit: BoxFit.cover,
+                ),
               ),
               const SizedBox(width: 5,),
               Column(
@@ -36,14 +37,14 @@ class UserProfileWidget extends StatelessWidget {
                 children: [
                   // Profile Name
                   SizedBox(
-                    width: size.width * 0.6,
+                    width: size.width * 0.575,
                     child: AppTextWidget(
                       text: '${prefs.getString('firstname') ?? ''} ${prefs.getString('lastname') ?? ''}', 
                       fontSize: 16, 
                       maxLines: 1,
                       fontWeight: FontWeight.w500,
                       textOverflow: TextOverflow.ellipsis,
-                      fontColor: Theme.of(context).primaryColorDark,
+                      fontColor: Theme.of(context).primaryColor,
                     ),
                   ),
                   // User Email
@@ -68,33 +69,35 @@ class UserProfileWidget extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(context, SideTransistionRoute(screen: const EditProfileWidget()));
                 },
-                icon: const Icon(
+                icon: Icon(
                   CupertinoIcons.pencil,
                   size: 20,
-                  color: Colors.black,
+                  color: Theme.of(context).primaryColor,
                 ),
               )
             ],
           ),
-          const SizedBox(height: 12,),
-          // Profile Boxes
-          Consumer3<ProfileProvider, SubscriptionProvider, ApiProvider>(
-            builder: (context, orders, subscriptions, wishlist, child) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    ProfileCardsWidget(name: "Subscriptions", count: subscriptions.activeSubscriptions.length),
-                    ProfileCardsWidget(name: "Orders", count: orders.orderInfoData.length),
-                    ProfileCardsWidget(name: "Wishlist", count: wishlist.wishlistProducts.length),
-                  ],
-                ),
-              );
-            }
-          )
-        ],
-      ),
+        ),
+        const SizedBox(height: 12,),
+        // Profile Boxes
+        Consumer3<ProfileProvider, SubscriptionProvider, ApiProvider>(
+          builder: (context, orders, subscriptions, wishlist, child) {
+            return Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ProfileCardsWidget(name: "Subscriptions", count: subscriptions.activeSubscriptions.length),
+                  ProfileCardsWidget(name: "Orders", count: orders.orderInfoData.length),
+                  ProfileCardsWidget(name: "Wishlist", count: wishlist.wishlistProducts.length),
+                ],
+              ),
+            );
+          }
+        )
+      ],
     );
   }
 }
@@ -121,12 +124,13 @@ class ProfileCardsWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // count
-              AppTextWidget(text: "$count", fontWeight: FontWeight.w500, fontSize: 18,),
+              AppTextWidget(text: "$count", fontWeight: FontWeight.w600, fontSize: 20, fontColor: Colors.white,),
               const SizedBox(height: 4,),
               // Name of the card
               AppTextWidget(
                 textAlign: TextAlign.center,
                 text: name, 
+                fontColor: Colors.white,
                 fontWeight: FontWeight.w300,
                 fontSize: 12,
               ),
@@ -134,15 +138,7 @@ class ProfileCardsWidget extends StatelessWidget {
           ),
         ),
         // Divider
-        name == "Wishlist"
-        ? Container()
-        : SizedBox(
-          height: size.height * 0.08,
-          child: const VerticalDivider(
-            thickness: 1,
-            color: Colors.grey,
-          ),
-        ),     
+       
       ],
     );
   }

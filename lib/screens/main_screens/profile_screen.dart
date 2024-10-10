@@ -58,9 +58,6 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
     });
   }
 
-  
-
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
@@ -183,10 +180,7 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
             ),
             body: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: UserProfileWidget(prefs: prefs),
-                ),
+                UserProfileWidget(prefs: prefs),
                 const SizedBox(height: 16,),
                 optionsBody[prefs.getInt('selectedOptionIndex') ?? selectedbody],
               ],
@@ -198,12 +192,12 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
   }
 
   List<Widget> optionsBody = [
-    OrdersHistoryWidget(),
-    ActiveSubscriptionWidget(),
+    const OrdersHistoryWidget(),
+    const ActiveSubscriptionWidget(),
     const SubscriptionHistoryWidget(),
     const YourAddressWidget(),
     const InvoiceListWidget(),
-    VacationListWidget(),
+    const VacationListWidget(),
   ];
 
   List<String> images = [

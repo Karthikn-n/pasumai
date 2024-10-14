@@ -137,6 +137,8 @@ class _AddressSelectionScreenState extends State<AddressSelectionScreen> {
                                               return [
                                                 PopupMenuItem(
                                                   onTap: () {
+                                                    print("UPdate Regions: ${address[index].region}");
+                                                    print("UPdate Location: ${address[index].location}");
                                                     // print(prefs.getString("customerId"));
                                                      Navigator.push(context, SideTransistionRoute(
                                                       screen: NewAddressFormWidget(
@@ -145,6 +147,7 @@ class _AddressSelectionScreenState extends State<AddressSelectionScreen> {
                                                         updateFormKey: GlobalKey<FormState>() 
                                                       ,)
                                                     ));
+                                                    
                                                   },
                                                   child: const AppTextWidget(text: "Edit", fontSize: 14, fontWeight: FontWeight.w500)
                                                 ),

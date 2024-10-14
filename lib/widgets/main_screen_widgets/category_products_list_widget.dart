@@ -1,4 +1,5 @@
 import 'package:app_3/data/constants.dart';
+import 'package:app_3/helper/cache_manager_helper.dart';
 import 'package:app_3/providers/cart_items_provider.dart';
 import 'package:app_3/model/products_model.dart';
 import 'package:app_3/providers/api_provider.dart';
@@ -9,7 +10,6 @@ import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:provider/provider.dart';
 
 class CategoryProductsListWidget extends StatelessWidget {
@@ -102,15 +102,7 @@ class CategoryProductsListWidget extends StatelessWidget {
                           child: CachedNetworkImage(
                             imageUrl: "https://maduraimarket.in/public/image/category/$bannerImage",
                             fit: BoxFit.scaleDown,
-                            cacheManager: CacheManager(
-                              Config(
-                                "#$bannerImage",
-                                repo: JsonCacheInfoRepository(databaseName: "#$bannerImage"),
-                                maxNrOfCacheObjects: 10,
-                                fileService: HttpFileService(),
-                                stalePeriod: const Duration(minutes: 10)
-                              )
-                            ),
+                            cacheManager: CacheManagerHelper.cacheIt(key: bannerImage,)
                           ),
                         ),
                       ),

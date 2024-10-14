@@ -107,9 +107,7 @@ class _MyAppState extends State<MyApp> {
             ),
             primaryColorDark: Colors.black,
             scaffoldBackgroundColor: Colors.white,
-            
           ),
-          
           home: const SplashScreen(),
         );
       },

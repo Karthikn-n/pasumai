@@ -98,7 +98,7 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
             needBack:  true,
             onBack: () {
               // addressProvider.disposeController();
-              if (widget.fromOnboarding!) {
+              if (widget.fromOnboarding != null) {
                 Navigator.pushAndRemoveUntil(context, downToTop(screen: const LoginPage()), (route) => false,);
               }else{
                 Navigator.pop(context);
@@ -319,21 +319,14 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
                                 isLoading = true;
                               });
 
+                                // List<RegionModel> regions = provider.regionLocationsList;
+                                // print("Current Location: ${widget.updateAddress!.location}");
+                                // print("Default Updated Location name${regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).locationData.firstWhere((element) => widget.updateAddress!.location == element.locationName,).locationName}");
                               try {
                                 if (widget.needUpdate != null && widget.needUpdate! && widget.updateAddress != null) {
                                   if (formKey.currentState!.validate()) {
-                                    // print("Regions length: ${provider.regionLocationsList.length}");
-                                    // print("Regios: ${widget.updateAddress!.region}");
-                                    // print("Regios: ${widget.updateAddress!.location}");
-                                    // print("Selected Location: $selectedLocation");
-                                    // print("Selected REgion: $selectedRegion");
                                     List<RegionModel> regions = provider.regionLocationsList;
-                                    // print(regions[0].regionName);
-                                    // print(regions[1].regionName);
-                                    // print("Region Id: ${regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).regionId}");
-                                    //  print("Location Id: ${locations.firstWhere((element) => element.locationName == selectedLocation,).locationId}");
-                                    // print("Location Id2: ${locations.firstWhere((element) => widget.updateAddress!.location == selectedLocation,).locationId}");
-                                    // print("Region Id2: ${provider.regionLocationsList.firstWhere((element) => element.regionName == selectedRegion,).regionId}");
+                                    print("Default Updated Location name${regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).locationData.firstWhere((element) => widget.updateAddress!.location == element.locationName,).locationName}");
                                     Map<String, dynamic> updateAddressData = {
                                       'customer_id': prefs.getString('customerId'),
                                       'address_id': widget.updateAddress!.id,
@@ -345,12 +338,20 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
                                         ? regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).regionId 
                                         : regions.firstWhere((element) => element.regionName == selectedRegion,).regionId,
                                       'location':  selectedLocation == null 
-                                        ? regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).locationData.firstWhere((element) => element.locationName == element.locationName,).locationId
+                                        ? regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).locationData.firstWhere((element) => widget.updateAddress!.location == element.locationName,).locationId
                                         : locations.firstWhere((element) => element.locationName == selectedLocation,).locationId,
                                       'pincode': pincodeController.text,
                                     };
-                                    print("Region: ${regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).regionName}");
-                                    print("Region: ${regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).locationData.firstWhere((element) => element.locationName == element.locationName,).locationName}");
+                                    if (selectedLocation == null && selectedLocation == null) {
+                                    print("Updated Address Region: ${widget.updateAddress!.region}");
+                                    print("Updated Address Location: ${widget.updateAddress!.location}");
+                                      print("Default Updated Region name: ${regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).regionName}");
+                                      print("Default Updated Location name: ${regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).locationData.firstWhere((element) => widget.updateAddress!.location == element.locationName,).locationName}");
+                                    }else{
+
+                                      print("Updated Region Name: ${regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).regionName}");
+                                      print("Updated Location Name: ${regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).locationData.firstWhere((element) => element.locationName == element.locationName,).locationName}");
+                                    }
                                     print("Selected Region: $selectedRegion");
                                     print("Selected Location: $selectedLocation");
                                     print("Update Address Data: $updateAddressData");

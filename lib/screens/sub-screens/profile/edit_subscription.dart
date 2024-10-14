@@ -14,6 +14,7 @@ void everyDayChange(BuildContext context, ActiveSubscriptionModel edit, Size siz
   int morningQuantity = edit.frequencyMobData[0].mrgQuantity;
   int eveningQuantity = edit.frequencyMobData[0].evgQuantity;
   List<int> quantityMap = [morningQuantity, eveningQuantity];
+  bool quantityNeeded = false;
   showModalBottomSheet(
     context: context,
     sheetAnimationStyle: AnimationStyle(
@@ -205,12 +206,31 @@ void everyDayChange(BuildContext context, ActiveSubscriptionModel edit, Size siz
                             'amount':  (quantityMap[0] + quantityMap[1]) * edit.productPrice,
                           };
                           print("Every day edit subscription data: $editEveryDayData");
-                          await provider.editSubscription(context, size, editEveryDayData);
+                          if ((quantityMap[0] + quantityMap[1]) * edit.productPrice == 0) {
+                            sheetState((){
+                              quantityNeeded = true;
+                            });
+                          }else{
+                            await provider.editSubscription(context, size, editEveryDayData);
+                          }
                         } 
                       ),
                     );
                   }
                 ),
+                 quantityNeeded 
+                  ? const Column(
+                      children: [
+                        SizedBox(height: 5,),
+                        AppTextWidget(
+                          text: "* atleast one quantity need to subscribe", 
+                          fontWeight: FontWeight.w500, 
+                          fontColor: Colors.red,
+                          fontSize: 12,
+                        ),
+                      ],
+                    )
+                  : Container()
               ],
             ),
           );
@@ -225,6 +245,7 @@ void everyDayChange(BuildContext context, ActiveSubscriptionModel edit, Size siz
 void weekDayChange(BuildContext context, ActiveSubscriptionModel edit, Size size) {
   List<String> weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
   List<List<int>> quantities = List<List<int>>.generate(edit.frequencyMobData.length, (index) => [edit.frequencyMobData[index].mrgQuantity, edit.frequencyMobData[index].evgQuantity]);
+  bool quantityNeeded = false;
   showModalBottomSheet(
     context: context,
     useSafeArea: true,
@@ -462,12 +483,35 @@ void weekDayChange(BuildContext context, ActiveSubscriptionModel edit, Size size
                                 'amount':  totalAmount,
                               };
                               print("Week Day Edit subscription: $editWeekdaySubscribeData");
-                              await provider.editSubscription(context, size, editWeekdaySubscribeData);
+                              if (totalAmount == 0) {
+                                sheetState((){
+                                  quantityNeeded = true;
+                                });
+                              }else{
+                                sheetState((){
+                                  quantityNeeded = false;
+                                });
+                                await provider.editSubscription(context, size, editWeekdaySubscribeData);
+                              }
                             }
                           ),
                         );
                       }
-                    )
+                    ),
+                    quantityNeeded 
+                    ? const Column(
+                        children: [
+                          SizedBox(height: 5,),
+                          AppTextWidget(
+                            text: "* atleast one quantity need to subscribe", 
+                            fontWeight: FontWeight.w500, 
+                            fontColor: Colors.red,
+                            fontSize: 12,
+                          ),
+                          // SizedBox(height: 20,),
+                        ],
+                      )
+                    : const SizedBox(height: 5,)
                   ],
                 ),
               );
@@ -483,6 +527,7 @@ void weekDayChange(BuildContext context, ActiveSubscriptionModel edit, Size size
 // custom 
 void customChange(BuildContext context, ActiveSubscriptionModel edit, Size size) {
   List<List<int>> quantities = List<List<int>>.generate(edit.frequencyMobData.length, (index) => [edit.frequencyMobData[index].mrgQuantity, edit.frequencyMobData[index].evgQuantity]);
+  bool quantityNeeded = false;
   showModalBottomSheet(
     context: context,
     useSafeArea: true,
@@ -725,12 +770,35 @@ void customChange(BuildContext context, ActiveSubscriptionModel edit, Size size)
                                 'amount':  totalAmount,
                               };
                               print("Custome Edit subscription: $editCustomSubscribeData");
-                              await provider.editSubscription(context, size, editCustomSubscribeData);
+                              if (totalAmount == 0) {
+                                sheetState((){
+                                  quantityNeeded = true;
+                                });
+                              }else{
+                                sheetState((){
+                                  quantityNeeded = false;
+                                });
+                                await provider.editSubscription(context, size, editCustomSubscribeData);
+                              }
                             }
                           ),
                         );
                       }
-                    )
+                    ),
+                    quantityNeeded 
+                    ? const Column(
+                        children: [
+                          SizedBox(height: 5,),
+                          AppTextWidget(
+                            text: "* atleast one quantity need to subscribe", 
+                            fontWeight: FontWeight.w500, 
+                            fontColor: Colors.red,
+                            fontSize: 12,
+                          ),
+                          // SizedBox(height: 20,),
+                        ],
+                      )
+                    : const SizedBox(height: 5,)
                   ],
                 ),
               );

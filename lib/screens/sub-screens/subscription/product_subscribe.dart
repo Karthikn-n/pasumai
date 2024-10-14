@@ -231,6 +231,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
   void everyDay(BuildContext context, int dailyQuantity, Size size,) {
     int morningQuantity = dailyQuantity;
     int eveningQuantity = dailyQuantity;
+    bool quantityNeeded = false;
     // List<String> days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     showModalBottomSheet(
       context: context,
@@ -436,10 +437,17 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                                   'address_id': addressProvider.currentAddress!.id
                                 };
                                 print('Every day subscriptin: $everyDayData');
-                                Navigator.pop(sheetContext);
-                                await activeSub.addSubscription(context, size, everyDayData);
-                               
-
+                                if (amount == 0.0) {
+                                  sheetState(() {
+                                    quantityNeeded = true;
+                                  });
+                                }else{
+                                  sheetState(() {
+                                    quantityNeeded = false;
+                                  });
+                                  Navigator.pop(sheetContext);
+                                  await activeSub.addSubscription(context, size, everyDayData);
+                                }
                               }
                             }else{
                               setState((){
@@ -452,7 +460,20 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                         );
                       }
                     ),
-                  )
+                  ),
+                  quantityNeeded 
+                  ? const Column(
+                      children: [
+                        SizedBox(height: 5,),
+                        AppTextWidget(
+                          text: "* atleast one quantity need to subscribe", 
+                          fontWeight: FontWeight.w500, 
+                          fontColor: Colors.red,
+                          fontSize: 12,
+                        ),
+                      ],
+                    )
+                  : Container()
                 ],
               ),
             );
@@ -467,7 +488,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
   void weekDay(BuildContext context, Size size) {
     List<String> weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
     List<List<int>> quantities = List<List<int>>.generate(5, (index) => [1, 1]);
-
+    bool quantityNeeded = false;
     showModalBottomSheet(
       useSafeArea: true,
       isScrollControlled: true,
@@ -657,7 +678,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                         ),
                       ),
                       Container(
-                        margin: const EdgeInsets.only(top: 20, bottom: 20),
+                        margin: const EdgeInsets.only(top: 20),
                         child: Consumer3<AddressProvider, ProfileProvider, SubscriptionProvider>(
                           builder: (providerContext, value, activeSub, subProvider, child) {
                             return ButtonWidget(
@@ -706,8 +727,17 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                                       'address_id': value.currentAddress!.id
                                     };
                                     print("Weekday subscription data: $weekDaySubscriptionData");
-                                    Navigator.pop(sheetContext);
-                                    await subProvider.addSubscription(context, size, weekDaySubscriptionData);
+                                    if (totalAmount == 0) {
+                                      sheetState((){
+                                        quantityNeeded = true;
+                                      });
+                                    }else{
+                                      sheetState((){
+                                        quantityNeeded = false;
+                                      });
+                                      Navigator.pop(sheetContext);
+                                      await subProvider.addSubscription(context, size, weekDaySubscriptionData);
+                                    }
                                   }
                                 }else{
                                   setState((){
@@ -719,7 +749,21 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                             );
                           }
                         ),
-                      )
+                      ),
+                      quantityNeeded 
+                        ? const Column(
+                            children: [
+                              SizedBox(height: 5,),
+                              AppTextWidget(
+                                text: "* atleast one quantity need to subscribe", 
+                                fontWeight: FontWeight.w500, 
+                                fontColor: Colors.red,
+                                fontSize: 12,
+                              ),
+                              SizedBox(height: 20,),
+                            ],
+                          )
+                        : const SizedBox(height: 20,)
                     ],
                   ),
                 );
@@ -735,7 +779,8 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
   void custom(BuildContext context, Size size, int price) {
     List<String> weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     List<List<int>> quantities = List<List<int>>.generate(7, (index) => [1, 1]);
-
+    // ignore: unused_local_variable
+    bool quantityNeeded = false;
     showModalBottomSheet(
       isScrollControlled: true,
       useSafeArea: true,
@@ -924,7 +969,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                         ),
                       ),
                       Container(
-                        margin: const EdgeInsets.only(top: 20, bottom: 20),
+                        margin: const EdgeInsets.only(top: 20,),
                         child: Consumer2<AddressProvider, SubscriptionProvider>(
                           builder: (providerContext, value, activeSub, child) {
                             return ButtonWidget(
@@ -973,8 +1018,17 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                                       'address_id': value.currentAddress!.id
                                     };
                                     print("Custome subscription data: $customSubscriptionData");
-                                    Navigator.pop(sheetContext);
-                                    await activeSub.addSubscription(context, size, customSubscriptionData);
+                                    if (totalAmount == 0) {
+                                      sheetState((){
+                                        quantityNeeded = true;
+                                      });
+                                    }else{
+                                      sheetState((){
+                                        quantityNeeded = false;
+                                      });
+                                      Navigator.pop(sheetContext);
+                                      await activeSub.addSubscription(context, size, customSubscriptionData);
+                                    }
                                    
                                   }
                                 }else{
@@ -988,6 +1042,20 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                           }
                         ),
                       ),
+                      quantityNeeded 
+                      ? const Column(
+                          children: [
+                            SizedBox(height: 5,),
+                            AppTextWidget(
+                              text: "* atleast one quantity need to subscribe", 
+                              fontWeight: FontWeight.w500, 
+                              fontColor: Colors.red,
+                              fontSize: 12,
+                            ),
+                            SizedBox(height: 20,),
+                          ],
+                        )
+                      : const SizedBox(height: 20,)
                     ],
                   ),
                 );

@@ -1,3 +1,4 @@
+import 'package:app_3/helper/cache_manager_helper.dart';
 import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/providers/subscription_provider.dart';
 import 'package:app_3/screens/sub-screens/subscription/product_subscribe.dart';
@@ -49,6 +50,7 @@ class SubscriptionPageWidget extends StatelessWidget {
                                 // imageUrl: 'http://192.168.1.5/pasumaibhoomi/public/image/product/${provider.subscribeProducts[index].image}',
                                 imageUrl: 'https://maduraimarket.in/public/image/product/${provider.subscribeProducts[index].image}',
                                 fit: BoxFit.cover,
+                                cacheManager: CacheManagerHelper.cacheIt(key: provider.subscribeProducts[index].image),
                               ),
                             ),
                           ),

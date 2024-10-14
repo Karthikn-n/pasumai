@@ -1,3 +1,4 @@
+import 'package:app_3/helper/cache_manager_helper.dart';
 import 'package:app_3/providers/api_provider.dart';
 import 'package:app_3/helper/shared_preference_helper.dart';
 import 'package:app_3/helper/page_transition_helper.dart';
@@ -68,6 +69,7 @@ class _HomeScreenProductsState extends State<HomeScreenProducts>{
                             child: CachedNetworkImage(
                               imageUrl: imageUrl,
                               fit: BoxFit.cover,
+                              cacheManager: CacheManagerHelper.cacheIt(key: product.image),
                             ),
                           ),
                         ),

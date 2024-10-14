@@ -1,4 +1,5 @@
 import 'package:app_3/data/constants.dart';
+import 'package:app_3/helper/cache_manager_helper.dart';
 import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/model/active_subscription_model.dart';
 import 'package:app_3/providers/subscription_provider.dart';
@@ -131,6 +132,7 @@ class ActiveSubscriptionWidget extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(8),
                                   child: CachedNetworkImage(
                                     fit: BoxFit.cover,
+                                    cacheManager: CacheManagerHelper.cacheIt(key: subscripedProducts[index].productImage),
                                     imageUrl: 'https://maduraimarket.in/public/image/product/${subscripedProducts[index].productImage}'
                                     // imageUrl: 'http://192.168.1.5/pasumaibhoomi/public/image/product/${subscripedProducts[index].productImage}'
                                   ),

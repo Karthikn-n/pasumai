@@ -1,4 +1,5 @@
 import 'package:app_3/data/constants.dart';
+import 'package:app_3/helper/cache_manager_helper.dart';
 import 'package:app_3/model/products_model.dart';
 import 'package:app_3/model/wishlist_products_model.dart';
 import 'package:app_3/providers/api_provider.dart';
@@ -64,6 +65,7 @@ class WishlistProducts extends StatelessWidget {
                                 child: CachedNetworkImage(
                                   imageUrl: image,
                                   fit: BoxFit.cover,
+                                  cacheManager: CacheManagerHelper.cacheIt(key: image)
                                 ),
                               ),
                             ),

@@ -1,3 +1,4 @@
+import 'package:app_3/helper/cache_manager_helper.dart';
 import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/model/active_subscription_model.dart';
 import 'package:app_3/providers/address_provider.dart';
@@ -68,6 +69,7 @@ class _RenewSubscriptionWidgetState extends State<RenewSubscriptionWidget> {
                             borderRadius: BorderRadius.circular(8),
                             child: CachedNetworkImage(
                               fit: BoxFit.cover,
+                              cacheManager: CacheManagerHelper.cacheIt(key: widget.product.productImage),
                               imageUrl: 'https://maduraimarket.in/public/image/product/${widget.product.productImage}'
                               // imageUrl: 'http://192.168.1.5/pasumaibhoomi/public/image/product/${product.productImage}'
                             ),

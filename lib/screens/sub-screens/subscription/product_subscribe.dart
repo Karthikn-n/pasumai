@@ -1,3 +1,4 @@
+import 'package:app_3/helper/cache_manager_helper.dart';
 import 'package:app_3/helper/shared_preference_helper.dart';
 import 'package:app_3/model/products_model.dart';
 import 'package:app_3/providers/address_provider.dart';
@@ -59,6 +60,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                   child: CachedNetworkImage(
                     imageUrl: "https://maduraimarket.in/public/image/product/${widget.product.image}",
                     fit: BoxFit.cover,
+                    cacheManager: CacheManagerHelper.cacheIt(key: widget.product.image),
                   ),
                 ),
               ),

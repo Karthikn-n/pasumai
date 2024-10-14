@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:app_3/data/encrypt_ids.dart';
+import 'package:app_3/helper/cache_manager_helper.dart';
 import 'package:app_3/helper/shared_preference_helper.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -220,6 +221,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             // imageUrl: 'http://192.168.1.5/pasumaibhoomi/public/image/product/${products[index].image}',
                             imageUrl: 'https://maduraimarket.in/public/image/product/${searchedProducts[index].image}',
                             fit: BoxFit.cover,
+                            cacheManager: CacheManagerHelper.cacheIt(key: searchedProducts[index].image),
                           ),
                         ),
                       ),

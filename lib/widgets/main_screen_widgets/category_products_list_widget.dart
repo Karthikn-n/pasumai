@@ -143,6 +143,7 @@ class CategoryProductsListWidget extends StatelessWidget {
                                         // imageUrl: 'http://192.168.1.5/pasumaibhoomi/public/image/product/${products[index].image}',
                                         imageUrl: 'https://maduraimarket.in/public/image/product/${products[index].image}',
                                         fit: BoxFit.cover,
+                                        cacheManager: CacheManagerHelper.cacheIt(key: products[index].image),
                                       ),
                                     ),
                                   ),

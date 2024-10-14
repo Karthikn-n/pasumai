@@ -14,7 +14,7 @@ class CacheManagerHelper {
         repo: JsonCacheInfoRepository(databaseName: "#$key"),
         maxNrOfCacheObjects: maxNrOfCacheObjects ?? 10,
         fileService: HttpFileService(),
-        stalePeriod: duration ?? const Duration(minutes: 10)
+        stalePeriod: duration ?? const Duration(days: 5)
       )
     );
   }

@@ -1,3 +1,4 @@
+import 'package:app_3/helper/cache_manager_helper.dart';
 import 'package:app_3/model/selected_product_model.dart';
 import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/providers/api_provider.dart';
@@ -127,6 +128,7 @@ class _QuickOrderScreenState extends State<QuickOrderScreen> {
                                       // imageUrl: 'http://192.168.1.5/pasumaibhoomi/public/image/product/${productProvider.quickOrderProductsList[index].image}',
                                       imageUrl: 'https://maduraimarket.in/public/image/product/${productProvider.quickOrderProductsList[index].image}',
                                       fit: BoxFit.cover,
+                                      cacheManager: CacheManagerHelper.cacheIt(key: productProvider.quickOrderProductsList[index].image),
                                     ),
                                   ),
                                 ),

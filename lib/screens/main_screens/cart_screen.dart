@@ -1,3 +1,4 @@
+import 'package:app_3/helper/cache_manager_helper.dart';
 import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/providers/api_provider.dart';
 import 'package:app_3/providers/cart_items_provider.dart';
@@ -72,6 +73,7 @@ class _CartScreenState extends State<CartScreen> {
                                         // imageUrl: 'http://192.168.1.5/pasumaibhoomi/public/image/product/${cartProvider.cartItems[index].image}',
                                         imageUrl: 'https://maduraimarket.in/public/image/product/${cartProvider.cartItems[index].image}',
                                         fit: BoxFit.cover,
+                                        cacheManager: CacheManagerHelper.cacheIt(key: cartProvider.cartItems[index].image),
                                       ),
                                     ),
                                   ),

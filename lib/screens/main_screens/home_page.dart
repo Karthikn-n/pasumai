@@ -1,6 +1,7 @@
 
 import 'dart:async';
 
+import 'package:app_3/helper/cache_manager_helper.dart';
 import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/providers/api_provider.dart';
@@ -223,6 +224,7 @@ class _HomePageState extends State<HomePage> {
                                     child: CachedNetworkImage(
                                       imageUrl: imageUrl,
                                       fit: BoxFit.fitWidth,
+                                      cacheManager: CacheManagerHelper.cacheIt(key: provider.banners[index]),
                                     )
                                   );
                                 },
@@ -308,6 +310,7 @@ class _HomePageState extends State<HomePage> {
                                                         child: CachedNetworkImage(
                                                           imageUrl: imageUrl,
                                                           fit: BoxFit.cover,
+                                                          cacheManager: CacheManagerHelper.cacheIt(key: provider.categories[index].categoryImage),
                                                         ),
                                                       ),
                                                     ),

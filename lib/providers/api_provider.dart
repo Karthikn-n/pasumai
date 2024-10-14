@@ -41,6 +41,7 @@ class ApiProvider extends ChangeNotifier{
 
   // Category list
   List<Products> categoryProducts = [];
+  String? categoryBanner;
   List<Products> quickOrderProductsList = [];
   List<Products> filteredProducts = [];
   // List<Attributes> attributesList = [
@@ -221,11 +222,14 @@ class ApiProvider extends ChangeNotifier{
     final response = await apiRepository.allProducts(productData);
     String decrptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
     final decodedResponse = json.decode(decrptedResponse);
-    debugPrint('All Products Response: $decodedResponse, Status Code: ${response.statusCode}');
+    debugPrint('All Products Response: $decodedResponse, Status Code: ${response.statusCode}', wrapWidth: 1064);
     if (response.statusCode == 200) {
       final List<dynamic> productJson = decodedResponse['products'];
       List<Products> productsList = productJson.map((json) => Products.fromJson(json)).toList();
       categoryProducts.clear();
+      categoryBanner = "";
+      print(decodedResponse["banner_image"]);
+      categoryBanner = decodedResponse["banner_image"];
       categoryProducts = productsList;
       // if (catId == 1) {
       //   createQuantities();

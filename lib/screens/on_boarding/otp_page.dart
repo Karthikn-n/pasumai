@@ -158,7 +158,7 @@ class _OtpPageState extends State<OtpPage> with WidgetsBindingObserver{
                              width: kToolbarHeight + 10,
                              decoration: BoxDecoration(
                               border: Border.all(
-                                color: const Color.fromRGBO(222, 231, 240, .57)
+                                color: const Color.fromARGB(145, 136, 141, 146)
                               ),
                               borderRadius: BorderRadius.circular(5),
                               // color: 

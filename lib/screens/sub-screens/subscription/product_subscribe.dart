@@ -436,6 +436,10 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                                 print('Every day subscriptin: $everyDayData');
                                 Navigator.pop(sheetContext);
                                 await activeSub.addSubscription(context, size, everyDayData);
+                                setState((){
+                                  subscriptionDate = null;
+                                });
+
                               }
                             }else{
                               setState((){
@@ -704,6 +708,9 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                                     print("Weekday subscription data: $weekDaySubscriptionData");
                                     Navigator.pop(sheetContext);
                                     await subProvider.addSubscription(context, size, weekDaySubscriptionData);
+                                    setState((){
+                                      subscriptionDate = null;
+                                    });
                                   }
                                 }else{
                                   setState((){
@@ -971,6 +978,9 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                                     print("Custome subscription data: $customSubscriptionData");
                                     Navigator.pop(sheetContext);
                                     await activeSub.addSubscription(context, size, customSubscriptionData);
+                                    setState((){
+                                      subscriptionDate = null;
+                                    });
                                   }
                                 }else{
                                   setState((){

@@ -199,7 +199,7 @@ class _HomePageState extends State<HomePage> {
                     slivers: [
                       // banners
                       SliverAppBar(
-                        expandedHeight: size.width > 600?  size.height * 0.4 : size.height * 0.180,
+                        expandedHeight: size.height * 0.180,
                         // floating: true,
                         // snap: true,
                         automaticallyImplyLeading: false,
@@ -260,65 +260,74 @@ class _HomePageState extends State<HomePage> {
                               ),
                               const SizedBox(height: 20),
                               // Category Heading
-                              AppTextWidget(
-                                text:  localeProvider.of(context).category,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              const SizedBox(height: 15,),
+                              // AppTextWidget(
+                              //   text:  localeProvider.of(context).category,
+                              //   fontSize: 18,
+                              //   fontWeight: FontWeight.w500,
+                              // ),
+                              // const SizedBox(height: 15,),
                               // Category list
                               SizedBox(
-                                height: 130,
+                                height: 210,
                                 // width: size.width,
-                                child: ListView.builder(
-                                  itemCount: provider.categories.length,
-                                  scrollDirection: Axis.horizontal,
-                                  itemBuilder: (context, index) {
-                                    String imageUrl = 'https://maduraimarket.in/public/image/category/${provider.categories[index].categoryImage}';   
-                                    // String imageUrl = 'http://192.168.1.5/pasumaibhoomi/public/image/category/${provider.categories[index].categoryImage}';   
-                                    return Row(
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () async {
-                                            // await provider.allProducts(provider.categories[index].categoryId).then((value){
-                                              Navigator.of(context).push(MaterialPageRoute(
-                                                builder: (context) => CategoryProductsListWidget(categoryName: provider.categories[index].categoryName, categoryId: provider.categories[index].categoryId,)
-                                              ));
-                                            // });
-                                          },
-                                          child: SizedBox(
-                                            height: 130,
-                                            width: 110,
-                                            // margin: EdgeInsets.only(right: index == provider.categories.length -1 ? 10 : 0),
-                                            // padding: const EdgeInsets.only(left: 10),
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                SizedBox(
-                                                  height: 100,
-                                                  child: ClipRRect(
-                                                    borderRadius: BorderRadius.circular(10),
-                                                    child: CachedNetworkImage(
-                                                      imageUrl: imageUrl,
-                                                      fit: BoxFit.cover,
+                                child: Center(
+                                  child: ListView.builder(
+                                    itemCount: provider.categories.length,
+                                    scrollDirection: Axis.horizontal,
+                                    itemBuilder: (context, index) {
+                                      String imageUrl = 'https://maduraimarket.in/public/image/category/${provider.categories[index].categoryImage}';   
+                                      // String imageUrl = 'http://192.168.1.5/pasumaibhoomi/public/image/category/${provider.categories[index].categoryImage}';   
+                                      return Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () async {
+                                              // await provider.allProducts(provider.categories[index].categoryId).then((value){
+                                                Navigator.of(context).push(MaterialPageRoute(
+                                                  builder: (context) => CategoryProductsListWidget(categoryName: provider.categories[index].categoryName, categoryId: provider.categories[index].categoryId,)
+                                                ));
+                                              // });
+                                            },
+                                            child: SizedBox(
+                                              // height: 200,
+                                              // width: 110,
+                                              // margin: EdgeInsets.only(right: index == provider.categories.length -1 ? 10 : 0),
+                                              // padding: const EdgeInsets.only(left: 10),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Card(
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(10)
+                                                    ),
+                                                    elevation: 3,
+                                                    child: SizedBox(
+                                                      height: 200,
+                                                      child: ClipRRect(
+                                                        borderRadius: BorderRadius.circular(10),
+                                                        child: CachedNetworkImage(
+                                                          imageUrl: imageUrl,
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                                AppTextWidget(
-                                                  text: provider.categories[index].categoryName, 
-                                                  fontSize: 14, 
-                                                  maxLines: 1,
-                                                  fontWeight: FontWeight.w400,
-                                                  textOverflow: TextOverflow.ellipsis,
-                                                )
-                                              ],
+                                                  // AppTextWidget(
+                                                  //   text: provider.categories[index].categoryName, 
+                                                  //   fontSize: 14, 
+                                                  //   maxLines: 1,
+                                                  //   fontWeight: FontWeight.w400,
+                                                  //   textOverflow: TextOverflow.ellipsis,
+                                                  // )
+                                                ],
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        const SizedBox(width: 10,)
-                                      ],
-                                    );
-                                  }
+                                          const SizedBox(width: 10,)
+                                        ],
+                                      );
+                                    }
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 16,),

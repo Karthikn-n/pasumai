@@ -26,9 +26,9 @@ class CategoryProductsListWidget extends StatelessWidget {
       return Consumer<ApiProvider>(
         builder: (context, categoryProvider, child) {
           if (isFeaturedProduct ?? false) {
-            return productListing(categoryProvider.featuredproductData, size, context);
+            return productListing(categoryProvider.featuredproductData, categoryProvider.categoryBanner, size, context);
           }else if(isBestSellerProduct ?? false){
-            return productListing(categoryProvider.bestSellerProducts, size, context);
+            return productListing(categoryProvider.bestSellerProducts, categoryProvider.categoryBanner, size, context);
           }else{
             return FutureBuilder(
               future: categoryProvider.allProducts(categoryId!), 
@@ -43,7 +43,7 @@ class CategoryProductsListWidget extends StatelessWidget {
                     body: const ShimmerListWidget()
                   );
                 }else{
-                  return productListing(categoryProvider.categoryProducts, size, context);
+                  return productListing(categoryProvider.categoryProducts, categoryProvider.categoryBanner, size, context);
                 }
               },
             );
@@ -65,7 +65,7 @@ class CategoryProductsListWidget extends StatelessWidget {
   }
 
   // Product List Widget
-  Widget productListing(List<Products> products, Size size, BuildContext context){
+  Widget productListing(List<Products> products, String? bannerImage, Size size, BuildContext context){
     final scrollController = Provider.of<Constants>(context).categoriesController;
     return Scaffold(
       appBar: AppBarWidget(
@@ -75,248 +75,283 @@ class CategoryProductsListWidget extends StatelessWidget {
       ),
       body: CupertinoScrollbar(
         controller: scrollController,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: products.isEmpty
-          ? const Center(
-            child: AppTextWidget(text: "No Products", fontSize: 15, fontWeight: FontWeight.w500),
-          )
-          : ListView.builder(
+        child: products.isEmpty
+        ? const Center(
+          child: AppTextWidget(text: "No Products", fontSize: 15, fontWeight: FontWeight.w500),
+        )
+        : CustomScrollView(
             controller: scrollController,
-            itemCount: products.length,
-            itemBuilder: (context, index) {
-              return Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.only(top: 10, bottom: 10),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: index == products.length - 1 
-                        ? BorderSide.none
-                        : BorderSide(color: Colors.grey.shade300)
+            slivers: [
+              bannerImage == null
+              ? const SliverToBoxAdapter()
+              : SliverAppBar(
+                  automaticallyImplyLeading: false,
+                  expandedHeight: size.height * 0.18,
+                  backgroundColor: Colors.white,
+                  surfaceTintColor: Colors.transparent.withOpacity(0.0),
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: SizedBox(
+                        height: size.height * 0.1,
+                        width: double.infinity,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          // clipBehavior: Clip.none,
+                          child: CachedNetworkImage(
+                            imageUrl: "https://maduraimarket.in/public/image/category/$bannerImage",
+                            fit: BoxFit.scaleDown,
+                          ),
+                        ),
                       ),
-                      // borderRadius: BorderRadius.circular(10)
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Product Image
-                        SizedBox(
-                          width: 94,
-                          height: 105,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: CachedNetworkImage(
-                              // imageUrl: 'http://192.168.1.5/pasumaibhoomi/public/image/product/${products[index].image}',
-                              imageUrl: 'https://maduraimarket.in/public/image/product/${products[index].image}',
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: size.width * 0.5,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Product Name and Quantity
-                              Consumer<CartProvider>(
-                                  builder: (context, productProvider, child) {
-                                  return RichText(
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    text: TextSpan(
-                                      text: productProvider.cartQuantities[products[index].id] != null
-                                      ? "${productProvider.cartQuantities[products[index].id]}x "
-                                      : "", 
-                                      style: TextStyle(
-                                        fontSize: 16, 
-                                        fontWeight: FontWeight.w500,
-                                        color: Theme.of(context).primaryColor
-                                      ),
-                                      children: [
-                                        TextSpan(
-                                          text: "${products[index].name}/${products[index].quantity}", 
-                                          style: const TextStyle(
-                                            fontSize: 14, 
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w400
-                                          )
-                                        )
-                                      ]
-                                    ),
-                                  );
-                                }
-                              ),
-                              const SizedBox(height: 5,),
-                              // Product Description
-                              AppTextWidget(
-                                text: products[index].description.replaceAll("<p>", ""), 
-                                fontSize: 12, 
-                                maxLines: 2,
-                                fontColor: Colors.grey,
-                                textOverflow: TextOverflow.ellipsis,
-                                fontWeight: FontWeight.w300
-                              ),
-                              const SizedBox(height: 5,),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  // Product Final price
-                                  AppTextWidget(
-                                    text: "₹${products[index].finalPrice.toString()}", 
-                                    fontSize: 14, 
-                                    fontColor: Theme.of(context).primaryColor,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                  const SizedBox(width: 5,),
-                                  // Product Price 
-                                  Text(
-                                    "₹${products[index].price.toString()}",
-                                    style: const TextStyle(
-                                      fontSize: 14, 
-                                      fontWeight: FontWeight.w400,
-                                      decorationThickness: 2,
-                                      decorationColor: Colors.grey,
-                                      color: Colors.grey,
-                                      decoration: TextDecoration.lineThrough,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        // Add to Cart Button
-                        Consumer<CartProvider>(
-                          builder: (context, cartProvider, child) {
-                            return SizedBox(
-                              height: 105,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    width: 40,
-                                    height: cartProvider.cartQuantities[products[index].id] != null ? 50: 105,
-                                    child: AnimatedSize(
-                                      duration: const Duration(milliseconds: 500),
-                                      curve: Curves.easeInOut,
-                                      child: ElevatedButton(
-                                        onPressed: () async {
-                                          // print("prod ")
-                                          if(cartProvider.cartQuantities[products[index].id] == null){
-                                            await cartProvider.addCart(products[index].id, size, context, products[index]);
-                                          }else{
-                                            cartProvider.incrementQuantity(productId: products[index].id, isIncrement: true);
-                                            List<Map<String, dynamic>> cartProductData = [];
-                                            // print(cartProvider.cartItems[index].id);
-                                            cartProvider.cartQuantities.forEach((key, value) {
-                                            
-                                              cartProductData.add({
-                                                "prdt_id": key,
-                                                "prdt_qty": value,
-                                                "prdt_total": value * products[index].finalPrice
-                                              });
-                                              
-                                            },);
-                                            await cartProvider.updateCart(size, context, cartProductData, false);
-                                          }
-                                        }, 
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: cartProvider.cartQuantities[products[index].id] != null 
-                                            ? Theme.of(context).primaryColor
-                                            : Colors.transparent.withOpacity(0.0),
-                                          elevation: 0,
-                                          alignment: Alignment.centerLeft,
-                                          padding: EdgeInsets.fromLTRB(cartProvider.cartQuantities[products[index].id] != null ? 13 : 10, 0, 0, 0),
-                                          shadowColor: Colors.transparent.withOpacity(0.0),
-                                          overlayColor: cartProvider.cartQuantities[products[index].id] != null 
-                                            ? Colors.white12
-                                            : Colors.transparent.withOpacity(0.1),
-                                          shape: RoundedRectangleBorder(
-                                            side: cartProvider.cartQuantities[products[index].id] != null
-                                            ? BorderSide.none 
-                                            : BorderSide(color: Colors.grey.shade300),
-                                            borderRadius: BorderRadius.circular(5)
-                                          )
-                                        ),
-                                        child: Icon(
-                                          cartProvider.cartQuantities[products[index].id] != null 
-                                          ? CupertinoIcons.plus
-                                          : CupertinoIcons.cart_badge_plus,
-                                          color: cartProvider.cartQuantities[products[index].id] != null 
-                                          ? Colors.white
-                                          : Theme.of(context).primaryColor,
-                                          size: cartProvider.cartQuantities[products[index].id] != null ? 13 : 20,
-                                        ) 
-                                      ),
-                                    ),
-                                  ),
-                                  cartProvider.cartQuantities[products[index].id] != null
-                                  ? SizedBox(
-                                      width: 40,
-                                      height: 50,
-                                      child: AnimatedSize(
-                                        duration: const Duration(milliseconds: 500),
-                                        curve: Curves.easeInOut,
-                                        child: ElevatedButton(
-                                          onPressed: () async {
-                                            // Decrease the quantity of the product
-                                            if (cartProvider.cartQuantities[products[index].id]  != null && cartProvider.cartQuantities[products[index].id]  == 1) {
-                                              cartProvider.confirmDelete(products[index].id, size, index, context);
-                                            } else {
-                                              cartProvider.incrementQuantity(productId: products[index].id);
-                                              List<Map<String, dynamic>> cartProductData = [];
-                                              cartProvider.cartQuantities.forEach((key, value) {
-                                                cartProductData.add({
-                                                  "prdt_id": key,
-                                                  "prdt_qty": value,
-                                                  "prdt_total": value * products[index].finalPrice
-                                                });
-                                              },);
-                                              await cartProvider.updateCart(size, context, cartProductData, false);
-                                            }
-                                          }, 
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.transparent.withOpacity(0.0),
-                                            elevation: 0,
-                                            alignment: Alignment.centerLeft,
-                                            padding: const EdgeInsets.fromLTRB(12, 0, 0, 0),
-                                            shadowColor: Colors.transparent.withOpacity(0.0),
-                                            overlayColor: Colors.transparent.withOpacity(0.1),
-                                            shape: RoundedRectangleBorder(
-                                              side: BorderSide(color: Colors.grey.shade300),
-                                              borderRadius: BorderRadius.circular(5)
-                                            )
-                                          ),
-                                          child: Icon(
-                                            cartProvider.cartQuantities[products[index].id]  != null && cartProvider.cartQuantities[products[index].id]  == 1
-                                            ? CupertinoIcons.delete
-                                            : CupertinoIcons.minus,
-                                            color: cartProvider.cartQuantities[products[index].id]  != null && cartProvider.cartQuantities[products[index].id]  == 1
-                                            ? Colors.red
-                                            : Theme.of(context).primaryColor,
-                                            size: 15,
-                                          )
-                                        ),
-                                      ),
-                                    )
-                                  : Container()
-                                ],
-                              ),
-                            );
-                          },
-                        )
-                      
-                      ],
                     ),
                   ),
-                  // const SizedBox(height: 10,)
-                ],
-              );
-            },
+                ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: SizedBox(
+                    height:( size.height * 0.17) * products.length,
+                    child: ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: products.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.only(top: 10, bottom: 10),
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: index == products.length - 1 
+                                  ? BorderSide.none
+                                  : BorderSide(color: Colors.grey.shade300)
+                                ),
+                                // borderRadius: BorderRadius.circular(10)
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  // Product Image
+                                  SizedBox(
+                                    width: 94,
+                                    height: 105,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: CachedNetworkImage(
+                                        // imageUrl: 'http://192.168.1.5/pasumaibhoomi/public/image/product/${products[index].image}',
+                                        imageUrl: 'https://maduraimarket.in/public/image/product/${products[index].image}',
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: size.width * 0.5,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        // Product Name and Quantity
+                                        Consumer<CartProvider>(
+                                            builder: (context, productProvider, child) {
+                                            return RichText(
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                              text: TextSpan(
+                                                text: productProvider.cartQuantities[products[index].id] != null
+                                                ? "${productProvider.cartQuantities[products[index].id]}x "
+                                                : "", 
+                                                style: TextStyle(
+                                                  fontSize: 16, 
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Theme.of(context).primaryColor
+                                                ),
+                                                children: [
+                                                  TextSpan(
+                                                    text: "${products[index].name}/${products[index].quantity}", 
+                                                    style: const TextStyle(
+                                                      fontSize: 14, 
+                                                      color: Colors.black,
+                                                      fontWeight: FontWeight.w400
+                                                    )
+                                                  )
+                                                ]
+                                              ),
+                                            );
+                                          }
+                                        ),
+                                        const SizedBox(height: 5,),
+                                        // Product Description
+                                        AppTextWidget(
+                                          text: products[index].description.replaceAll("<p>", ""), 
+                                          fontSize: 12, 
+                                          maxLines: 2,
+                                          fontColor: Colors.grey,
+                                          textOverflow: TextOverflow.ellipsis,
+                                          fontWeight: FontWeight.w300
+                                        ),
+                                        const SizedBox(height: 5,),
+                                        Row(
+                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          children: [
+                                            // Product Final price
+                                            AppTextWidget(
+                                              text: "₹${products[index].finalPrice.toString()}", 
+                                              fontSize: 14, 
+                                              fontColor: Theme.of(context).primaryColor,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                            const SizedBox(width: 5,),
+                                            // Product Price 
+                                            Text(
+                                              "₹${products[index].price.toString()}",
+                                              style: const TextStyle(
+                                                fontSize: 14, 
+                                                fontWeight: FontWeight.w400,
+                                                decorationThickness: 2,
+                                                decorationColor: Colors.grey,
+                                                color: Colors.grey,
+                                                decoration: TextDecoration.lineThrough,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  // Add to Cart Button
+                                  Consumer<CartProvider>(
+                                    builder: (context, cartProvider, child) {
+                                      return SizedBox(
+                                        height: 105,
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            SizedBox(
+                                              width: 40,
+                                              height: cartProvider.cartQuantities[products[index].id] != null ? 50: 105,
+                                              child: AnimatedSize(
+                                                duration: const Duration(milliseconds: 500),
+                                                curve: Curves.easeInOut,
+                                                child: ElevatedButton(
+                                                  onPressed: () async {
+                                                    // print("prod ")
+                                                    if(cartProvider.cartQuantities[products[index].id] == null){
+                                                      await cartProvider.addCart(products[index].id, size, context, products[index]);
+                                                    }else{
+                                                      cartProvider.incrementQuantity(productId: products[index].id, isIncrement: true);
+                                                      List<Map<String, dynamic>> cartProductData = [];
+                                                      // print(cartProvider.cartItems[index].id);
+                                                      cartProvider.cartQuantities.forEach((key, value) {
+                                                      
+                                                        cartProductData.add({
+                                                          "prdt_id": key,
+                                                          "prdt_qty": value,
+                                                          "prdt_total": value * products[index].finalPrice
+                                                        });
+                                                        
+                                                      },);
+                                                      await cartProvider.updateCart(size, context, cartProductData, false);
+                                                    }
+                                                  }, 
+                                                  style: ElevatedButton.styleFrom(
+                                                    backgroundColor: cartProvider.cartQuantities[products[index].id] != null 
+                                                      ? Theme.of(context).primaryColor
+                                                      : Colors.transparent.withOpacity(0.0),
+                                                    elevation: 0,
+                                                    alignment: Alignment.centerLeft,
+                                                    padding: EdgeInsets.fromLTRB(cartProvider.cartQuantities[products[index].id] != null ? 13 : 10, 0, 0, 0),
+                                                    shadowColor: Colors.transparent.withOpacity(0.0),
+                                                    overlayColor: cartProvider.cartQuantities[products[index].id] != null 
+                                                      ? Colors.white12
+                                                      : Colors.transparent.withOpacity(0.1),
+                                                    shape: RoundedRectangleBorder(
+                                                      side: cartProvider.cartQuantities[products[index].id] != null
+                                                      ? BorderSide.none 
+                                                      : BorderSide(color: Colors.grey.shade300),
+                                                      borderRadius: BorderRadius.circular(5)
+                                                    )
+                                                  ),
+                                                  child: Icon(
+                                                    cartProvider.cartQuantities[products[index].id] != null 
+                                                    ? CupertinoIcons.plus
+                                                    : CupertinoIcons.cart_badge_plus,
+                                                    color: cartProvider.cartQuantities[products[index].id] != null 
+                                                    ? Colors.white
+                                                    : Theme.of(context).primaryColor,
+                                                    size: cartProvider.cartQuantities[products[index].id] != null ? 13 : 20,
+                                                  ) 
+                                                ),
+                                              ),
+                                            ),
+                                            cartProvider.cartQuantities[products[index].id] != null
+                                            ? SizedBox(
+                                                width: 40,
+                                                height: 50,
+                                                child: AnimatedSize(
+                                                  duration: const Duration(milliseconds: 500),
+                                                  curve: Curves.easeInOut,
+                                                  child: ElevatedButton(
+                                                    onPressed: () async {
+                                                      // Decrease the quantity of the product
+                                                      if (cartProvider.cartQuantities[products[index].id]  != null && cartProvider.cartQuantities[products[index].id]  == 1) {
+                                                        cartProvider.confirmDelete(products[index].id, size, index, context);
+                                                      } else {
+                                                        cartProvider.incrementQuantity(productId: products[index].id);
+                                                        List<Map<String, dynamic>> cartProductData = [];
+                                                        cartProvider.cartQuantities.forEach((key, value) {
+                                                          cartProductData.add({
+                                                            "prdt_id": key,
+                                                            "prdt_qty": value,
+                                                            "prdt_total": value * products[index].finalPrice
+                                                          });
+                                                        },);
+                                                        await cartProvider.updateCart(size, context, cartProductData, false);
+                                                      }
+                                                    }, 
+                                                    style: ElevatedButton.styleFrom(
+                                                      backgroundColor: Colors.transparent.withOpacity(0.0),
+                                                      elevation: 0,
+                                                      alignment: Alignment.centerLeft,
+                                                      padding: const EdgeInsets.fromLTRB(12, 0, 0, 0),
+                                                      shadowColor: Colors.transparent.withOpacity(0.0),
+                                                      overlayColor: Colors.transparent.withOpacity(0.1),
+                                                      shape: RoundedRectangleBorder(
+                                                        side: BorderSide(color: Colors.grey.shade300),
+                                                        borderRadius: BorderRadius.circular(5)
+                                                      )
+                                                    ),
+                                                    child: Icon(
+                                                      cartProvider.cartQuantities[products[index].id]  != null && cartProvider.cartQuantities[products[index].id]  == 1
+                                                      ? CupertinoIcons.delete
+                                                      : CupertinoIcons.minus,
+                                                      color: cartProvider.cartQuantities[products[index].id]  != null && cartProvider.cartQuantities[products[index].id]  == 1
+                                                      ? Colors.red
+                                                      : Theme.of(context).primaryColor,
+                                                      size: 15,
+                                                    )
+                                                  ),
+                                                ),
+                                              )
+                                            : Container()
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  )
+                                
+                                ],
+                              ),
+                            ),
+                            // const SizedBox(height: 10,)
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              )
+            ],
           ),
-        ),
       )
     );
   

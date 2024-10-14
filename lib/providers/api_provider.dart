@@ -169,6 +169,7 @@ class ApiProvider extends ChangeNotifier{
     notifyListeners();
   }
 
+  // Customer Profile
   Future<void> userProfileAPI() async {
     Map<String, dynamic> userData = {
       'customer_id': prefs.getString('customerId')
@@ -188,7 +189,6 @@ class ApiProvider extends ChangeNotifier{
       print('Error: ${response.body}');
     }
   }
-
 
   // Resend OTP api
   Future<void> resendOTP(BuildContext context, Size size, String mobileNo) async {

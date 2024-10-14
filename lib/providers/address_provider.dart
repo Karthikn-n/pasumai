@@ -14,9 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AddressProvider extends ChangeNotifier{
-  AddressProvider._addresses();
 
-  static final AddressProvider helper = AddressProvider._addresses();
   static final AppRepository _addressRepository = AppRepository(ApiService("https://maduraimarket.in/api"));
   // static final AppRepository _addressRepository = AppRepository(ApiService('http://192.168.1.5/pasumaibhoomi/public/api'));
   static final SharedPreferences _prefs = SharedPreferencesHelper.getSharedPreferences();
@@ -29,13 +27,11 @@ class AddressProvider extends ChangeNotifier{
   TextEditingController mapAddressController = TextEditingController();
 
 
-
   // Set Current Delivery Address
   void setCurrentAddress({AddressModel? address, int? addressId}) {
     currentAddress = address;
     notifyListeners();
   }
-
 
   // Get all the regions and locations
   Future<void> getRegionLocation() async {
@@ -54,7 +50,6 @@ class AddressProvider extends ChangeNotifier{
     }
     notifyListeners();
   }
-
 
   // Get All the Address of the User
   Future<void> getAddressesAPI({bool? newUser}) async {
@@ -156,7 +151,6 @@ class AddressProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-
   // Delete Address From the Entry
   Future<void> deleteAddress(BuildContext context, Size size, int id, int index) async {
    
@@ -202,7 +196,6 @@ class AddressProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-
   // Notify to user to add address if they have no address on checkout or subscribe
   void addnewAddress(BuildContext context, Size size){
     final addAddress = snackBarMessage(
@@ -222,7 +215,6 @@ class AddressProvider extends ChangeNotifier{
     ScaffoldMessenger.of(context).showSnackBar(addAddress);
     notifyListeners();
   }
-
 
   // Get confirm message for Deleting address
   void confirmDelete(BuildContext context, Size size, int id, int index){
@@ -314,8 +306,6 @@ class AddressProvider extends ChangeNotifier{
       },
     );
   }
-
- 
 
   // Set As Default Message
   void setAddressDefault(BuildContext context, Size size, int id,){

@@ -9,6 +9,7 @@ import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:provider/provider.dart';
 
 class CategoryProductsListWidget extends StatelessWidget {
@@ -101,6 +102,15 @@ class CategoryProductsListWidget extends StatelessWidget {
                           child: CachedNetworkImage(
                             imageUrl: "https://maduraimarket.in/public/image/category/$bannerImage",
                             fit: BoxFit.scaleDown,
+                            cacheManager: CacheManager(
+                              Config(
+                                "#$bannerImage",
+                                repo: JsonCacheInfoRepository(databaseName: "#$bannerImage"),
+                                maxNrOfCacheObjects: 10,
+                                fileService: HttpFileService(),
+                                stalePeriod: const Duration(minutes: 10)
+                              )
+                            ),
                           ),
                         ),
                       ),
@@ -181,7 +191,7 @@ class CategoryProductsListWidget extends StatelessWidget {
                                         const SizedBox(height: 5,),
                                         // Product Description
                                         AppTextWidget(
-                                          text: products[index].description.replaceAll("<p>", ""), 
+                                          text: products[index].description.replaceAll("<p>", "").replaceAll("</p>", ""), 
                                           fontSize: 12, 
                                           maxLines: 2,
                                           fontColor: Colors.grey,

@@ -235,7 +235,7 @@ class VacationListWidget extends StatelessWidget {
                                   ),
                                   const SizedBox(width: 10,),
                                   GestureDetector(
-                                    onTap: ()  {
+                                    onTap: ()  async{
                                       if (DateTime.now().hour >= 15 ) {
                                         final alertMessage = snackBarMessage(
                                           context: context, 
@@ -244,7 +244,12 @@ class VacationListWidget extends StatelessWidget {
                                           sidePadding: size.width * 0.1, bottomPadding: size.height * 0.05);
                                         ScaffoldMessenger.of(context).showSnackBar(alertMessage);
                                       }else{
-                                         provider.confirmDeleteVacation(provider.vacations[index].id, context, size);
+                                        if (provider.vacations.length == 1) {
+                                          provider.confirmDeleteVacation(provider.vacations[index].id, context, size);
+                                          await provider.vacationList();
+                                        }else{
+                                          provider.confirmDeleteVacation(provider.vacations[index].id, context, size);
+                                        }
                                       }
                                     },
                                     child: const Icon(CupertinoIcons.delete, size: 20, color: Colors.red,)
@@ -350,7 +355,7 @@ class VacationListWidget extends StatelessWidget {
                                           context: context, 
                                           firstDate: DateTime.now(), 
                                           helpText: "Start date",
-                                          lastDate: DateTime(2100),
+                                          lastDate: isUpdating ? updatedEndDate! : DateTime(2100),
                                           initialDate: isUpdating ? updatedStartDate : DateTime.now(),
                                         );
                                         if (isUpdating) {
@@ -410,10 +415,10 @@ class VacationListWidget extends StatelessWidget {
                                       onPressed: () async {
                                         DateTime? endDate = await showDatePicker(
                                           context: context, 
-                                          firstDate: isUpdating ? DateTime.now() : provider.startDate!, 
+                                          firstDate: isUpdating ? provider.updatedStartDate! : provider.startDate!, 
                                           helpText: "End date",
                                           lastDate: DateTime(2100),
-                                          initialDate: isUpdating ? updatedEndDate! : provider.startDate!,
+                                          initialDate: isUpdating ?  provider.updatedStartDate! : provider.startDate!,
                                         );
                                         if (isUpdating) {
                                           provider.updateTime(isStart: false, updatedDate: endDate);
@@ -522,7 +527,7 @@ class VacationListWidget extends StatelessWidget {
                                 });
                                 try {
                                   if (isUpdating) {
-                                      await profileProvider.updateVacation(
+                                    await profileProvider.updateVacation(
                                       {
                                       "vacation_id": id,
                                       "start_date": DateFormat('yyyy-MM-dd').format(provider.updatedStartDate ?? updatedStartDate!),
@@ -563,6 +568,7 @@ class VacationListWidget extends StatelessWidget {
                           }
                         ),
                       )
+                    
                     ],
                   ),
                 );

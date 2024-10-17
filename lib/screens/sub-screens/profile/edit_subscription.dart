@@ -211,6 +211,9 @@ void everyDayChange(BuildContext context, ActiveSubscriptionModel edit, Size siz
                               quantityNeeded = true;
                             });
                           }else{
+                            sheetState((){
+                              quantityNeeded = false;
+                            });
                             await provider.editSubscription(context, size, editEveryDayData);
                           }
                         } 
@@ -223,7 +226,7 @@ void everyDayChange(BuildContext context, ActiveSubscriptionModel edit, Size siz
                       children: [
                         SizedBox(height: 5,),
                         AppTextWidget(
-                          text: "* atleast one quantity need to subscribe", 
+                          text: "* atleast one quantity need to update", 
                           fontWeight: FontWeight.w500, 
                           fontColor: Colors.red,
                           fontSize: 12,
@@ -503,7 +506,7 @@ void weekDayChange(BuildContext context, ActiveSubscriptionModel edit, Size size
                         children: [
                           SizedBox(height: 5,),
                           AppTextWidget(
-                            text: "* atleast one quantity need to subscribe", 
+                            text: "* atleast one quantity need to update", 
                             fontWeight: FontWeight.w500, 
                             fontColor: Colors.red,
                             fontSize: 12,
@@ -790,7 +793,7 @@ void customChange(BuildContext context, ActiveSubscriptionModel edit, Size size)
                         children: [
                           SizedBox(height: 5,),
                           AppTextWidget(
-                            text: "* atleast one quantity need to subscribe", 
+                            text: "* atleast one quantity need to update", 
                             fontWeight: FontWeight.w500, 
                             fontColor: Colors.red,
                             fontSize: 12,

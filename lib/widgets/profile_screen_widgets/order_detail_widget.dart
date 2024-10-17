@@ -67,7 +67,7 @@ class OrderDetailWidget extends StatelessWidget {
                           children: [
                             SizedBox(
                               width: size.width *0.33,
-                              child: const AppTextWidget(text: 'Quantity', fontSize: 14, fontWeight: FontWeight.w500)
+                              child: const AppTextWidget(text: 'Products', fontSize: 14, fontWeight: FontWeight.w500)
                             ),
                             AppTextWidget(text: '${orderDetail.quantity}', fontSize: 12, fontWeight: FontWeight.w400),
                           ],

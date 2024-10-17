@@ -6,6 +6,7 @@ class VacationProvider extends ChangeNotifier{
   DateTime? updatedStartDate;
   DateTime? updatedEndDate;
   bool notSet = false;
+  bool startDateIsGreater = false;
   String selectedReason  = "";
   List<String> reasons = [
     'Going family tour',
@@ -17,9 +18,15 @@ class VacationProvider extends ChangeNotifier{
   void setTime({DateTime? pickedDate, required bool isStart}){
     if (isStart) {
       startDate = pickedDate;
+      endDate = null;
     }else{
       endDate = pickedDate;
     }
+    notifyListeners();
+  }
+
+  void greaterStartDate(bool yes){
+    startDateIsGreater = yes;
     notifyListeners();
   }
 

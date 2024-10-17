@@ -51,6 +51,7 @@ class _AddressSelectionScreenState extends State<AddressSelectionScreen> {
       backgroundColor: Colors.white,
       appBar: AppBarWidget(
         title: 'Addresses', 
+        needBack: true,
         onBack: () => Navigator.pop(context),
       ),
       body: Consumer<AddressProvider>(

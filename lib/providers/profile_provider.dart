@@ -382,6 +382,7 @@ class ProfileProvider extends ChangeNotifier{
       final results = decodedResponse["results"];
       vacations.clear();
       if (decodedResponse["message"] == "No Vacation") {
+      vacations.clear();
         throw Exception(decodedResponse["message"]);
         // notifyListeners();
       }
@@ -623,7 +624,7 @@ class ProfileProvider extends ChangeNotifier{
               color: Colors.white,
               borderRadius: BorderRadius.circular(10),
             ),
-            height: 180,
+            height: 195,
             child: Column(
               children: [
                 const Padding(

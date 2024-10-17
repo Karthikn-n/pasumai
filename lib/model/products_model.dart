@@ -6,6 +6,7 @@ class Products{
   final String image;
   final String quantity;
   final String description;
+  final String? subscribed;
 
   Products({
     required this.id,
@@ -14,7 +15,8 @@ class Products{
     required this.finalPrice,
     required this.image,
     required this.quantity,
-    required this.description
+    required this.description,
+    this.subscribed
   });
 
   factory Products.fromJson(Map<String, dynamic> json){
@@ -25,7 +27,8 @@ class Products{
       finalPrice: json['final_price'] ?? 0, 
       image: json['image'] ?? '', 
       quantity: json['quantity'] ?? '',
-      description: json['description'] ?? ''
+      description: json['description'] ?? '',
+      subscribed: json["subscription_status"] ?? ""
     );
   }
   Map<String, dynamic> toJson() {

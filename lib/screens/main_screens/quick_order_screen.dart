@@ -58,7 +58,7 @@ class _QuickOrderScreenState extends State<QuickOrderScreen> {
               appBar: const AppBarWidget(
                 title: 'Quick order',
               ),
-              body: productProvider.quickOrderProductsList.isEmpty
+              body: productProvider.quickOrderProductsList.isEmpty && productProvider.bottomIndex == 2
               ? FutureBuilder(
                 future: productProvider.quickOrderProducts(),
                 builder: (context, snapshot) {

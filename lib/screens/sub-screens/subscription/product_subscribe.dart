@@ -247,12 +247,15 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const SizedBox(height: 20,),
-                  const Text(
-                    'Quantity',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                    ),
+                  const AppTextWidget(
+                    text: 'Select quantity',
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  const AppTextWidget(
+                    text: 'This product will be delivered every day of this month',
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
                   ),
                   const SizedBox(height: 20,),
                   // The Quantity 
@@ -505,9 +508,15 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                 return SingleChildScrollView(
                   controller: scrollController,
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const SizedBox(height: 20,),
-                      const AppTextWidget(text: "Qunatity", fontSize: 18, fontWeight: FontWeight.w500),
+                      const AppTextWidget(text: "Select qunatity", fontSize: 18, fontWeight: FontWeight.w500),
+                      const AppTextWidget(
+                        text: "This product will be delivered except Saturday and Sunday of this month", 
+                        fontSize: 12, fontWeight: FontWeight.w400,
+                        textAlign: TextAlign.center,
+                      ),
                       const SizedBox(height: 20,),
                       Container(
                         margin: const EdgeInsets.only(left: 35),
@@ -799,7 +808,12 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                   child: Column(
                     children: [
                       const SizedBox(height: 20,),
-                      const AppTextWidget(text: "Quantity", fontSize: 18, fontWeight: FontWeight.w500),
+                      const AppTextWidget(text: "Select quantity", fontSize: 18, fontWeight: FontWeight.w500),
+                      const AppTextWidget(
+                        text: "This product will be delivered only selected day of this month", 
+                        fontSize: 12, fontWeight: FontWeight.w400,
+                        textAlign: TextAlign.center,
+                      ),
                       const SizedBox(height: 20,),
                       Container(
                         margin: const EdgeInsets.only(left: 40),

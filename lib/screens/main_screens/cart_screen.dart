@@ -37,8 +37,22 @@ class _CartScreenState extends State<CartScreen> {
         body: Consumer3<AddressProvider, ApiProvider, CartProvider>(
           builder: (context,addressProvider, apiProvider, cartProvider, child) {
             return  cartProvider.cartItems.isEmpty
-            ? const Center(
-              child: AppTextWidget(text: "No products", fontSize: 15, fontWeight: FontWeight.w500),
+            ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 120,
+                    width: 120,
+                    child: Image.asset(
+                      "assets/icons/sad-face.png",
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  const SizedBox(height: 10,),
+                  const AppTextWidget(text: "No products", fontSize: 18, fontWeight: FontWeight.w500),
+                ],
+              ),
             )
             : Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),

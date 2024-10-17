@@ -34,7 +34,8 @@ class SubscriptionProvider extends ChangeNotifier{
   // Get all the Subscribe Product in Login Page
   Future<void> getSubscribProducts() async {
      // Call SubScribe Product API
-    final response = await subscribeRepository.subscribedProducts();
+     Map<String, dynamic> productData = {"customer_id": prefs.getString("customerId")};
+    final response = await subscribeRepository.subscribedProducts(productData);
     String decrptedData = decryptAES(response.body);
     final decodedResponse = json.decode(decrptedData.replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), ''));
     print('Subscribe Product Response: $decodedResponse, Code: ${response.statusCode}');

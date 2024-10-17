@@ -118,7 +118,7 @@ class _HomePageState extends State<HomePage> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            AppTextWidget(text: 'Locating...', fontSize: 14, fontWeight: FontWeight.w500),
+                            AppTextWidget(text: 'Select address...', fontSize: 14, fontWeight: FontWeight.w500),
                             AppTextWidget(text: 'Tamilnadu, India', fontSize: 12, fontWeight: FontWeight.w500)
                           ],
                         ),
@@ -143,7 +143,7 @@ class _HomePageState extends State<HomePage> {
                             SizedBox(
                               width: size.width * 0.65,
                               child: AppTextWidget(
-                                text: '${addressProvider.currentAddress!.flatNo}, ${addressProvider.currentAddress!.floorNo}', 
+                                text: 'Selected address', 
                                 fontSize: 16, 
                                 maxLines: 1,
                                 textOverflow: TextOverflow.ellipsis,
@@ -338,10 +338,19 @@ class _HomePageState extends State<HomePage> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  AppTextWidget(
-                                    text: localeProvider.of(context).subscriptionProducts, 
-                                    fontSize: 18, 
-                                    fontWeight: FontWeight.w500
+                                  Consumer<SubscriptionProvider>(
+                                    builder: (context, value, child) {
+                                      return GestureDetector(
+                                        onTap: ()async {
+                                         await value.getSubscribProducts();
+                                        },
+                                        child: AppTextWidget(
+                                          text: localeProvider.of(context).subscriptionProducts, 
+                                          fontSize: 18, 
+                                          fontWeight: FontWeight.w500
+                                        ),
+                                      );
+                                    }
                                   ),
                                   // View all Button
                                   // InkWell(

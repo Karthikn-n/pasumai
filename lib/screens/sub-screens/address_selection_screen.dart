@@ -50,7 +50,7 @@ class _AddressSelectionScreenState extends State<AddressSelectionScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBarWidget(
-        title: 'Addresses', 
+        title: 'Your addresses', 
         needBack: true,
         onBack: () => Navigator.pop(context),
       ),

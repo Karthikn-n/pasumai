@@ -231,20 +231,19 @@ class ApiProvider extends ChangeNotifier{
       print(decodedResponse["banner_image"]);
       categoryBanner = decodedResponse["banner_image"];
       categoryProducts = productsList;
-      // if (catId == 1) {
-      //   createQuantities();
-      // }
+    
       
       // attributesList = decodedResponse['attributes'].map<Attributes>((attr) => Attributes.fromJson(attr)).toList();
     } else {
       print('Error: ${response.body}');
     }
+    notifyListeners();
   }
 
   // All Products List API
   Future<void> quickOrderProducts() async {
     Map<String, dynamic> productData = {'cat_id': "1"};
-    print("Category ID: $productData");
+    print("Quick order called: $productData");
     final response = await apiRepository.allProducts(productData);
     String decrptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
     final decodedResponse = json.decode(decrptedResponse);

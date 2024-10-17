@@ -21,9 +21,7 @@ class AppRepository{
   Future<http.Response> featuredProducts() async
     => await apiService.get('/featuredproducts');
 
-  // Get Subscribe Products
-  Future<http.Response> subscribedProducts() async
-    => await apiService.get('/subscribedproducts');
+  
 
 
   // Get Best Seller products
@@ -61,6 +59,10 @@ class AppRepository{
   // All products API
   Future<http.Response> allProducts(Map<String, dynamic> body) async
     => await apiService.post('/allproducts', body);
+
+  // Get Subscribe Products
+  Future<http.Response> subscribedProducts(Map<String, dynamic> body) async
+    => await apiService.post('/subscribedproducts', body);
 
   // Get User Address
   Future<http.Response> getAddresses(Map<String, dynamic> body) async

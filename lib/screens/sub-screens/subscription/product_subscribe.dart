@@ -13,7 +13,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -44,20 +43,6 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
       appBar: AppBarWidget(
         title: widget.product.name,
         needBack: true,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 20),
-            child: widget.product.subscribed == "Subscribed"
-            ? SizedBox(
-                height: 25,
-                width: 25,
-                child: Lottie.asset(
-                  "assets/lottie/Animation.json"
-                )
-              )
-            : Container(),
-          )
-        ],
         onBack: () => Navigator.pop(context),
       ),
       body: Padding(
@@ -67,17 +52,57 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
           children: [
             // Product image
             Center(
-              child: SizedBox(
-                height: 320,
-                width: 320,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: CachedNetworkImage(
-                    imageUrl: "https://maduraimarket.in/public/image/product/${widget.product.image}",
-                    fit: BoxFit.cover,
-                    cacheManager: CacheManagerHelper.cacheIt(key: widget.product.image),
+              child: Stack(
+                children: [
+                  SizedBox(
+                    height: 320,
+                    width: 320,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: CachedNetworkImage(
+                        imageUrl: "https://maduraimarket.in/public/image/product/${widget.product.image}",
+                        fit: BoxFit.cover,
+                        cacheManager: CacheManagerHelper.cacheIt(key: widget.product.image),
+                      ),
+                    ),
                   ),
-                ),
+                  Positioned(
+                    left: 0,
+                    top: 20,
+                    child: widget.product.subscribed == "Subscribed"
+                    ? Container(
+                      // width: 320,
+                      padding: const EdgeInsets.all(5),
+                      decoration: const BoxDecoration(
+                        // color: Color(0xFFEA2B01),
+                        color: Color.fromARGB(255, 255, 98, 0),
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(2),
+                          bottomRight: Radius.circular(2)
+                        )
+                      ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              "assets/icons/crown.png",
+                              height: 20,
+                              width: 20,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(width: 4,),
+                            const AppTextWidget(
+                              fontColor: Colors.white, 
+                              text: "Subscribed", 
+                              fontWeight: FontWeight.w500, 
+                              fontSize: 12,
+                            ),
+                          ],
+                        )
+                      )
+                    : Container(),
+                  )
+                ],
               ),
             ),
             const SizedBox(height: 20,),

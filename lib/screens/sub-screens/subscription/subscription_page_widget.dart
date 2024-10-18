@@ -6,7 +6,6 @@ import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 class SubscriptionPageWidget extends StatelessWidget {
@@ -43,6 +42,7 @@ class SubscriptionPageWidget extends StatelessWidget {
                         children: [
                           // Product Image
                           Stack(
+                            alignment: Alignment.center,
                             children: [
                               SizedBox(
                                 width: 94,
@@ -57,26 +57,36 @@ class SubscriptionPageWidget extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              // Positioned(
-                              //   top: 15,
-                              //   left: 10,
-                              //   child: provider.subscribeProducts[index].subscribed == "Subscribed"
-                              //   ? SizedBox(
-                              //       height: 20,
-                              //       width: 20,
-                              //       child: Lottie.asset(
-                              //         "assets/lottie/Animation.json"
-                              //       )
-                              //     )
-                              //   : Container(),
-                              // )
-                                // SizedBox(
-                                //   height: 20,
-                                //   width: 20,
-                                //   child: Lottie.asset(
-                                //     "assets/lottie/Animation.json"
-                                //   )
-                                // )
+                              Positioned(
+                                bottom: 0,
+                                child: provider.subscribeProducts[index].subscribed == "Subscribed"
+                                ? Container(
+                                  width: 94,
+                                    padding: const EdgeInsets.all(5),
+                                    decoration: const BoxDecoration(
+                                      // color: Color(0xFFEA2B01),
+                                      color: Color.fromARGB(255, 255, 98, 0),
+                                      borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(8),
+                                        bottomRight: Radius.circular(8)
+                                      )
+                                    ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Image.asset(
+                                            "assets/icons/crown.png",
+                                            height: 12,
+                                            width: 12,
+                                            color: Colors.white,
+                                          ),
+                                          const SizedBox(width: 4,),
+                                          const AppTextWidget(fontColor: Colors.white, text: "Subscribed  ", fontWeight: FontWeight.w500, fontSize: 10,),
+                                        ],
+                                      )
+                                    )
+                                : Container(),
+                              )
                             ],
                           ),
                           SizedBox(
@@ -104,42 +114,38 @@ class SubscriptionPageWidget extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 5,),
                                 Row(
-                                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     // Product Final price
-                                    Row(
-                                      children: [
-                                        AppTextWidget(
-                                          text: "₹${provider.subscribeProducts[index].finalPrice.toString()}", 
-                                          fontSize: 14, 
-                                          fontColor: Theme.of(context).primaryColor,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                        const SizedBox(width: 5,),
-                                        // Product Price 
-                                        Text(
-                                          "₹${provider.subscribeProducts[index].price.toString()}",
-                                          style: const TextStyle(
-                                            fontSize: 14, 
-                                            fontWeight: FontWeight.w500,
-                                            decorationThickness: 2,
-                                            decorationColor: Colors.grey,
-                                            color: Colors.grey,
-                                            decoration: TextDecoration.lineThrough,
-                                          ),
-                                        ),
-                                      ],
+                                    AppTextWidget(
+                                      text: "₹${provider.subscribeProducts[index].finalPrice.toString()}", 
+                                      fontSize: 14, 
+                                      fontColor: Theme.of(context).primaryColor,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                     const SizedBox(width: 5,),
-                                    provider.subscribeProducts[index].subscribed == "Subscribed"
-                                    ? SizedBox(
-                                        height: 20,
-                                        width: 20,
-                                        child: Lottie.asset(
-                                          "assets/lottie/Animation.json"
-                                        )
-                                      )
-                                    : Container()
+                                    // Product Price 
+                                    Text(
+                                      "₹${provider.subscribeProducts[index].price.toString()}",
+                                      style: const TextStyle(
+                                        fontSize: 14, 
+                                        fontWeight: FontWeight.w500,
+                                        decorationThickness: 2,
+                                        decorationColor: Colors.grey,
+                                        color: Colors.grey,
+                                        decoration: TextDecoration.lineThrough,
+                                      ),
+                                    ),
+                                    // const SizedBox(width: 5,),
+                                    // provider.subscribeProducts[index].subscribed == "Subscribed"
+                                    // ? SizedBox(
+                                    //     height: 20,
+                                    //     width: 20,
+                                    //     child: Lottie.asset(
+                                    //       "assets/lottie/Animation.json"
+                                    //     )
+                                    //   )
+                                    // : Container()
                                   ],
                                 ),
                               ],

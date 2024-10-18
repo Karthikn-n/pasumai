@@ -9,7 +9,6 @@ import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -64,39 +63,64 @@ class HomeScreenProducts extends StatelessWidget {
                             Positioned(
                               top: 15,
                               right: 10,
-                              child: GestureDetector(
-                                onTap: () async {
-                                  // await addWishlist(product.id, size, product.name, product.quantity);
-                                  await addtoWishlistHelper.addWishlist(product.id, size, product.name, product.quantity, context);
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.all(4),
-                                  decoration: BoxDecoration(
-                                    color: Colors.green,
-                                    borderRadius: BorderRadius.circular(50)
+                              child: Row(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () async {
+                                      // await addWishlist(product.id, size, product.name, product.quantity);
+                                      await addtoWishlistHelper.addWishlist(product.id, size, product.name, product.quantity, context);
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.all(4),
+                                      decoration: BoxDecoration(
+                                        color: Colors.green,
+                                        borderRadius: BorderRadius.circular(50)
+                                      ),
+                                      child: Icon(
+                                        prefs.getBool('${product.id}${product.name}${product.quantity}') ?? false
+                                        ? CupertinoIcons.heart_fill
+                                        : CupertinoIcons.heart, 
+                                        size: 20, 
+                                        color: prefs.getBool('${product.id}${product.name}${product.quantity}') ?? false
+                                        ? Colors.white
+                                        : Theme.of(context).scaffoldBackgroundColor,
+                                      ),
+                                    ),
                                   ),
-                                  child: Icon(
-                                    prefs.getBool('${product.id}${product.name}${product.quantity}') ?? false
-                                    ? CupertinoIcons.heart_fill
-                                    : CupertinoIcons.heart, 
-                                    size: 20, 
-                                    color: prefs.getBool('${product.id}${product.name}${product.quantity}') ?? false
-                                    ? Colors.white
-                                    : Theme.of(context).scaffoldBackgroundColor,
-                                  ),
-                                ),
+                                ],
                               )
                             ),
                             // Product subscribed
                             Positioned(
                               top: 15,
-                              left: 10,
+                              left: 1,
                               child: product.subscribed == "Subscribed"
-                              ? SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: Lottie.asset(
-                                    "assets/lottie/Animation.json"
+                              ? Container(
+                                padding: const EdgeInsets.all(5),
+                                decoration: const BoxDecoration(
+                                  // color: Color(0xFFEA2B01),
+                                  color: Color.fromARGB(255, 255, 98, 0),
+                                   // ff8c42 -> Pumpkin
+                                  // db5461 -> indian
+                                  // 183a37 -> dark slate grey
+                                  // 183a37 -> mustard
+                                  // dc602e -> flame
+                                  borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(2),
+                                    bottomRight: Radius.circular(2)
+                                  )
+                                ),
+                                  child: Row(
+                                    children: [
+                                      Image.asset(
+                                        "assets/icons/crown.png",
+                                        height: 20,
+                                        width: 20,
+                                        color: Colors.white,
+                                      ),
+                                      const SizedBox(width: 4,),
+                                      const AppTextWidget(fontColor: Colors.white, text: "Subscribed", fontWeight: FontWeight.w500, fontSize: 10,),
+                                    ],
                                   )
                                 )
                               : Container(),

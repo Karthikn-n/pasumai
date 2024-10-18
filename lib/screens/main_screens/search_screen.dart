@@ -197,7 +197,6 @@ class _SearchScreenState extends State<SearchScreen> {
           itemBuilder: (context, index) {
             return Column(
               children: [
-                
                 Container(
                   padding: const EdgeInsets.only(top: 10, bottom: 10),
                   decoration: BoxDecoration(
@@ -233,10 +232,10 @@ class _SearchScreenState extends State<SearchScreen> {
                             // Product Name and Quantity
                             AppTextWidget(
                               text: "${searchedProducts[index].name}/${searchedProducts[index].quantity}", 
-                              fontSize: 16, 
+                              fontSize: 14, 
                               maxLines: 2,
                               textOverflow: TextOverflow.ellipsis,
-                              fontWeight: FontWeight.w600
+                              fontWeight: FontWeight.w400
                             ),
                             const SizedBox(height: 5,),
                             // Product Description

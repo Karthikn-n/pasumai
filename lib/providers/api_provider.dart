@@ -27,6 +27,8 @@ class ApiProvider extends ChangeNotifier{
 
   bool isQuick = false;
   int bottomIndex = 0;
+  bool fromCategories = false;
+  int? categoryNumber;
 
   // Data For Home screen
   List<String> banners = [];
@@ -95,6 +97,13 @@ class ApiProvider extends ChangeNotifier{
     notifyListeners();
   }
 
+  void setCategoryRoute({required bool route, int? categoryNo}){
+    fromCategories = route;
+    if (categoryNo != null) {
+      // categoryNumber = cate
+    }
+    notifyListeners();
+  }
 
   // User Register API
   Future<void> registerUser(Map<String, dynamic> registerData, BuildContext context, Size size) async {

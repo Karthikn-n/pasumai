@@ -1,7 +1,9 @@
 import 'package:app_3/helper/cache_manager_helper.dart';
+import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/providers/api_provider.dart';
 import 'package:app_3/providers/cart_items_provider.dart';
+import 'package:app_3/screens/sub-screens/category_list_screen.dart';
 import 'package:app_3/service/connectivity_helper.dart';
 import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
 import 'package:app_3/widgets/common_widgets.dart/button_widget.dart';
@@ -277,7 +279,35 @@ class _CartScreenState extends State<CartScreen> {
                                 ],
                               ),
                             ),
-                            SizedBox(height: cartProvider.cartItems.length - 1 == index ? 105 :0,)
+                            cartProvider.cartItems.length - 1 == index
+                            ? Align(
+                              alignment: Alignment.centerLeft,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 10,),
+                                  InkWell(
+                                    radius: 20,
+                                    splashColor: Colors.transparent,
+                                    onTap: () {
+                                      Navigator.push(context, ReverseSideTransistionRoute(screen: const CategoryListScreen()));
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(4),
+                                      child: AppTextWidget(
+                                        text: "< Continue shopping", 
+                                        fontWeight: FontWeight.w500, 
+                                        fontColor: Theme.of(context).primaryColor,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                            : Container(),
+                            SizedBox(height: cartProvider.cartItems.length - 1 == index ? 105 :0,),
+                            // 
                           ],
                         );
                       },

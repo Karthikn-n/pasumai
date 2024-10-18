@@ -63,3 +63,25 @@ class SideTransistionRoute<T> extends PageRouteBuilder<T>{
       settings: RouteSettings(arguments: args)
     );
 }
+
+class ReverseSideTransistionRoute<T> extends PageRouteBuilder<T>{
+  final Widget screen;
+  final Map<String, dynamic>? args;
+
+  ReverseSideTransistionRoute({required this.screen, this.args})
+    :super(
+      pageBuilder: (context, animation, secondaryAnimation) => screen,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(-1.0, 0.0);
+        const end = Offset.zero;
+        const curve = Curves.easeInOutCirc;
+        var tween =Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        var offsetAnimation = animation.drive(tween);
+        return SlideTransition(
+          position: offsetAnimation,
+          child: child,
+        );
+      },
+      settings: RouteSettings(arguments: args)
+    );
+}

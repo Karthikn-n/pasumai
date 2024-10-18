@@ -6,6 +6,7 @@ import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 class SubscriptionPageWidget extends StatelessWidget {
@@ -41,18 +42,42 @@ class SubscriptionPageWidget extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           // Product Image
-                          SizedBox(
-                            width: 94,
-                            height: 105,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: CachedNetworkImage(
-                                // imageUrl: 'http://192.168.1.5/pasumaibhoomi/public/image/product/${provider.subscribeProducts[index].image}',
-                                imageUrl: 'https://maduraimarket.in/public/image/product/${provider.subscribeProducts[index].image}',
-                                fit: BoxFit.cover,
-                                cacheManager: CacheManagerHelper.cacheIt(key: provider.subscribeProducts[index].image),
+                          Stack(
+                            children: [
+                              SizedBox(
+                                width: 94,
+                                height: 105,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: CachedNetworkImage(
+                                    // imageUrl: 'http://192.168.1.5/pasumaibhoomi/public/image/product/${provider.subscribeProducts[index].image}',
+                                    imageUrl: 'https://maduraimarket.in/public/image/product/${provider.subscribeProducts[index].image}',
+                                    fit: BoxFit.cover,
+                                    cacheManager: CacheManagerHelper.cacheIt(key: provider.subscribeProducts[index].image),
+                                  ),
+                                ),
                               ),
-                            ),
+                              // Positioned(
+                              //   top: 15,
+                              //   left: 10,
+                              //   child: provider.subscribeProducts[index].subscribed == "Subscribed"
+                              //   ? SizedBox(
+                              //       height: 20,
+                              //       width: 20,
+                              //       child: Lottie.asset(
+                              //         "assets/lottie/Animation.json"
+                              //       )
+                              //     )
+                              //   : Container(),
+                              // )
+                                // SizedBox(
+                                //   height: 20,
+                                //   width: 20,
+                                //   child: Lottie.asset(
+                                //     "assets/lottie/Animation.json"
+                                //   )
+                                // )
+                            ],
                           ),
                           SizedBox(
                             width: size.width * 0.5,
@@ -79,28 +104,42 @@ class SubscriptionPageWidget extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 5,),
                                 Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     // Product Final price
-                                    AppTextWidget(
-                                      text: "₹${provider.subscribeProducts[index].finalPrice.toString()}", 
-                                      fontSize: 14, 
-                                      fontColor: Theme.of(context).primaryColor,
-                                      fontWeight: FontWeight.w500,
+                                    Row(
+                                      children: [
+                                        AppTextWidget(
+                                          text: "₹${provider.subscribeProducts[index].finalPrice.toString()}", 
+                                          fontSize: 14, 
+                                          fontColor: Theme.of(context).primaryColor,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                        const SizedBox(width: 5,),
+                                        // Product Price 
+                                        Text(
+                                          "₹${provider.subscribeProducts[index].price.toString()}",
+                                          style: const TextStyle(
+                                            fontSize: 14, 
+                                            fontWeight: FontWeight.w500,
+                                            decorationThickness: 2,
+                                            decorationColor: Colors.grey,
+                                            color: Colors.grey,
+                                            decoration: TextDecoration.lineThrough,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                     const SizedBox(width: 5,),
-                                    // Product Price 
-                                    Text(
-                                      "₹${provider.subscribeProducts[index].price.toString()}",
-                                      style: const TextStyle(
-                                        fontSize: 14, 
-                                        fontWeight: FontWeight.w500,
-                                        decorationThickness: 2,
-                                        decorationColor: Colors.grey,
-                                        color: Colors.grey,
-                                        decoration: TextDecoration.lineThrough,
-                                      ),
-                                    ),
+                                    provider.subscribeProducts[index].subscribed == "Subscribed"
+                                    ? SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: Lottie.asset(
+                                          "assets/lottie/Animation.json"
+                                        )
+                                      )
+                                    : Container()
                                   ],
                                 ),
                               ],

@@ -9,6 +9,7 @@ import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -62,50 +63,44 @@ class HomeScreenProducts extends StatelessWidget {
                             // Wishlist Icon
                             Positioned(
                               top: 15,
-                              left:  190,
+                              right: 10,
                               child: GestureDetector(
                                 onTap: () async {
                                   // await addWishlist(product.id, size, product.name, product.quantity);
                                   await addtoWishlistHelper.addWishlist(product.id, size, product.name, product.quantity, context);
                                 },
-                                child: CircleAvatar(
-                                  radius: 25,
-                                  backgroundColor: Theme.of(context).primaryColor,
-                                  child: Center(
-                                    child: Icon(
-                                      prefs.getBool('${product.id}${product.name}${product.quantity}') ?? false
-                                      ? CupertinoIcons.heart_fill
-                                      : CupertinoIcons.heart, 
-                                      size: 20, 
-                                      color: prefs.getBool('${product.id}${product.name}${product.quantity}') ?? false
-                                      ? Colors.white
-                                      : Theme.of(context).scaffoldBackgroundColor,
-                                    )
+                                child: Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    color: Colors.green,
+                                    borderRadius: BorderRadius.circular(50)
+                                  ),
+                                  child: Icon(
+                                    prefs.getBool('${product.id}${product.name}${product.quantity}') ?? false
+                                    ? CupertinoIcons.heart_fill
+                                    : CupertinoIcons.heart, 
+                                    size: 20, 
+                                    color: prefs.getBool('${product.id}${product.name}${product.quantity}') ?? false
+                                    ? Colors.white
+                                    : Theme.of(context).scaffoldBackgroundColor,
                                   ),
                                 ),
                               )
                             ),
                             // Product subscribed
-                            // icon != null &&  
-                            // ? Positioned(
-                            //     right: 10,
-                            //     top: 70,
-                            //     child: Container(
-                            //       padding: const EdgeInsets.all(12),
-                            //       decoration: BoxDecoration(
-                            //         borderRadius: BorderRadius.circular(50),
-                            //         color: Theme.of(context).primaryColor
-                            //       ),
-                            //       child: const Center(
-                            //         child: Icon(
-                            //           CupertinoIcons.checkmark_alt_circle, 
-                            //           size: 25, 
-                            //           color: Colors.white
-                            //         )
-                            //       ),
-                            //     ), 
-                            //   )
-                            // : Container()
+                            Positioned(
+                              top: 15,
+                              left: 10,
+                              child: product.subscribed == "Subscribed"
+                              ? SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: Lottie.asset(
+                                    "assets/lottie/Animation.json"
+                                  )
+                                )
+                              : Container(),
+                            )
                           ],
                         ),
                         const SizedBox(height: 8,),
@@ -172,7 +167,7 @@ class HomeScreenProducts extends StatelessWidget {
                                                 decorationColor: Colors.grey,
                                                 decorationThickness: 2
                                               ),
-                                            )
+                                            ),
                                           ],
                                         ),
                                       ],
@@ -272,8 +267,8 @@ class HomeScreenProducts extends StatelessWidget {
                                           borderRadius: BorderRadius.circular(8),
                                           color: Theme.of(context).primaryColor,
                                         ),
-                                        child: AppTextWidget(
-                                          text: product.subscribed == "Subscribed" ? "Subscribed"  : "Subscribe", fontSize: 12, 
+                                        child: const AppTextWidget(
+                                          text: "Subscribe", fontSize: 12, 
                                           fontWeight: FontWeight.w500,
                                           fontColor: Colors.white,
                                         )

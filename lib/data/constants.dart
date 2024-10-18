@@ -10,6 +10,7 @@ class Constants extends ChangeNotifier{
   final ScrollController _addressesScrollController = ScrollController();
   final ScrollController _categoriesScrollController = ScrollController();
   final ScrollController _invoiceScrollController = ScrollController();
+  final ScrollController _categoryListScrollController = ScrollController();
 
   ScrollController get activeSubScrollController => _activeSubScrollController;
   ScrollController get wishlistScrollController => _wishlistScrollController;
@@ -19,6 +20,7 @@ class Constants extends ChangeNotifier{
   ScrollController get addressScrollController => _addressesScrollController;
   ScrollController get categoriesController => _categoriesScrollController;
   ScrollController get invoiceController => _invoiceScrollController;
+  ScrollController get categoryListController => _categoryListScrollController;
 
   @override
   void dispose() {
@@ -30,6 +32,7 @@ class Constants extends ChangeNotifier{
     _addressesScrollController.dispose();
     _subHistoryScrollController.dispose();
     _invoiceScrollController.dispose();
+    _categoryListScrollController.dispose();
     super.dispose();
   }
 }

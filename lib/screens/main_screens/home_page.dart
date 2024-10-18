@@ -104,6 +104,13 @@ class _HomePageState extends State<HomePage> {
               surfaceTintColor: Colors.transparent.withOpacity(0.0),
               automaticallyImplyLeading: false,
               backgroundColor: Colors.white,
+              bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(1.0),
+                child: Container(
+                  color: Colors.grey.withOpacity(0.3),  // Choose your preferred underline color
+                  height: 1.0,         // Height of the underline
+                ),
+              ),
               title: addressProvider.addresses.isEmpty
                 ? GestureDetector(
                   onTap: () async {
@@ -338,19 +345,10 @@ class _HomePageState extends State<HomePage> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Consumer<SubscriptionProvider>(
-                                    builder: (context, value, child) {
-                                      return GestureDetector(
-                                        onTap: ()async {
-                                         await value.getSubscribProducts();
-                                        },
-                                        child: AppTextWidget(
-                                          text: localeProvider.of(context).subscriptionProducts, 
-                                          fontSize: 18, 
-                                          fontWeight: FontWeight.w500
-                                        ),
-                                      );
-                                    }
+                                  AppTextWidget(
+                                    text: localeProvider.of(context).subscriptionProducts, 
+                                    fontSize: 18, 
+                                    fontWeight: FontWeight.w500
                                   ),
                                   // View all Button
                                   // InkWell(

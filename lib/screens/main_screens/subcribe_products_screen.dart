@@ -20,7 +20,7 @@ class SubscriptionList extends StatelessWidget {
     final subscriptionProductsProvider = Provider.of<SubscriptionProvider>(context);
     if (connectivityService.isConnected) {
       return Scaffold(
-        appBar: const AppBarWidget(title: 'Subscription',),
+        appBar: const AppBarWidget(title: 'Subscription products',),
         body: subscriptionProductsProvider.subscribeProducts.isEmpty
           ? FutureBuilder(
               future: subscriptionProductsProvider.getSubscribProducts(), 

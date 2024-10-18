@@ -43,6 +43,13 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         )
         : Container(),
         actions: actions,
+        bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(1.0),
+          child: Container(
+            color: Colors.grey.withOpacity(0.3),  // Choose your preferred underline color
+            height: 1.0,         // Height of the underline
+          ),
+        ),
       ),
     );
   }

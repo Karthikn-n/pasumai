@@ -89,7 +89,7 @@ class CategoryProductsListWidget extends StatelessWidget {
             : CustomScrollView(
                 controller: scrollController,
                 slivers: [
-                  bannerImage == null
+                  bannerImage == null || isBestSellerProduct != null || isBestSellerProduct != null
                   ? const SliverToBoxAdapter()
                   : SliverAppBar(
                       automaticallyImplyLeading: false,

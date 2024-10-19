@@ -29,7 +29,13 @@ void everyDayChange(BuildContext context, ActiveSubscriptionModel edit, Size siz
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(height: 20,),
-                const AppTextWidget(text: "Quantity", fontSize: 24, fontWeight: FontWeight.w400),
+                const AppTextWidget(text: "Edit quantity", fontSize: 18, fontWeight: FontWeight.w500),
+                const AppTextWidget(
+                  text: 'Edited quantity will be delivered remaining day of this month',
+                  fontSize: 12,
+                  textAlign: TextAlign.center,
+                  fontWeight: FontWeight.w400,
+                ),
                 const SizedBox(height: 20,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -48,7 +54,7 @@ void everyDayChange(BuildContext context, ActiveSubscriptionModel edit, Size siz
                         });
                       },
                     ),
-                    const AppTextWidget(text: "Morning", fontSize: 14, fontWeight: FontWeight.w400),
+                    const AppTextWidget(text: "Morning", fontSize: 14, fontWeight: FontWeight.w500),
                     const SizedBox(width: 10,),
                     // Quantity counter for Morning
                     GestureDetector(
@@ -71,7 +77,7 @@ void everyDayChange(BuildContext context, ActiveSubscriptionModel edit, Size siz
                         ),
                       ),
                     ),
-                    const SizedBox(width: 10,),
+                    const SizedBox(width: 5,),
                     SizedBox(
                       height: 40,
                       width: 40,
@@ -83,7 +89,7 @@ void everyDayChange(BuildContext context, ActiveSubscriptionModel edit, Size siz
                         ),
                       ),
                     ),
-                    const SizedBox(width: 10,),
+                    const SizedBox(width: 5,),
                     GestureDetector(
                       onTap: () {
                         sheetState(() {
@@ -124,7 +130,7 @@ void everyDayChange(BuildContext context, ActiveSubscriptionModel edit, Size siz
                         });
                       },
                     ),
-                    const AppTextWidget(text: "Evening", fontSize: 14, fontWeight: FontWeight.w400),
+                    const AppTextWidget(text: "Evening", fontSize: 14, fontWeight: FontWeight.w500),
                     const SizedBox(width: 10,),
                     // Quantity counter for Evening
                     GestureDetector(
@@ -147,19 +153,19 @@ void everyDayChange(BuildContext context, ActiveSubscriptionModel edit, Size siz
                         ),
                       ),
                     ),
-                    const SizedBox(width: 10,),
+                    const SizedBox(width: 5,),
                     SizedBox(
                       height: 40,
                       width: 40,
                       child: Center(
                         child: AppTextWidget(
                           text: "$eveningQuantity", 
-                          fontSize: 15, 
+                          fontSize: 14, 
                           fontWeight: FontWeight.w500
                         ),
                       ),
                     ),
-                    const SizedBox(width: 10,),
+                    const SizedBox(width: 5,),
                     GestureDetector(
                       onTap: () {
                         sheetState(() {
@@ -186,8 +192,9 @@ void everyDayChange(BuildContext context, ActiveSubscriptionModel edit, Size siz
                     builder: (context, provider, child) {
                     return SizedBox(
                       width: size.width * 0.8,
+                      height: kToolbarHeight - 10,
                       child: ButtonWidget(
-                        buttonName: "Update", 
+                        buttonName: "Update subscription", 
                         onPressed: () async {
                           quantityMap[0] = morningQuantity;
                           quantityMap[1] = eveningQuantity;
@@ -267,10 +274,15 @@ void weekDayChange(BuildContext context, ActiveSubscriptionModel edit, Size size
                 child: Column(
                   children: [
                     const SizedBox(height: 20,),
-                    const AppTextWidget(text: "Qunatity", fontSize: 24, fontWeight: FontWeight.w400),
+                    const AppTextWidget(text: "Edit qunatity", fontSize: 24, fontWeight: FontWeight.w400),
+                    const AppTextWidget(
+                      text: "Edited quantity of product will be delivered except Saturday and Sunday, remaining days of this month", 
+                      fontSize: 12, fontWeight: FontWeight.w400,
+                      textAlign: TextAlign.center,
+                    ),
                     const SizedBox(height: 20,),
                     Container(
-                      margin: const EdgeInsets.only(left: 40),
+                      margin: const EdgeInsets.only(left: 35),
                       child: Column(
                         children: List.generate(
                           edit.frequencyMobData.length,
@@ -282,7 +294,7 @@ void weekDayChange(BuildContext context, ActiveSubscriptionModel edit, Size size
                                 margin: const EdgeInsets.only(left: 10),
                                 child: AppTextWidget(
                                   text:  "${edit.frequencyMobData[index].day[0].toUpperCase()}${edit.frequencyMobData[index].day.substring(1)}", 
-                                  fontSize: 15, 
+                                  fontSize: 16, 
                                   fontWeight: FontWeight.w500
                                 )
                               ),
@@ -309,7 +321,7 @@ void weekDayChange(BuildContext context, ActiveSubscriptionModel edit, Size size
                                     },
                                   ),
                                   SizedBox(
-                                    width: size.width * 0.15,
+                                    width: size.width * 0.17,
                                     child: const AppTextWidget(text: "Morning", fontSize: 14, fontWeight: FontWeight.w400)
                                   ),
                                   const SizedBox(width: 25,),
@@ -334,7 +346,7 @@ void weekDayChange(BuildContext context, ActiveSubscriptionModel edit, Size size
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(height: 10),
+                                  const SizedBox(height: 5),
                                   SizedBox(
                                     height: 30,
                                     width: 40,
@@ -342,7 +354,7 @@ void weekDayChange(BuildContext context, ActiveSubscriptionModel edit, Size size
                                       child: AppTextWidget(text: "${quantities[index][0]}", fontSize: 14, fontWeight: FontWeight.w500)
                                     ),
                                   ),
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 5),
                                   GestureDetector(
                                     onTap: () {
                                       sheetState(() {
@@ -383,7 +395,7 @@ void weekDayChange(BuildContext context, ActiveSubscriptionModel edit, Size size
                                     },
                                   ),
                                    SizedBox(
-                                    width: size.width * 0.15,
+                                    width: size.width * 0.17,
                                     child: const AppTextWidget(text: "Evening", fontSize: 14, fontWeight: FontWeight.w400)
                                   ),
                                   const SizedBox(width: 25,),
@@ -408,7 +420,7 @@ void weekDayChange(BuildContext context, ActiveSubscriptionModel edit, Size size
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(height: 10),
+                                  const SizedBox(height: 5),
                                   SizedBox(
                                     height: 30,
                                     width: 40,
@@ -416,7 +428,7 @@ void weekDayChange(BuildContext context, ActiveSubscriptionModel edit, Size size
                                       child: AppTextWidget(text: "${quantities[index][1]}", fontSize: 14, fontWeight: FontWeight.w500),
                                     ),
                                   ),
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 5),
                                   GestureDetector(
                                     onTap: () {
                                       sheetState(() {
@@ -448,8 +460,9 @@ void weekDayChange(BuildContext context, ActiveSubscriptionModel edit, Size size
                       builder: (context, provider, child) {
                         return SizedBox(
                           width: size.width * 0.8,
+                          height: kToolbarHeight - 10,
                           child: ButtonWidget(
-                            buttonName: "Update", 
+                            buttonName: "Update subscription", 
                             onPressed: () async {
                               List<Map<String, dynamic>> quantityList = [];
                               double totalAmount = 0;
@@ -549,7 +562,12 @@ void customChange(BuildContext context, ActiveSubscriptionModel edit, Size size)
                 child: Column(
                   children: [
                     const SizedBox(height: 20,),
-                    const AppTextWidget(text: "Quantity", fontSize: 24, fontWeight: FontWeight.w400),
+                    const AppTextWidget(text: "Edit quantity", fontSize: 24, fontWeight: FontWeight.w400),
+                    const AppTextWidget(
+                      text: "Edited quantity of products will be delivered selected remaining days of this month", 
+                      fontSize: 12, fontWeight: FontWeight.w400,
+                      textAlign: TextAlign.center,
+                    ),
                     const SizedBox(height: 20,),
                     Container(
                       margin: const EdgeInsets.only(left: 40),
@@ -590,7 +608,7 @@ void customChange(BuildContext context, ActiveSubscriptionModel edit, Size size)
                                     },
                                   ),
                                   SizedBox(
-                                    width: size.width * 0.15,
+                                    width: size.width * 0.17,
                                     child: const AppTextWidget(text: "Morning", fontSize: 14, fontWeight: FontWeight.w400)
                                   ),
                                   // Quantity counter for Morning
@@ -615,18 +633,18 @@ void customChange(BuildContext context, ActiveSubscriptionModel edit, Size size)
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(height: 10),
+                                  const SizedBox(height: 5),
                                   SizedBox(
                                     height: 30,
                                     width: 40,
                                     child: Center(
                                       child: AppTextWidget(
                                         text: "${quantities[index][0]}", 
-                                        fontSize: 14, fontWeight: FontWeight.w400
+                                        fontSize: 14, fontWeight: FontWeight.w500
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(height: 10),
+                                  const SizedBox(height: 5),
                                   GestureDetector(
                                     onTap: () {
                                       sheetState(() {
@@ -669,7 +687,7 @@ void customChange(BuildContext context, ActiveSubscriptionModel edit, Size size)
                                     },
                                   ),
                                   SizedBox(
-                                    width: size.width * 0.15,
+                                    width: size.width * 0.17,
                                     child: const AppTextWidget(text: "Evening", fontSize: 14, fontWeight: FontWeight.w400)
                                   ),
                                   const SizedBox(width: 25,),
@@ -694,7 +712,7 @@ void customChange(BuildContext context, ActiveSubscriptionModel edit, Size size)
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(height: 10),
+                                  const SizedBox(height: 5),
                                   SizedBox(
                                     height: 30,
                                     width: 40,
@@ -705,7 +723,7 @@ void customChange(BuildContext context, ActiveSubscriptionModel edit, Size size)
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(height: 10),
+                                  const SizedBox(height: 5),
                                   GestureDetector(
                                     onTap: () {
                                       sheetState(() {
@@ -736,8 +754,9 @@ void customChange(BuildContext context, ActiveSubscriptionModel edit, Size size)
                       builder: (context, provider, child) {
                         return SizedBox(
                           width: size.width * 0.8,
+                          height: kToolbarHeight - 10,
                           child: ButtonWidget(
-                            buttonName: "Update", 
+                            buttonName: "Update subscription", 
                             onPressed: () async {
                               List<String> weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
                               List<Map<String, dynamic>> quantityList = [];

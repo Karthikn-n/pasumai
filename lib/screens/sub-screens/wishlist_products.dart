@@ -133,7 +133,8 @@ class WishlistProducts extends StatelessWidget {
                                           finalPrice: int.parse(product.finalPrice), 
                                           image: product.image, 
                                           quantity: product.quantity, 
-                                          description: product.description
+                                          description: product.description,
+                                          categoryId: 1
                                         )
                                       );
                                       

@@ -203,6 +203,7 @@ class _HomePageState extends State<HomePage> {
             body: Consumer<ApiProvider>(
               builder: (context, provider, child) {
                 return CustomScrollView(
+                  key: const PageStorageKey("Homescreen"),
                     physics: const BouncingScrollPhysics(),
                     slivers: [
                       // banners

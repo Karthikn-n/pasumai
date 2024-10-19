@@ -7,6 +7,7 @@ class ButtonWidget extends StatelessWidget {
   final Color? buttonColor;
   final double? fontSize;
   final IconData? icon;
+  final double? height;
   final Color? fontColor;
   final FontWeight? fontWeight;
   final double? borderRadius;
@@ -16,6 +17,7 @@ class ButtonWidget extends StatelessWidget {
   const ButtonWidget({
     super.key, 
     this.width,
+    this.height,
     this.buttonColor,
     this.fontSize, 
     this.icon,
@@ -33,7 +35,7 @@ class ButtonWidget extends StatelessWidget {
     Size size = MediaQuery.sizeOf(context);
     return SizedBox(
       width: width ?? size.width * 0.8,
-      height: size.height * 0.065,
+      height: height ?? size.height * 0.065,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           elevation: 0,

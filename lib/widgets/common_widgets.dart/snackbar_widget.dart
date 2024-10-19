@@ -20,7 +20,7 @@ SnackBar snackBarMessage({
       showCloseIcon: showCloseIcon ?? true,
       animation: animation,
       dismissDirection: dismissDirection ?? DismissDirection.horizontal,
-      duration: duration ?? const  Duration(seconds: 3),
+      duration: duration ?? const  Duration(seconds: 2),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),

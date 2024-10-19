@@ -60,6 +60,10 @@ class AppRepository{
   Future<http.Response> allProducts(Map<String, dynamic> body) async
     => await apiService.post('/allproducts', body);
 
+  // Quick order product list API
+  Future<http.Response> quickOrderProducts() async
+    => await apiService.post('/productlist', {});
+
   // Get Subscribe Products
   Future<http.Response> subscribedProducts(Map<String, dynamic> body) async
     => await apiService.post('/subscribedproducts', body);

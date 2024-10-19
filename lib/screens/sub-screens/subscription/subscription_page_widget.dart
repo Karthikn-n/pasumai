@@ -19,6 +19,7 @@ class SubscriptionPageWidget extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: ListView.builder(
+            key: const PageStorageKey("Subscription"),
             itemCount: provider.subscribeProducts.length,
             itemBuilder: (context, index) {
               return Column(

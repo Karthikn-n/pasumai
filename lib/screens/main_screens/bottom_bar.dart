@@ -54,10 +54,10 @@ class _BottomBarState extends State<BottomBar> {
   @override
   Widget build(BuildContext context) {
     _pages = [
-      const HomePage(),
-      const CartScreen(),
-      const QuickOrderScreen(),
-      SubscriptionList(),
+      const HomePage(key: PageStorageKey("Homescreen"),),
+      const CartScreen(key: PageStorageKey("Cartscreen"),),
+      const QuickOrderScreen(key: PageStorageKey("Quickorder"),),
+      const SubscriptionList(key: PageStorageKey("Subscription"),),
       const NewProfileScreen(),
       // ProfilePage()
     ];
@@ -349,6 +349,7 @@ class _BottomBarState extends State<BottomBar> {
     final subscription = Provider.of<SubscriptionProvider>(context, listen: false);
     final wishlist = Provider.of<ApiProvider>(context, listen: false);
     final orders = Provider.of<ProfileProvider>(context, listen: false);
+    await wishlist.quickOrderProducts();
     await subscription.activeSubscription().then((value) async {
       await wishlist.wishlistProductsAPI().then((value) async {
         await orders.orderList();

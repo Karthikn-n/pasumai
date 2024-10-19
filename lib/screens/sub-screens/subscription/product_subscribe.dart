@@ -456,6 +456,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                     child: Consumer2<AddressProvider, SubscriptionProvider>(
                       builder: (providerContext, addressProvider, activeSub, child) {
                         return ButtonWidget(
+                          height: kToolbarHeight - 10,
                           buttonName: 'Subscribe', 
                           onPressed: () async {
                             print("subscription data: $subscriptionDate");
@@ -731,6 +732,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                         child: Consumer3<AddressProvider, ProfileProvider, SubscriptionProvider>(
                           builder: (providerContext, value, activeSub, subProvider, child) {
                             return ButtonWidget(
+                              height: kToolbarHeight - 10,
                               buttonName: 'Subscribe', 
                               onPressed: () async {
                                 if (subscriptionDate != null) {
@@ -1027,6 +1029,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                         child: Consumer2<AddressProvider, SubscriptionProvider>(
                           builder: (providerContext, value, activeSub, child) {
                             return ButtonWidget(
+                              height: kToolbarHeight - 10,
                               buttonName: 'Subscribe', 
                               onPressed: () async {
                                 if (subscriptionDate != null) {

@@ -94,6 +94,7 @@ class _QuickOrderScreenState extends State<QuickOrderScreen> {
               children: [
                 // List Of Products
                 ListView.builder(
+                  key: const PageStorageKey("Quickorder"),
                   controller: _controller,
                   itemCount: productProvider.quickOrderProductsList.length,
                   itemBuilder: (context, index) {

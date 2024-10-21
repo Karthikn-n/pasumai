@@ -355,34 +355,29 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             children: [
                               const AppTextWidget(text: "Expected delivery time: ", fontSize: 14, fontWeight: FontWeight.w500),
                               // Delivery time drop down
-                              SizedBox(
-                                height: 30,
-                                width: size.width * 0.35,
-                                child: DropdownButton(
-                                  isExpanded: true,
-                                  padding: EdgeInsets.zero,
-                                  elevation: 1,
-                                  value: expectedDeliveryTime,
-                                  underline: Container(),
-                                  // icon: Container(),
-                                  dropdownColor: Colors.white,
-                                  hint: const AppTextWidget(text: "Pick a time", fontSize: 12, fontWeight: FontWeight.w500),
-                                  items: deliveryTimes.map((option) {
-                                    return DropdownMenuItem(
-                                      value: option,
+                              PopupMenuButton<String>(
+                                padding: EdgeInsets.zero,
+                                initialValue: "Pick a time",
+                                itemBuilder: (context) {
+                                  return List.generate(deliveryTimes.length, (index) {
+                                    return PopupMenuItem(
+                                      onTap: () {
+                                        setState(() {
+                                          expectedDeliveryTime = deliveryTimes[index];
+                                        });
+                                      },
                                       child: AppTextWidget(
-                                        text: option, 
-                                        fontSize: 12, 
-                                        fontWeight: FontWeight.w500
-                                      )
-                                    );
-                                  },).toList(), 
-                                  onChanged: (value) {
-                                    setState(() {
-                                      expectedDeliveryTime = value;
-                                      isDeliveryTimeSelected = false;
-                                    });
-                                  },
+                                        text: deliveryTimes[index], 
+                                        fontWeight: FontWeight.w400
+                                        ),
+                                      );
+                                  },);
+                                },
+                                child: AppTextWidget(
+                                  text: expectedDeliveryTime ?? "Pick a time", 
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12,
+                                  fontColor: Theme.of(context).primaryColor,
                                 ),
                               ),
                             ],

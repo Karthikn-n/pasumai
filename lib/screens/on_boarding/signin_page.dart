@@ -29,6 +29,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
   double imageHeight = 360; // Initial height of the image
   bool isLoading = false;
   bool isKeyboard= false;
+  bool isNotValidate = false;
 
 
 
@@ -41,7 +42,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
     // Adjust the height of the image when the keyboard is visible or hidden
     setState(() {
       isKeyboard = isKeyboardVisible;
-      imageHeight = isKeyboardVisible ? 300 : 360; // Shrink the image when keyboard appears
+      imageHeight = isKeyboardVisible ? isNotValidate ? 290 : 300 : 360; // Shrink the image when keyboard appears
     });
   }
   @override
@@ -162,8 +163,15 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                          try {
                           if (_key.currentState!.validate()) {
                             mobileNoFocus.unfocus();
+                            setState(() {
+                              isNotValidate = false;
+                            });
                             // FirebaseAuthHelper.verifyUserPhoneNumber("+91${mobileController.text}");
                             await provider.userLogin(mobileController.text, size, context);
+                          }else{
+                            setState(() {
+                              isNotValidate = true;
+                            });
                           }
                          } catch (e) {
                            print("Can't Login $e");

@@ -174,7 +174,7 @@ class _QuickOrderScreenState extends State<QuickOrderScreen> {
                                     const SizedBox(height: 5,),
                                     // Product Description
                                     AppTextWidget(
-                                      text: productProvider.quickOrderProductsList[index].description.replaceAll("<p>", ""), 
+                                      text: productProvider.quickOrderProductsList[index].description.replaceAll("<p>", "").replaceAll("</p>", ""), 
                                       fontSize: 12, 
                                       maxLines: 2,
                                       fontColor: Colors.grey,

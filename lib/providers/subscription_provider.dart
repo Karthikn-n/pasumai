@@ -38,11 +38,16 @@ class SubscriptionProvider extends ChangeNotifier{
     final response = await subscribeRepository.subscribedProducts(productData);
     String decrptedData = decryptAES(response.body);
     final decodedResponse = json.decode(decrptedData.replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), ''));
-    print('Subscribe Product Response: $decodedResponse, Code: ${response.statusCode}');
+    debugPrint('Subscribe Product Response: $decodedResponse, Code: ${response.statusCode}', wrapWidth: 1064);
     if (response.statusCode == 200) {
-      final List<dynamic> productJson = decodedResponse['products'];
+      try {
+        final List<dynamic> productJson = decodedResponse['products'];
       List<Products> productsList = productJson.map((json) => Products.fromJson(json)).toList();
       subscribeProducts = productsList;
+      print("Subscribed product list: ${subscribeProducts.length}");
+      } catch (e) {
+        print("Something went wrong: $e");
+      }
     } else {
       print('Error: ${response.body}');
     }

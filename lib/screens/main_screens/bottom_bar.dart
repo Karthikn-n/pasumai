@@ -38,7 +38,7 @@ class _BottomBarState extends State<BottomBar> {
   @override
   void initState() {
     super.initState();
-    preloadApi();
+     preloadApi();
   }
 
   @override
@@ -201,9 +201,9 @@ class _BottomBarState extends State<BottomBar> {
                 apiProvider.isQuick
                 ? const QuickOrderScreen()
                 : Positioned.fill(
-                  child: PageStorage(
-                    bucket: PageStorageBucket(),
-                    child: _pages[apiProvider.bottomIndex],
+                  child: IndexedStack(
+                    index: apiProvider.bottomIndex,
+                    children: _pages,
                   ),
                 ),
         
@@ -344,17 +344,28 @@ class _BottomBarState extends State<BottomBar> {
       );
     }
   }
-
-  void preloadApi() async {
+  
+  Future<void> preloadApi() async {
     final subscription = Provider.of<SubscriptionProvider>(context, listen: false);
     final wishlist = Provider.of<ApiProvider>(context, listen: false);
     final orders = Provider.of<ProfileProvider>(context, listen: false);
-    await wishlist.quickOrderProducts();
-    await subscription.activeSubscription().then((value) async {
-      await wishlist.wishlistProductsAPI().then((value) async {
-        await orders.orderList();
-      },);
-    });
+    // final startTime = DateTime.now();
+    await Future.wait([
+      wishlist.quickOrderProducts(),
+      subscription.activeSubscription(),
+      wishlist.wishlistProductsAPI(),
+      orders.orderList()
+    ]);
+    // final endTime = DateTime.now();
+    // print("Difference in parallel API call: ${endTime.difference(startTime).inMilliseconds} ms");
+    // await wishlist.quickOrderProducts();
+    // await subscription.activeSubscription().then((value) async {
+    //   await wishlist.wishlistProductsAPI().then((value) async {
+    //     await orders.orderList();
+    //   },);
+    // }); 
+    // final endTime = DateTime.now();
+    // print("Difference in sequential API call: ${endTime.difference(startTime).inMilliseconds} ms");
   }
 }
 

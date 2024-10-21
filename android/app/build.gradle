@@ -36,12 +36,12 @@ android {
     buildTypes {
         release {
             minifyEnabled true   // Enables ProGuard
-            shrinkResources true // Removes unused resources
+            // shrinkResources true // Removes unused resources
             // proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
-        coreLibraryDesugaringEnabled true
+        // coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -80,8 +80,8 @@ flutter {
 }
 
 dependencies {
-    implementation(platform("com.google.firebase:firebase-bom:33.2.0"))
-    implementation("com.google.firebase:firebase-auth")
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
-    implementation 'com.google.firebase:firebase-analytics'
+    // implementation(platform("com.google.firebase:firebase-bom:33.2.0"))
+    // implementation("com.google.firebase:firebase-auth")
+    // coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
+    // implementation 'com.google.firebase:firebase-analytics'
 }

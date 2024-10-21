@@ -161,10 +161,10 @@ class ApiProvider extends ChangeNotifier{
     if (response.statusCode == 200 && decodedResponse['status'] == 'success') {
       prefs.setString('customerId', decodedResponse["customer_id"].toString());
       prefs.setString("mobile", mobileNo);
+      prefs.setBool("${prefs.getString("customerId")}_${prefs.getString("mobile")}_logged", true);
       ScaffoldMessenger.of(context).showSnackBar(loginMessage).closed.then(
         (value) async {
           // Save User id In Cache
-          print("Customer ID: ${prefs.getString("customerId")}");
           await userProfileAPI();
           Navigator.push(context, SideTransistionRoute(
             screen: const OtpPage(fromRegister: false,), 
@@ -251,14 +251,12 @@ class ApiProvider extends ChangeNotifier{
 
   // All Products List API
   Future<void> quickOrderProducts() async {
-    Map<String, dynamic> productData = {'cat_id': "1"};
-    print("Quick order called: $productData");
-    final response = await apiRepository.allProducts(productData);
+    final response = await apiRepository.quickOrderProducts();
     String decrptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
     final decodedResponse = json.decode(decrptedResponse);
-    debugPrint('Quick Order Products Response: $decodedResponse, Status Code: ${response.statusCode}');
+    debugPrint('Quick Order Products Response: $decodedResponse, Status Code: ${response.statusCode}', wrapWidth: 1064);
     if (response.statusCode == 200) {
-      final List<dynamic> productJson = decodedResponse['products'];
+      final List<dynamic> productJson = decodedResponse['results'];
       List<Products> productsList = productJson.map((json) => Products.fromJson(json)).toList();
       quickOrderProductsList.clear();
       quickOrderProductsList = productsList;
@@ -271,6 +269,7 @@ class ApiProvider extends ChangeNotifier{
 
   // Add Product to wishlist
   Future<void> addWishlist(int productId, Size size, String name, String quantity, BuildContext context) async {
+    
     Map<String, dynamic> wishlistData = {
       'customer_id': prefs.getString('customerId'),
       'product_id': productId

@@ -343,48 +343,15 @@ class _HomePageState extends State<HomePage> {
                               ),
                               const SizedBox(height: 16,),
                               // Subscribe products Heading
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  AppTextWidget(
-                                    text: localeProvider.of(context).subscriptionProducts, 
-                                    fontSize: 18, 
-                                    fontWeight: FontWeight.w500
-                                  ),
-                                  // View all Button
-                                  // InkWell(
-                                  //   splashColor: Colors.transparent.withOpacity(0.1),
-                                  //   borderRadius: BorderRadius.circular(8),
-                                  //   onTap: () {
-                                  //     provider.setIndex(3);
-                                  //     Navigator.of(context).push(PageRouteBuilder(
-                                  //       pageBuilder: (context, animation, secondaryAnimation) =>  const BottomBar(),
-                                  //       transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                  //         return child;
-                                  //       },
-                                  //       transitionDuration: Duration.zero,
-                                  //     ));
-                                  //   },
-                                  //   child: Row(
-                                  //     children: [
-                                  //       Text(
-                                  //         'View all',
-                                  //         style: TextStyle(
-                                  //           fontSize: 14,
-                                  //           fontWeight: FontWeight.w400,
-                                  //           color: Theme.of(context).primaryColor,
-                                  //         ),
-                                  //       ),
-                                  //       Icon(
-                                  //         Icons.arrow_forward_ios_sharp,
-                                  //         color: Theme.of(context).primaryColor,
-                                  //         size:  size.width > 600 ?  size.height * 0.034: size.height * 0.014,
-                                  //       )
-                                  //     ],
-                                  //   ),
-                                  // )
-                                
-                                ],
+                              GestureDetector(
+                                onTap: () async {
+                                  await provider.quickOrderProducts();
+                                },
+                                child: AppTextWidget(
+                                  text: localeProvider.of(context).subscriptionProducts, 
+                                  fontSize: 18, 
+                                  fontWeight: FontWeight.w500
+                                ),
                               ),
                               // Subscription Products List
                               const SizedBox(height: 12,),

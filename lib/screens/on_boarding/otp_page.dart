@@ -1,18 +1,13 @@
 import 'dart:async';
-// import 'dart:convert';
-
-// import 'package:app_3/data/encrypt_ids.dart';
 import 'package:app_3/helper/shared_preference_helper.dart';
 import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/providers/api_provider.dart';
-import 'package:app_3/providers/subscription_provider.dart';
 import 'package:app_3/repository/app_repository.dart';
 import 'package:app_3/screens/main_screens/bottom_bar.dart';
 import 'package:app_3/service/api_service.dart';
 import 'package:app_3/service/connectivity_helper.dart';
 import 'package:app_3/widgets/common_widgets.dart/button_widget.dart';
-// import 'package:app_3/widgets/common_widgets.dart/snackbar_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:app_3/widgets/sub_screen_widgets/new_address_form_widget.dart';
 import 'package:flutter/material.dart';
@@ -85,10 +80,6 @@ class _OtpPageState extends State<OtpPage> with WidgetsBindingObserver{
     });
   }
 
-  void preload() async {
-    final subscriptionProvider = Provider.of<SubscriptionProvider>(context);
-    await subscriptionProvider.getSubscribProducts();
-  }
 
   String formatTime(int seconds) {
     final int minutes = seconds ~/ 60;

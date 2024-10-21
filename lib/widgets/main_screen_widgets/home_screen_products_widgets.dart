@@ -68,6 +68,11 @@ class HomeScreenProducts extends StatelessWidget {
                                   GestureDetector(
                                     onTap: () async {
                                       // await addWishlist(product.id, size, product.name, product.quantity);
+                                      if (prefs.getBool('${product.id}${product.name}${product.quantity}') ?? true) {
+                                        prefs.setBool('${product.id}${product.name}${product.quantity}',  true);
+                                      }else{
+                                        prefs.setBool('${product.id}${product.name}${product.quantity}',  false);
+                                      }
                                       await addtoWishlistHelper.addWishlist(product.id, size, product.name, product.quantity, context);
                                     },
                                     child: Container(

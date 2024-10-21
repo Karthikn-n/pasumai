@@ -1,11 +1,11 @@
 import 'package:app_3/data/constants.dart';
-import 'package:app_3/helper/firebase_analytics_helper.dart';
+// import 'package:app_3/helper/firebase_analytics_helper.dart';
 import 'package:app_3/providers/api_provider.dart';
 import 'package:app_3/providers/locale_provider.dart';
 import 'package:app_3/providers/profile_provider.dart';
 import 'package:app_3/providers/vacation_provider.dart';
 import 'package:app_3/screens/on_boarding/splash_screen.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
+// import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +15,7 @@ import 'package:app_3/helper/shared_preference_helper.dart';
 import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/providers/subscription_provider.dart';
 import 'package:app_3/service/connectivity_helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -23,9 +24,10 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SharedPreferencesHelper.init();
-  await FirebaseAnalyticsHelper.init().then((value) async{
-   await FirebaseAnalyticsHelper.trackFirstLaunch(); 
-  },);
+  final SharedPreferences prefs = SharedPreferencesHelper.getSharedPreferences();
+  // await FirebaseAnalyticsHelper.init().then((value) async{
+  //  await FirebaseAnalyticsHelper.trackFirstLaunch(); 
+  // },);
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -43,31 +45,26 @@ void main() async {
           ChangeNotifierProvider(create: (_) => ApiProvider(),),
           ChangeNotifierProvider(create: (_) => Constants(),)
         ],
-        child: const MyApp()
+        child: MyApp(userLogged:  prefs.getBool("${prefs.getString("customerId")}_${prefs.getString("mobile")}_logged") ?? false,)
       )
     );
   });
   
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class MyApp extends StatelessWidget {
+  final bool userLogged;
+  const MyApp({super.key, required this.userLogged});
 
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
- 
   @override
   Widget build(BuildContext context) {
     return Consumer<LocaleProvider>(
       builder: (context, localProvider, child) {
         return  MaterialApp(
           title: 'Flutter Demo',
-          navigatorObservers: [
-            FirebaseAnalyticsObserver(analytics: FirebaseAnalyticsHelper.analytics)
-          ],
+          // navigatorObservers: [
+          //   FirebaseAnalyticsObserver(analytics: FirebaseAnalyticsHelper.analytics)
+          // ],
           navigatorKey: navigatorKey,
           debugShowCheckedModeBanner: false,
           locale: localProvider.locale,
@@ -77,6 +74,7 @@ class _MyAppState extends State<MyApp> {
             appBarTheme: const AppBarTheme(
               backgroundColor: Colors.white
             ),
+           
             primaryColorLight: Colors.white,
             colorScheme:  const ColorScheme.light(
               primary: Color(0xFF60B47B),
@@ -108,7 +106,7 @@ class _MyAppState extends State<MyApp> {
             primaryColorDark: Colors.black,
             scaffoldBackgroundColor: Colors.white,
           ),
-          home: const SplashScreen(),
+          home: SplashScreen(userLogged: userLogged,),
         );
       },
     );

@@ -220,7 +220,7 @@ class VacationListWidget extends StatelessWidget {
                                       }else{
                                         vacation.validate(false);
                                         vacation.clearAddDates();
-                                        // vacation.cleatupdateDates();
+                                        vacation.clearupdateDates();
                                         addVacation(
                                           context: context, size: size, 
                                           isUpdating: true, 
@@ -536,7 +536,7 @@ class VacationListWidget extends StatelessWidget {
                                       }, 
                                       size, context
                                     );
-                                    provider.cleatupdateDates();
+                                    provider.clearupdateDates();
                                     Navigator.pop(context);
                                   }else{
                                     if (provider.startDate == null || provider.endDate == null || provider.selectedReason.isEmpty) {

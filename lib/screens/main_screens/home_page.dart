@@ -97,435 +97,457 @@ class _HomePageState extends State<HomePage> {
             }
             
           },
-          child: Scaffold(
-            backgroundColor: Colors.white,
-            appBar: provider.isQuick ? null
-            : AppBar(
-              surfaceTintColor: Colors.transparent.withOpacity(0.0),
-              automaticallyImplyLeading: false,
-              backgroundColor: Colors.white,
-              bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(1.0),
-                child: Container(
-                  color: Colors.grey.withOpacity(0.3),  // Choose your preferred underline color
-                  height: 1.0,         // Height of the underline
+          child: provider.serverDown
+          ? Scaffold(
+              appBar: AppBar(
+                actions: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 15),
+                    child: Icon(
+                      CupertinoIcons.heart_fill, 
+                      size: 28,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                ],
+              ),
+              body: const Center(
+                child: AppTextWidget(
+                  text: "Unable to load content. Our services are currently down. Please try again later.", 
+                  fontWeight: FontWeight.w500,
+                  textAlign: TextAlign.start,
                 ),
               ),
-              title: addressProvider.addresses.isEmpty
-                ? GestureDetector(
-                  onTap: () async {
-                    await Navigator.push(context, downToTop(screen: const AddressSelectionScreen()));
-                  },
-                  child: SizedBox(
-                    width: size.width * 0.4,
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            AppTextWidget(text: 'Select address...', fontSize: 14, fontWeight: FontWeight.w500),
-                            AppTextWidget(text: 'Tamilnadu, India', fontSize: 12, fontWeight: FontWeight.w500)
-                          ],
-                        ),
-                        Icon(CupertinoIcons.chevron_down, size: 18,)
-                      ],
-                    ),
+            )
+          : Scaffold(
+              backgroundColor: Colors.white,
+              appBar: provider.isQuick ? null
+              : AppBar(
+                surfaceTintColor: Colors.transparent.withOpacity(0.0),
+                automaticallyImplyLeading: false,
+                backgroundColor: Colors.white,
+                bottom: PreferredSize(
+                preferredSize: const Size.fromHeight(1.0),
+                  child: Container(
+                    color: Colors.grey.withOpacity(0.3),  // Choose your preferred underline color
+                    height: 1.0,         // Height of the underline
                   ),
-                )
-                : InkWell(
-                    splashColor: Colors.transparent.withOpacity(0.1),
+                ),
+                title: addressProvider.addresses.isEmpty
+                  ? GestureDetector(
                     onTap: () async {
-                      // await addressProvider.getRegionLocation();
-                      Navigator.push(context, downToTop(screen: const AddressSelectionScreen()));
+                      await Navigator.push(context, downToTop(screen: const AddressSelectionScreen()));
                     },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              width: size.width * 0.65,
-                              child: AppTextWidget(
-                                text: 'Selected address', 
-                                fontSize: 16, 
-                                maxLines: 1,
-                                textOverflow: TextOverflow.ellipsis,
-                                fontWeight: FontWeight.w500,
-                                fontColor: Colors.black.withOpacity(0.8),
-                              ),
-                            ),
-                            SizedBox(
-                              width:size.width * 0.65,
-                              child: AppTextWidget(
-                                text: '${addressProvider.currentAddress!.address} ${addressProvider.currentAddress!.location.toString()}, ${addressProvider.currentAddress!.region.toString()}, ${addressProvider.currentAddress!.landmark}, ${addressProvider.currentAddress!.pincode}', 
-                                fontSize: 12, 
-                                maxLines: 1,
-                                textOverflow: TextOverflow.ellipsis,
-                                fontColor: Colors.black.withOpacity(0.5),
-                                fontWeight: FontWeight.w400
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Icon(CupertinoIcons.chevron_down, size: 18,)
-                      ],
-                    ),
-                  ),
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 15, top: 10),
-                  child: Consumer<ApiProvider>(
-                    builder: (context, wishlistProductProvider, child) {
-                      return IconButton(
-                        tooltip: "Wishlist",
-                        style: ElevatedButton.styleFrom(
-                          // overlayColor: Colors.grey.shade400
-                        ),
-                        onPressed: () async {
-                          wishlistProductProvider.wishlistProductsAPI();
-                          Navigator.push(context, downToTop(screen: const WishlistProducts()));
-                        },
-                        icon:  Icon(
-                          CupertinoIcons.heart_fill, 
-                          size: 28,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      );
-                    }
-                  )
-                )
-              ],
-            ),
-            body: Consumer<ApiProvider>(
-              builder: (context, provider, child) {
-                return CustomScrollView(
-                  key: const PageStorageKey("Homescreen"),
-                    physics: const BouncingScrollPhysics(),
-                    slivers: [
-                      // banners
-                      SliverAppBar(
-                        expandedHeight: size.height * 0.180,
-                        // floating: true,
-                        // snap: true,
-                        automaticallyImplyLeading: false,
-                        // pinned: true,
-                        backgroundColor: Colors.white,
-                        surfaceTintColor: Colors.transparent.withOpacity(0.0),
-                        flexibleSpace: FlexibleSpaceBar(
-                          background: Stack(
-                            children: [
-                              // Banner Images
-                              PageView.builder(
-                                controller: bannerController,
-                                itemCount: provider.banners.length,
-                                itemBuilder: (context, index) {
-                                  // List<String> storedBanners = prefs.getStringList('banners') ?? banners;
-                                  String imageUrl = 'https://maduraimarket.in/public/image/banner/${provider.banners[index]}';
-                                  // String imageUrl = 'http://192.168.1.5/pasumaibhoomi/public/image/banner/${provider.banners[index]}';
-                                  return SizedBox(
-                                    // width: size.width,
-                                    height: size.height * 0.1,
-                                    child: CachedNetworkImage(
-                                      imageUrl: imageUrl,
-                                      fit: BoxFit.fitWidth,
-                                      cacheManager: CacheManagerHelper.cacheIt(key: provider.banners[index]),
-                                    )
-                                  );
-                                },
-                                onPageChanged: (int page) {
-                                  setState(() {
-                                    _currentPage = page;
-                                  });
-                                },
-                              ),
-                              // Page indicator
-                              Padding(
-                                padding: EdgeInsets.only(top: size.height * 0.15),
-                                child: _buildDotIndicator(provider.banners),
-                              ),
-                            ],
-                          )
-                        ),
-                      ),
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                          child: Column(
+                    child: SizedBox(
+                      width: size.width * 0.4,
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const SizedBox(height: 20),
-                              TextFields(
-                                hintText: 'Search Product', 
-                                isObseure: false, 
-                                textInputAction: TextInputAction.done,
-                                readOnly: true,
-                                suffixIcon: const Icon(CupertinoIcons.search, color: Colors.grey,),
-                                onTap: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen(focusNode: FocusNode(),)));
-                                },
-                              ),
-                              const SizedBox(height: 20),
-                              // Category Heading
-                              // AppTextWidget(
-                              //   text:  localeProvider.of(context).category,
-                              //   fontSize: 18,
-                              //   fontWeight: FontWeight.w500,
-                              // ),
-                              // const SizedBox(height: 15,),
-                              // Category list
+                              AppTextWidget(text: 'Select address...', fontSize: 14, fontWeight: FontWeight.w500),
+                              AppTextWidget(text: 'Tamilnadu, India', fontSize: 12, fontWeight: FontWeight.w500)
+                            ],
+                          ),
+                          Icon(CupertinoIcons.chevron_down, size: 18,)
+                        ],
+                      ),
+                    ),
+                  )
+                  : InkWell(
+                      splashColor: Colors.transparent.withOpacity(0.1),
+                      onTap: () async {
+                        // await addressProvider.getRegionLocation();
+                        Navigator.push(context, downToTop(screen: const AddressSelectionScreen()));
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
                               SizedBox(
-                                height: 210,
-                                // width: size.width,
-                                child: Center(
-                                  child: ListView.builder(
-                                    itemCount: provider.categories.length,
-                                    scrollDirection: Axis.horizontal,
-                                    itemBuilder: (context, index) {
-                                      String imageUrl = 'https://maduraimarket.in/public/image/category/${provider.categories[index].categoryImage}';   
-                                      // String imageUrl = 'http://192.168.1.5/pasumaibhoomi/public/image/category/${provider.categories[index].categoryImage}';   
-                                      return Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () async {
-                                              // await provider.allProducts(provider.categories[index].categoryId).then((value){
-                                                Navigator.of(context).push(MaterialPageRoute(
-                                                  builder: (context) => CategoryProductsListWidget(categoryName: provider.categories[index].categoryName, categoryId: provider.categories[index].categoryId,)
-                                                ));
-                                              // });
-                                            },
-                                            child: SizedBox(
-                                              // height: 200,
-                                              // width: 110,
-                                              // margin: EdgeInsets.only(right: index == provider.categories.length -1 ? 10 : 0),
-                                              // padding: const EdgeInsets.only(left: 10),
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Card(
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(10)
-                                                    ),
-                                                    elevation: 3,
-                                                    child: SizedBox(
-                                                      height: 200,
-                                                      child: ClipRRect(
-                                                        borderRadius: BorderRadius.circular(10),
-                                                        child: CachedNetworkImage(
-                                                          imageUrl: imageUrl,
-                                                          fit: BoxFit.cover,
-                                                          cacheManager: CacheManagerHelper.cacheIt(key: provider.categories[index].categoryImage),
+                                width: size.width * 0.65,
+                                child: AppTextWidget(
+                                  text: 'Selected address', 
+                                  fontSize: 16, 
+                                  maxLines: 1,
+                                  textOverflow: TextOverflow.ellipsis,
+                                  fontWeight: FontWeight.w500,
+                                  fontColor: Colors.black.withOpacity(0.8),
+                                ),
+                              ),
+                              SizedBox(
+                                width:size.width * 0.65,
+                                child: AppTextWidget(
+                                  text: '${addressProvider.currentAddress!.address} ${addressProvider.currentAddress!.location.toString()}, ${addressProvider.currentAddress!.region.toString()}, ${addressProvider.currentAddress!.landmark}, ${addressProvider.currentAddress!.pincode}', 
+                                  fontSize: 12, 
+                                  maxLines: 1,
+                                  textOverflow: TextOverflow.ellipsis,
+                                  fontColor: Colors.black.withOpacity(0.5),
+                                  fontWeight: FontWeight.w400
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Icon(CupertinoIcons.chevron_down, size: 18,)
+                        ],
+                      ),
+                    ),
+                actions: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 15, top: 10),
+                    child: Consumer<ApiProvider>(
+                      builder: (context, wishlistProductProvider, child) {
+                        return IconButton(
+                          tooltip: "Wishlist",
+                          style: ElevatedButton.styleFrom(
+                            // overlayColor: Colors.grey.shade400
+                          ),
+                          onPressed: () async {
+                            wishlistProductProvider.wishlistProductsAPI();
+                            Navigator.push(context, downToTop(screen: const WishlistProducts()));
+                          },
+                          icon:  Icon(
+                            CupertinoIcons.heart_fill, 
+                            size: 28,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        );
+                      }
+                    )
+                  )
+                ],
+              ),
+              body: Consumer<ApiProvider>(
+                builder: (context, provider, child) {
+                  return CustomScrollView(
+                    key: const PageStorageKey("Homescreen"),
+                      physics: const BouncingScrollPhysics(),
+                      slivers: [
+                        // banners
+                        SliverAppBar(
+                          expandedHeight: size.height * 0.180,
+                          // floating: true,
+                          // snap: true,
+                          automaticallyImplyLeading: false,
+                          // pinned: true,
+                          backgroundColor: Colors.white,
+                          surfaceTintColor: Colors.transparent.withOpacity(0.0),
+                          flexibleSpace: FlexibleSpaceBar(
+                            background: Stack(
+                              children: [
+                                // Banner Images
+                                PageView.builder(
+                                  controller: bannerController,
+                                  itemCount: provider.banners.length,
+                                  itemBuilder: (context, index) {
+                                    // List<String> storedBanners = prefs.getStringList('banners') ?? banners;
+                                    String imageUrl = 'https://maduraimarket.in/public/image/banner/${provider.banners[index]}';
+                                    // String imageUrl = 'http://192.168.1.5/pasumaibhoomi/public/image/banner/${provider.banners[index]}';
+                                    return SizedBox(
+                                      // width: size.width,
+                                      height: size.height * 0.1,
+                                      child: CachedNetworkImage(
+                                        imageUrl: imageUrl,
+                                        fit: BoxFit.fitWidth,
+                                        cacheManager: CacheManagerHelper.cacheIt(key: provider.banners[index]),
+                                      )
+                                    );
+                                  },
+                                  onPageChanged: (int page) {
+                                    setState(() {
+                                      _currentPage = page;
+                                    });
+                                  },
+                                ),
+                                // Page indicator
+                                Padding(
+                                  padding: EdgeInsets.only(top: size.height * 0.15),
+                                  child: _buildDotIndicator(provider.banners),
+                                ),
+                              ],
+                            )
+                          ),
+                        ),
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 20),
+                                TextFields(
+                                  hintText: 'Search Product', 
+                                  isObseure: false, 
+                                  textInputAction: TextInputAction.done,
+                                  readOnly: true,
+                                  suffixIcon: const Icon(CupertinoIcons.search, color: Colors.grey,),
+                                  onTap: (){
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen(focusNode: FocusNode(),)));
+                                  },
+                                ),
+                                const SizedBox(height: 20),
+                                // Category Heading
+                                // AppTextWidget(
+                                //   text:  localeProvider.of(context).category,
+                                //   fontSize: 18,
+                                //   fontWeight: FontWeight.w500,
+                                // ),
+                                // const SizedBox(height: 15,),
+                                // Category list
+                                SizedBox(
+                                  height: 210,
+                                  // width: size.width,
+                                  child: Center(
+                                    child: ListView.builder(
+                                      itemCount: provider.categories.length,
+                                      scrollDirection: Axis.horizontal,
+                                      itemBuilder: (context, index) {
+                                        String imageUrl = 'https://maduraimarket.in/public/image/category/${provider.categories[index].categoryImage}';   
+                                        // String imageUrl = 'http://192.168.1.5/pasumaibhoomi/public/image/category/${provider.categories[index].categoryImage}';   
+                                        return Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () async {
+                                                // await provider.allProducts(provider.categories[index].categoryId).then((value){
+                                                  Navigator.of(context).push(MaterialPageRoute(
+                                                    builder: (context) => CategoryProductsListWidget(categoryName: provider.categories[index].categoryName, categoryId: provider.categories[index].categoryId,)
+                                                  ));
+                                                // });
+                                              },
+                                              child: SizedBox(
+                                                // height: 200,
+                                                // width: 110,
+                                                // margin: EdgeInsets.only(right: index == provider.categories.length -1 ? 10 : 0),
+                                                // padding: const EdgeInsets.only(left: 10),
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Card(
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(10)
+                                                      ),
+                                                      elevation: 3,
+                                                      child: SizedBox(
+                                                        height: 200,
+                                                        child: ClipRRect(
+                                                          borderRadius: BorderRadius.circular(10),
+                                                          child: CachedNetworkImage(
+                                                            imageUrl: imageUrl,
+                                                            fit: BoxFit.cover,
+                                                            cacheManager: CacheManagerHelper.cacheIt(key: provider.categories[index].categoryImage),
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
-                                                  ),
-                                                  // AppTextWidget(
-                                                  //   text: provider.categories[index].categoryName, 
-                                                  //   fontSize: 14, 
-                                                  //   maxLines: 1,
-                                                  //   fontWeight: FontWeight.w400,
-                                                  //   textOverflow: TextOverflow.ellipsis,
-                                                  // )
-                                                ],
+                                                    // AppTextWidget(
+                                                    //   text: provider.categories[index].categoryName, 
+                                                    //   fontSize: 14, 
+                                                    //   maxLines: 1,
+                                                    //   fontWeight: FontWeight.w400,
+                                                    //   textOverflow: TextOverflow.ellipsis,
+                                                    // )
+                                                  ],
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                          const SizedBox(width: 10,)
-                                        ],
-                                      );
-                                    }
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 16,),
-                              // Subscribe products Heading
-                              GestureDetector(
-                                onTap: () async {
-                                  await provider.quickOrderProducts();
-                                },
-                                child: AppTextWidget(
-                                  text: localeProvider.of(context).subscriptionProducts, 
-                                  fontSize: 18, 
-                                  fontWeight: FontWeight.w500
-                                ),
-                              ),
-                              // Subscription Products List
-                              const SizedBox(height: 12,),
-                              Consumer<SubscriptionProvider>(
-                                builder: (context, value, child) {
-                                  return  value.subscribeProducts.isEmpty
-                                  ? FutureBuilder(
-                                    future: value.getSubscribProducts(), 
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState == ConnectionState.waiting) {
-                                        return const ShimmerCarosouelView();
-                                      }else{
-                                        return HomeScreenProducts(
-                                          products: value.subscribeProducts, 
-                                          icon: Container(
-                                            padding: const EdgeInsets.all(5),
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(8),
-                                              color: Theme.of(context).primaryColor,
-                                            ),
-                                            child: const AppTextWidget(
-                                              text: "Subscribe", fontSize: 12, 
-                                              fontWeight: FontWeight.w500,
-                                              fontColor: Colors.white,
-                                            )
-                                          ), 
-                                          // Move to Next View all Screen
-                                          onViewall: () { 
-                                            provider.setIndex(3);
-                                            Navigator.of(context).push(PageRouteBuilder(
-                                              pageBuilder: (context, animation, secondaryAnimation) =>  const BottomBar(),
-                                              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                                return child;
-                                              },
-                                              transitionDuration: Duration.zero,
-                                            ));
-                                          },
+                                            const SizedBox(width: 10,)
+                                          ],
                                         );
                                       }
-                                    } ,
-                                  )
-                                    // Subscribe product list
-                                  : HomeScreenProducts(
-                                    products: value.subscribeProducts.sublist(0, 5), 
-                                    icon: Container(), 
-                                    onViewall: () { 
-                                      provider.setIndex(3);
-                                      Navigator.of(context).push(PageRouteBuilder(
-                                        pageBuilder: (context, animation, secondaryAnimation) =>  const BottomBar(),
-                                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                          return child;
-                                        },
-                                        transitionDuration: Duration.zero,
-                                      ));
-                                    },
-                                  );
-                                },
-                              ),
-                              const SizedBox(height: 6,),
-                              // Featured Products Heading
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  AppTextWidget(
-                                    text: localeProvider.of(context).featuredProducts, 
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 16,),
+                                // Subscribe products Heading
+                                GestureDetector(
+                                  onTap: () async {
+                                    await provider.quickOrderProducts();
+                                  },
+                                  child: AppTextWidget(
+                                    text: localeProvider.of(context).subscriptionProducts, 
                                     fontSize: 18, 
                                     fontWeight: FontWeight.w500
                                   ),
-                                  // GestureDetector(
-                                  //   onTap: () {
-                                  //     // Move to Featured List Page
-                                  //     Navigator.of(context).push(MaterialPageRoute(
-                                  //       builder: (context) => const CategoryProductsListWidget(categoryName: "Featured Products", isFeaturedProduct: true,)
-                                  //     ));
-                                  //   },
-                                  //   child: Row(
-                                  //     children: [
-                                  //       Text(
-                                  //         'View all',
-                                  //         style: TextStyle(
-                                  //           color: Theme.of(context).primaryColor,
-                                  //           fontSize: size.width > 600 ?  size.height * 0.034: size.height * 0.018,
-                                  //           fontWeight: FontWeight.bold
-                                  //         ),
-                                  //       ),
-                                  //       // SizedBox(width: size.width * 0.003,),
-                                  //       Icon(
-                                  //         Icons.arrow_forward_ios_sharp,
-                                  //         color: Theme.of(context).primaryColor,
-                                  //         size:  size.width > 600 ?  size.height * 0.034: size.height * 0.014,
-                                  //       )
-                                  //     ],
-                                  //   ),
-                                
-                                  // )
-                                
-                                ],
-                              ),
-                              const SizedBox(height: 12,),
-                              // Featured Products list
-                              HomeScreenProducts(
-                                products: provider.featuredproductData.sublist(0, 5), 
-                                onViewall: () {  
-                                   Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => const CategoryProductsListWidget(categoryName: "Featured Products", isFeaturedProduct: true,)
-                                  ));
-                                },
-                              ),
-                              const SizedBox(height: 6,),
-                              // Best Seller Heading
-                              Row(
-                                // crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  SizedBox(
-                                    width: size.width * 0.7,
-                                    child: AppTextWidget(
-                                      text: localeProvider.of(context).bestseller, 
+                                ),
+                                // Subscription Products List
+                                const SizedBox(height: 12,),
+                                Consumer<SubscriptionProvider>(
+                                  builder: (context, value, child) {
+                                    return  value.subscribeProducts.isEmpty
+                                    ? FutureBuilder(
+                                      future: value.getSubscribProducts(), 
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState == ConnectionState.waiting) {
+                                          return const ShimmerCarosouelView();
+                                        }else{
+                                          return HomeScreenProducts(
+                                            products: value.subscribeProducts, 
+                                            icon: Container(
+                                              padding: const EdgeInsets.all(5),
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(8),
+                                                color: Theme.of(context).primaryColor,
+                                              ),
+                                              child: const AppTextWidget(
+                                                text: "Subscribe", fontSize: 12, 
+                                                fontWeight: FontWeight.w500,
+                                                fontColor: Colors.white,
+                                              )
+                                            ), 
+                                            // Move to Next View all Screen
+                                            onViewall: () { 
+                                              provider.setIndex(3);
+                                              Navigator.of(context).push(PageRouteBuilder(
+                                                pageBuilder: (context, animation, secondaryAnimation) =>  const BottomBar(),
+                                                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                                  return child;
+                                                },
+                                                transitionDuration: Duration.zero,
+                                              ));
+                                            },
+                                          );
+                                        }
+                                      } ,
+                                    )
+                                      // Subscribe product list
+                                    : HomeScreenProducts(
+                                      products: value.subscribeProducts.sublist(0, 5), 
+                                      icon: Container(), 
+                                      onViewall: () { 
+                                        provider.setIndex(3);
+                                        Navigator.of(context).push(PageRouteBuilder(
+                                          pageBuilder: (context, animation, secondaryAnimation) =>  const BottomBar(),
+                                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                            return child;
+                                          },
+                                          transitionDuration: Duration.zero,
+                                        ));
+                                      },
+                                    );
+                                  },
+                                ),
+                                const SizedBox(height: 6,),
+                                // Featured Products Heading
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    AppTextWidget(
+                                      text: localeProvider.of(context).featuredProducts, 
                                       fontSize: 18, 
-                                      textOverflow: TextOverflow.fade,
                                       fontWeight: FontWeight.w500
                                     ),
-                                  ),
-                                  // View all Button
-                                  // GestureDetector(
-                                  //   onTap: () {
-                                  //     print("Best Seller: ${provider.bestSellerProducts.length}");
-                                  //      Navigator.of(context).push(MaterialPageRoute(
-                                  //       builder: (context) => const CategoryProductsListWidget(categoryName: "Best Seller", isBestSellerProduct: true,)
-                                  //     ));
-                                  //   },
-                                  //   child: Row(
-                                  //     mainAxisAlignment: MainAxisAlignment.center,
-                                  //     children: [
-                                  //       Text(
-                                  //         'View all',
-                                  //         style: TextStyle(
-                                  //           fontSize: 14,
-                                  //           color: Theme.of(context).primaryColor,
-                                  //           fontWeight: FontWeight.w500
-                                  //         ),
-                                  //       ),
-                                  //       Icon(
-                                  //         Icons.arrow_forward_ios_sharp,
-                                  //         color: Theme.of(context).primaryColor,
-                                  //         size:  size.width > 600 ?  size.height * 0.034: size.height * 0.014,
-                                  //       )
-                                  //     ],
-                                  //   ),
-                                  // )
+                                    // GestureDetector(
+                                    //   onTap: () {
+                                    //     // Move to Featured List Page
+                                    //     Navigator.of(context).push(MaterialPageRoute(
+                                    //       builder: (context) => const CategoryProductsListWidget(categoryName: "Featured Products", isFeaturedProduct: true,)
+                                    //     ));
+                                    //   },
+                                    //   child: Row(
+                                    //     children: [
+                                    //       Text(
+                                    //         'View all',
+                                    //         style: TextStyle(
+                                    //           color: Theme.of(context).primaryColor,
+                                    //           fontSize: size.width > 600 ?  size.height * 0.034: size.height * 0.018,
+                                    //           fontWeight: FontWeight.bold
+                                    //         ),
+                                    //       ),
+                                    //       // SizedBox(width: size.width * 0.003,),
+                                    //       Icon(
+                                    //         Icons.arrow_forward_ios_sharp,
+                                    //         color: Theme.of(context).primaryColor,
+                                    //         size:  size.width > 600 ?  size.height * 0.034: size.height * 0.014,
+                                    //       )
+                                    //     ],
+                                    //   ),
+                                  
+                                    // )
+                                  
+                                  ],
+                                ),
+                                const SizedBox(height: 12,),
+                                // Featured Products list
+                                HomeScreenProducts(
+                                  products: provider.featuredproductData.sublist(0, 5), 
+                                  onViewall: () {  
+                                    Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => const CategoryProductsListWidget(categoryName: "Featured Products", isFeaturedProduct: true,)
+                                    ));
+                                  },
+                                ),
+                                const SizedBox(height: 6,),
+                                // Best Seller Heading
+                                Row(
+                                  // crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      width: size.width * 0.7,
+                                      child: AppTextWidget(
+                                        text: localeProvider.of(context).bestseller, 
+                                        fontSize: 18, 
+                                        textOverflow: TextOverflow.fade,
+                                        fontWeight: FontWeight.w500
+                                      ),
+                                    ),
+                                    // View all Button
+                                    // GestureDetector(
+                                    //   onTap: () {
+                                    //     print("Best Seller: ${provider.bestSellerProducts.length}");
+                                    //      Navigator.of(context).push(MaterialPageRoute(
+                                    //       builder: (context) => const CategoryProductsListWidget(categoryName: "Best Seller", isBestSellerProduct: true,)
+                                    //     ));
+                                    //   },
+                                    //   child: Row(
+                                    //     mainAxisAlignment: MainAxisAlignment.center,
+                                    //     children: [
+                                    //       Text(
+                                    //         'View all',
+                                    //         style: TextStyle(
+                                    //           fontSize: 14,
+                                    //           color: Theme.of(context).primaryColor,
+                                    //           fontWeight: FontWeight.w500
+                                    //         ),
+                                    //       ),
+                                    //       Icon(
+                                    //         Icons.arrow_forward_ios_sharp,
+                                    //         color: Theme.of(context).primaryColor,
+                                    //         size:  size.width > 600 ?  size.height * 0.034: size.height * 0.014,
+                                    //       )
+                                    //     ],
+                                    //   ),
+                                    // )
+                                  
+                                  ],
+                                ),
+                                const SizedBox(height: 12,),
+                                // Best Seller Products List
+                                HomeScreenProducts(
+                                  products: provider.bestSellerProducts, 
+                                  onViewall: () { 
+                                    Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => const CategoryProductsListWidget(categoryName: "Best Seller", isBestSellerProduct: true,)
+                                    ));
+                                  },
+                                ),
+                                const SizedBox(height: 60,),
                                 
-                                ],
-                              ),
-                              const SizedBox(height: 12,),
-                              // Best Seller Products List
-                              HomeScreenProducts(
-                                products: provider.bestSellerProducts, 
-                                onViewall: () { 
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => const CategoryProductsListWidget(categoryName: "Best Seller", isBestSellerProduct: true,)
-                                  ));
-                                },
-                              ),
-                              const SizedBox(height: 60,),
-                              
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      )
-                    ]
-                  );
-              }
+                        )
+                      ]
+                    );
+                }
+              ),
             ),
-          ),
         );
       }
     ); 

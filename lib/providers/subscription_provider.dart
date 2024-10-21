@@ -30,6 +30,7 @@ class SubscriptionProvider extends ChangeNotifier{
   List<List<String>> options = [];
   bool isCancellingSubscription = false;
   bool isSubscriped = false;
+  bool serverDown = false;
   
   // Get all the Subscribe Product in Login Page
   Future<void> getSubscribProducts() async {
@@ -48,7 +49,9 @@ class SubscriptionProvider extends ChangeNotifier{
       } catch (e) {
         print("Something went wrong: $e");
       }
-    } else {
+    } else if(response.statusCode == 508){
+      serverDown = true;
+    }else {
       print('Error: ${response.body}');
     }
     notifyListeners();
@@ -68,6 +71,8 @@ class SubscriptionProvider extends ChangeNotifier{
       activeSubscriptions.clear();
       activeSubscriptions = activeSubscriptionsList.map((subscription) => ActiveSubscriptionModel.fromJson(subscription) ,).toList();
       options = List.generate(activeSubscriptions.length, (index) => ["Edit", "Cancel", "Renew"],);
+    } else if(response.statusCode == 508){
+      serverDown = true;
     } else {
       print('Failed to fetch data: ${response.statusCode}');
     }

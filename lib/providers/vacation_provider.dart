@@ -59,7 +59,7 @@ class VacationProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  void cleatupdateDates(){
+  void clearupdateDates(){
     updatedEndDate = null;
     updatedStartDate = null;
     selectedReason = "";

@@ -25,6 +25,7 @@ class ApiProvider extends ChangeNotifier{
   // AppRepository apiRepository = AppRepository(ApiService("http://192.168.1.5/pasumaibhoomi/public/api"));
   SharedPreferences prefs = SharedPreferencesHelper.getSharedPreferences();
 
+  bool serverDown = false;
   bool isQuick = false;
   int bottomIndex = 0;
   bool fromCategories = false;
@@ -352,6 +353,8 @@ class ApiProvider extends ChangeNotifier{
       final List<dynamic> productJson = decodedResponse['products'];
       List<Products> productsList = productJson.map((product) => Products.fromJson(product)).toList();
       featuredproductData = productsList;
+    } else if(response.statusCode == 508){
+      serverDown = true;
     } else {
       print('Featured Products Error: ${response.body}');
     }
@@ -369,6 +372,8 @@ class ApiProvider extends ChangeNotifier{
       final List<dynamic> productJson = decodedResponse['products'];
       List<Products> productsList = productJson.map((product) => Products.fromJson(product)).toList();
       bestSellerProducts = productsList;
+    } else if(response.statusCode == 508){
+      serverDown = true;
     } else {
       print('Featured Products Error: ${response.body}');
     }
@@ -385,6 +390,8 @@ class ApiProvider extends ChangeNotifier{
       final List<dynamic> categoriesReponse = decodedResponse['results'];
       List<CategoryModel> categoryList = categoriesReponse.map((json) => CategoryModel.fromMap(json)).toList();
       categories = categoryList;
+    } else if(response.statusCode == 508){
+      serverDown = true;
     } else {
       print('Error Banner: ${response.body}');
     }

@@ -26,7 +26,7 @@ class YourAddressWidget extends StatelessWidget {
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 12),
                       child: AppTextWidget(
-                        text: "My Addresses", 
+                        text: "My addresses", 
                         fontSize: 16, 
                         fontWeight: FontWeight.w500
                       ),
@@ -48,7 +48,7 @@ class YourAddressWidget extends StatelessWidget {
                         const Padding(
                           padding: EdgeInsets.symmetric(horizontal: 12),
                           child: AppTextWidget(
-                            text: "My Addresses", 
+                            text: "My addresses", 
                             fontSize: 16, 
                             fontWeight: FontWeight.w500
                           ),
@@ -85,13 +85,13 @@ class YourAddressWidget extends StatelessWidget {
                           const Padding(
                             padding: EdgeInsets.symmetric(horizontal: 12),
                             child: AppTextWidget(
-                              text: "My Addresses", 
+                              text: "My addresses", 
                               fontSize: 16, 
                               fontWeight: FontWeight.w500
                             ),
                           ),
                           IconButton(
-                            tooltip: "Add Address",
+                            tooltip: "Add address",
                             style: IconButton.styleFrom(
                               padding: const EdgeInsets.all(0)
                             ),
@@ -124,7 +124,7 @@ class YourAddressWidget extends StatelessWidget {
                       const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 12),
                         child: AppTextWidget(
-                          text: "My Addresses", 
+                          text: "My addresses", 
                           fontSize: 16, 
                           fontWeight: FontWeight.w500
                         ),

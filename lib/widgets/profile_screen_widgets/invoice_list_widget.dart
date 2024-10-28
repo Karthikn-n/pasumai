@@ -28,7 +28,7 @@ class InvoiceListWidget extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 12),
                         child: AppTextWidget(
-                          text: "Invoice Listing", 
+                          text: "Invoice listing", 
                           fontSize: 16, 
                           fontWeight: FontWeight.w500
                         ),
@@ -54,7 +54,7 @@ class InvoiceListWidget extends StatelessWidget {
                       const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 12),
                         child: AppTextWidget(
-                          text: "Invoice Listing", 
+                          text: "Invoice lsting", 
                           fontSize: 16, 
                           fontWeight: FontWeight.w500
                         ),
@@ -76,7 +76,7 @@ class InvoiceListWidget extends StatelessWidget {
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 12),
                     child: AppTextWidget(
-                      text: "Invoice Listing", 
+                      text: "Invoice listing", 
                       fontSize: 16, 
                       fontWeight: FontWeight.w500
                     ),

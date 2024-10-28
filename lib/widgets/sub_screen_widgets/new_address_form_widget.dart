@@ -457,6 +457,7 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
           draggable: true,
           markerId: const MarkerId('currentLocation'),
           position: currentLocation!,
+          
           infoWindow: const  InfoWindow(
             title: "Use this address"
           )

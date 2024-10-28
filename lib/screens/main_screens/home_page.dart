@@ -280,8 +280,9 @@ class _HomePageState extends State<HomePage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const SizedBox(height: 20),
+                                // Search text field
                                 TextFields(
-                                  hintText: 'Search Product', 
+                                  hintText: 'Search Products', 
                                   isObseure: false, 
                                   textInputAction: TextInputAction.done,
                                   readOnly: true,
@@ -291,13 +292,6 @@ class _HomePageState extends State<HomePage> {
                                   },
                                 ),
                                 const SizedBox(height: 20),
-                                // Category Heading
-                                // AppTextWidget(
-                                //   text:  localeProvider.of(context).category,
-                                //   fontSize: 18,
-                                //   fontWeight: FontWeight.w500,
-                                // ),
-                                // const SizedBox(height: 15,),
                                 // Category list
                                 SizedBox(
                                   height: 210,
@@ -321,10 +315,6 @@ class _HomePageState extends State<HomePage> {
                                                 // });
                                               },
                                               child: SizedBox(
-                                                // height: 200,
-                                                // width: 110,
-                                                // margin: EdgeInsets.only(right: index == provider.categories.length -1 ? 10 : 0),
-                                                // padding: const EdgeInsets.only(left: 10),
                                                 child: Column(
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [

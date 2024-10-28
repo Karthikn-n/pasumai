@@ -11,11 +11,11 @@
     <!-- <uses-permission android:name="android.permission.READ_SMS"/>
     <uses-permission android:name="android.permission.RECEIVE_SMS"/> -->
     <!-- This will allow reschedule notifications upon device reboot -->
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.VIBRATE" /> -->
     <!-- This will allow to set the notification in exact timing -->
     <!-- <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/> -->
-    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>
+    <!-- <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/> -->
     <application
         android:label="Madurai Market"
         android:name="${applicationName}"
@@ -23,7 +23,7 @@
         android:icon="@mipmap/ic_launcher">
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDbZcQiUQy-YyCN08yz8OQxQd4z4eRmMqA"/>
-        <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver" />
+        <!-- <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver" /> -->
         <activity
             android:name=".MainActivity"
             android:exported="true"

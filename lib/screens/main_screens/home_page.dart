@@ -282,7 +282,7 @@ class _HomePageState extends State<HomePage> {
                                 const SizedBox(height: 20),
                                 // Search text field
                                 TextFields(
-                                  hintText: 'Search Products', 
+                                  hintText: 'Search Dairy, Food & Groceries', 
                                   isObseure: false, 
                                   textInputAction: TextInputAction.done,
                                   readOnly: true,

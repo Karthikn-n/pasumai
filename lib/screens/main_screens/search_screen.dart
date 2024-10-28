@@ -83,7 +83,7 @@ class _SearchScreenState extends State<SearchScreen> {
               });
             },
             decoration: InputDecoration(
-              hintText: 'Search',
+              hintText: 'Search Dairy, Food & Groceries',
               hintStyle: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w500,

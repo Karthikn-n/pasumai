@@ -11,6 +11,7 @@ class TextFields extends StatelessWidget {
   final int? maxLine;
   final FocusNode? focusNode;
   final bool? readOnly;
+  final Widget? label;
   final double? borderRadius;
   final VoidCallback? onEditingComplete;
   final Function(String value)? onChanged;
@@ -31,6 +32,7 @@ class TextFields extends StatelessWidget {
     this.suffixIcon,
     this.onTap,
     this.borderRadius,
+    this.label,
     this.maxLine,
     this.hintTextSize,
     this.readOnly,
@@ -92,6 +94,7 @@ class TextFields extends StatelessWidget {
           suffixIcon: suffixIcon,
           suffixIconColor: const Color(0xFF656872).withOpacity(1.0),
           hintText: hintText,
+          label: label,
           hintStyle: TextStyle(
             fontSize: hintTextSize ?? 14,
             fontWeight: FontWeight.w500,

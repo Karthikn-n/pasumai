@@ -22,7 +22,8 @@ String decryptAES(
         mode: encrypt.AESMode.cbc, padding: null));
     final decrypted = encrypter.decrypt(
         encrypt.Encrypted.fromBase64(encryptedData),
-        iv: encrypt.IV.fromUtf8(iv));
+        iv: encrypt.IV.fromUtf8(iv)
+      );
     return decrypted;
   } catch (e) {
     return 'null';

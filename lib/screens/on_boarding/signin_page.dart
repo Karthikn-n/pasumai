@@ -166,7 +166,6 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                             setState(() {
                               isNotValidate = false;
                             });
-                            // FirebaseAuthHelper.verifyUserPhoneNumber("+91${mobileController.text}");
                             await provider.userLogin(mobileController.text, size, context);
                           }else{
                             setState(() {

@@ -5,6 +5,7 @@ import 'package:app_3/providers/profile_provider.dart';
 import 'package:app_3/providers/subscription_provider.dart';
 import 'package:app_3/repository/app_repository.dart';
 import 'package:app_3/screens/main_screens/cart_screen.dart';
+import 'package:app_3/screens/main_screens/cubits/cart_cubits.dart';
 import 'package:app_3/screens/main_screens/profile_screen.dart';
 import 'package:app_3/screens/main_screens/quick_order_screen.dart';
 import 'package:app_3/screens/main_screens/subcribe_products_screen.dart';
@@ -32,24 +33,25 @@ class _BottomBarState extends State<BottomBar> {
   // List of pages in the0 bottom navigation bar
   SharedPreferences prefs = SharedPreferencesHelper.getSharedPreferences();
   late List<Widget> _pages;
-  bool _isInitialized = false;
+
   bool isQuickOrderSelected = false;
 
   @override
   void initState() {
     super.initState();
+    context.read<CartCubits>().fetchCartItems();
      preloadApi();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_isInitialized) {
-      final cartItemsHelper = Provider.of<CartProvider>(context, listen: false);
-      cartItemsHelper.cartItemsAPI();
-      _isInitialized = true;
-    }
-  }
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //     context.r
+  //     // final cartItemsHelper = Provider.of<CartProvider>(context, listen: false);
+  //     // cartItemsHelper.cartItemsAPI();
+  //     _isInitialized = true;
+    
+  // }
 
   @override
   Widget build(BuildContext context) {

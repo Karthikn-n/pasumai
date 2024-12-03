@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "712803607053",
+    "firebase_url": "https://e-learning-app-5f316-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "e-learning-app-5f316",
+    "storage_bucket": "e-learning-app-5f316.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:712803607053:android:8b72777821fcff3abaab44",
+        "android_client_info": {
+          "package_name": "com.example.app_3"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7JhKa1a8xNKHfUw986_cTy_E_UdHP1j4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "712803607053-a2dem60nnjj00e49ca1tkvng5idmafcn.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "712803607053-ao0vad4sgridkvqisfo6tuvv9fkuabfr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.app3"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

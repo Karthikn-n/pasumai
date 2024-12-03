@@ -1,6 +1,8 @@
+import 'package:app_3/firebase_options.dart';
 import 'package:app_3/helper/provider_helper.dart';
 import 'package:app_3/providers/locale_provider.dart';
 import 'package:app_3/screens/on_boarding/splash_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +18,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SharedPreferencesHelper.init();
   final SharedPreferences prefs = SharedPreferencesHelper.getSharedPreferences();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,

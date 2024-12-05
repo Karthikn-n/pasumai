@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:app_3/firebase_options.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -67,15 +70,16 @@ class FirebaseProvider {
 
   // Github login
   static Future<void> siginWithGithub() async {
+    await _firebaseAuthInstance.signOut();
     // Need SHA finger print to use github social login
      final GithubAuthProvider githubAuthProvider = GithubAuthProvider();
 
     // Sign in with the GitHub credential
      final  UserCredential? user;
     if (kIsWeb) {
-      user = await FirebaseAuth.instance.signInWithPopup(githubAuthProvider);
+      user = await _firebaseAuthInstance.signInWithPopup(githubAuthProvider);
     } else {
-      user = await FirebaseAuth.instance.signInWithProvider(githubAuthProvider);
+      user = await _firebaseAuthInstance.signInWithProvider(githubAuthProvider);
     }
     Map<String, dynamic> userData = {
       "user_name": user.user!.displayName,
@@ -131,9 +135,28 @@ class FirebaseProvider {
       
     }
 
-  static Future<void> storeUserContancts(List<Map<String, Map<String,String>>> contacts, String user) async {
+  // Store the user contact in the database
+  static Future<void> storeUserContancts(List<Map<String, String>> contacts, String user) async {
     // create a collection using user number 
-    final DocumentReference doc =  _firestore.collection("contacts").doc(user);
-    await doc.set(contacts);
+    try {
+      print("Called");
+      final collection =  _firestore.collection("contacts");
+      await collection.doc(user).set({"contacts": json.encode(contacts)});
+    } catch (e) {
+      FirebaseCrashlytics.instance.log("Can't store contact: $e");
+    }
+  }
+
+  // Check already user contact is stored
+  static Future<bool> isStored(String user) async {
+    final doc = FirebaseFirestore.instance.collection("contacts").doc(user);
+
+    try {
+      final snapshot = await doc.get();
+      return snapshot.exists; // Returns true if the document exists, false otherwise.
+    } catch (e) {
+      print("Error checking document existence: $e");
+      return false;
+    }
   }
 }

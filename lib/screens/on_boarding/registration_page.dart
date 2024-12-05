@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:app_3/helper/local_db_helper.dart';
 import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/providers/api_provider.dart';
 import 'package:app_3/screens/on_boarding/signin_page.dart';
@@ -176,8 +177,9 @@ class _RegisterationPageState extends State<RegisterationPage> {
                               'email' : emailController.text,
                               'mobile_no': mobileController.text
                             };
+                            print(userData);
+                          await DatabaseHelper.storeUsers(userData);
                           await provider.registerUser(userData, context, size);
-                          // await registerUser(context, size);
                         }
                       } catch (e) {
                         print("Can't Signup $e");

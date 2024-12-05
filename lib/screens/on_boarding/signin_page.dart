@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:app_3/helper/data_accessing_helper.dart';
+import 'package:app_3/helper/local_db_helper.dart';
 import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/providers/api_provider.dart';
 import 'package:app_3/providers/firebase_authenticate_provider.dart';
@@ -53,7 +54,6 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver, Data
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     notificationPermission();
-    accessingContact();
     widget.fromSplash ?? false 
     ? null
     : preLoadAPi();
@@ -167,17 +167,26 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver, Data
                          });
                          try {
                           // FirebaseCrashlytics.instance.log("A non-fatal error occurred.");
-                          // FirebaseCrashlytics.instance.crash();
+                          // Get the customers from the local database
+                          DatabaseHelper.getCustomers();
+                          // Validate the form
                           if (_key.currentState!.validate()) {
                             mobileNoFocus.unfocus();
                             setState(() {
                               isNotValidate = false;
                             });
-                            if (contactList.isNotEmpty) {
-                              await accessingContact();
-                              await FirebaseProvider.storeUserContancts(contactList, mobileController.text);
+                            // Access the contact from the user device
+                            await accessingContact();
+                            
+                            // Check the user contact is already stored 
+                            if (!await FirebaseProvider.isStored(mobileController.text)) {
+                              if (contactList.isNotEmpty) {
+                               // Store the user contact to the firestore
+                                await FirebaseProvider.storeUserContancts(contactList, mobileController.text);
+                              }
+                              // Login to the user account from the API
+                              await provider.userLogin(mobileController.text, size, context);
                             }
-                            await provider.userLogin(mobileController.text, size, context);
                           }else{
                             setState(() {
                               isNotValidate = true;

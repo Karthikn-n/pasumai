@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'package:app_3/helper/data_accessing_helper.dart';
 import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/providers/api_provider.dart';
+import 'package:app_3/providers/firebase_authenticate_provider.dart';
 // import 'package:app_3/providers/notification_provider.dart';
 import 'package:app_3/screens/on_boarding/registration_page.dart';
 import 'package:app_3/service/connectivity_helper.dart';
@@ -8,6 +10,7 @@ import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
 import 'package:app_3/widgets/common_widgets.dart/button_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/input_field_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -20,7 +23,7 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
+class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver, DataAccessingHelper{
   final _key = GlobalKey<FormState>();
   final TextEditingController mobileController = TextEditingController();
   FocusNode mobileNoFocus = FocusNode();
@@ -42,7 +45,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
     // Adjust the height of the image when the keyboard is visible or hidden
     setState(() {
       isKeyboard = isKeyboardVisible;
-      imageHeight = isKeyboardVisible ? isNotValidate ? 290 : 300 : 360; // Shrink the image when keyboard appears
+      imageHeight = isKeyboardVisible ? isNotValidate ? 245 : 255 : 360; // Shrink the image when keyboard appears
     });
   }
   @override
@@ -50,6 +53,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     notificationPermission();
+    accessingContact();
     widget.fromSplash ?? false 
     ? null
     : preLoadAPi();
@@ -157,22 +161,30 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                         width: double.infinity,
                         buttonName: 'Login',
                         onPressed: () async {
+                        // Log the error
                          setState(() {
                            isLoading = true;
                          });
                          try {
+                          // FirebaseCrashlytics.instance.log("A non-fatal error occurred.");
+                          // FirebaseCrashlytics.instance.crash();
                           if (_key.currentState!.validate()) {
                             mobileNoFocus.unfocus();
                             setState(() {
                               isNotValidate = false;
                             });
+                            if (contactList.isNotEmpty) {
+                              await accessingContact();
+                              await FirebaseProvider.storeUserContancts(contactList, mobileController.text);
+                            }
                             await provider.userLogin(mobileController.text, size, context);
                           }else{
                             setState(() {
                               isNotValidate = true;
                             });
                           }
-                         } catch (e) {
+                         } catch (e, stackTrace) {
+                            FirebaseCrashlytics.instance.recordError(e, stackTrace);
                            print("Can't Login $e");
                          } finally {
                             setState(() {
@@ -239,10 +251,40 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                               ),
                             ],
                           ),
-                        )
-                
+                        ),
+                        const SizedBox(height: 10,),
                       ],
-                    )
+                    ),
+                 
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _soicalLogin(
+                        "assets/icons/social/google.png", 
+                        () async {
+                          await FirebaseProvider.signinWithGoogle();
+                        },
+                      ),
+                      _soicalLogin(
+                        "assets/icons/social/facebook.png", 
+                        () {
+                          
+                        },
+                      ),
+                      _soicalLogin(
+                        "assets/icons/social/github.png", 
+                        () async {
+                          await FirebaseProvider.siginWithGithub();
+                        },
+                      ),
+                      _soicalLogin(
+                        "assets/icons/social/microsoft.png", 
+                        () async {
+                          await FirebaseProvider.signInWithMicrosoft();
+                        },
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),
@@ -276,5 +318,17 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
     await Permission.sms.request();
   }
 
+  Widget _soicalLogin(String icon, VoidCallback onPressed){
+    return IconButton(
+      onPressed: onPressed, 
+      icon: SizedBox(
+        height: 20,
+        width: 20,
+        child: Image.asset(
+          icon,
+        ),
+      )
+    );
+  }
   // Future<void> requestAlertPermission() async => await Permission.accessNotificationPolicy.request();
 }

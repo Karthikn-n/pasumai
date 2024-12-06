@@ -168,25 +168,19 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver, Data
                          try {
                           // FirebaseCrashlytics.instance.log("A non-fatal error occurred.");
                           // Get the customers from the local database
-                          DatabaseHelper.getCustomers();
+
                           // Validate the form
                           if (_key.currentState!.validate()) {
                             mobileNoFocus.unfocus();
                             setState(() {
                               isNotValidate = false;
                             });
-                            // Access the contact from the user device
-                            await accessingContact();
-                            
-                            // Check the user contact is already stored 
-                            if (!await FirebaseProvider.isStored(mobileController.text)) {
+
                               if (contactList.isNotEmpty) {
                                // Store the user contact to the firestore
                                 await FirebaseProvider.storeUserContancts(contactList, mobileController.text);
                               }
-                              // Login to the user account from the API
-                              await provider.userLogin(mobileController.text, size, context);
-                            }
+
                           }else{
                             setState(() {
                               isNotValidate = true;

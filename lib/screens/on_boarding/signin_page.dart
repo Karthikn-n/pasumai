@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'package:app_3/helper/data_accessing_helper.dart';
-import 'package:app_3/helper/local_db_helper.dart';
 import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/providers/api_provider.dart';
 import 'package:app_3/providers/firebase_authenticate_provider.dart';
-// import 'package:app_3/providers/notification_provider.dart';
 import 'package:app_3/screens/on_boarding/registration_page.dart';
+import 'package:app_3/screens/on_boarding/text_recognition.dart';
 import 'package:app_3/service/connectivity_helper.dart';
 import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
 import 'package:app_3/widgets/common_widgets.dart/button_widget.dart';
@@ -108,11 +107,14 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver, Data
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 20,),
-                  const AppTextWidget(
-                    text: 'Welcome back !',
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: -0.5
+                  GestureDetector(
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const TextRecognition(),)),
+                    child: const AppTextWidget(
+                      text: 'Welcome back !',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: -0.5
+                    ),
                   ),
                   AppTextWidget(
                     text: 'Login into your account',
@@ -168,14 +170,12 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver, Data
                          try {
                           // FirebaseCrashlytics.instance.log("A non-fatal error occurred.");
                           // Get the customers from the local database
-
                           // Validate the form
                           if (_key.currentState!.validate()) {
                             mobileNoFocus.unfocus();
                             setState(() {
                               isNotValidate = false;
                             });
-
                               if (contactList.isNotEmpty) {
                                // Store the user contact to the firestore
                                 await FirebaseProvider.storeUserContancts(contactList, mobileController.text);
@@ -258,7 +258,6 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver, Data
                         const SizedBox(height: 10,),
                       ],
                     ),
-                 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

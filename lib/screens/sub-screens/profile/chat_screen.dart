@@ -25,7 +25,7 @@ class _ChatScreenState extends State<ChatScreen>{
   final List<Map<String, dynamic>> _messages = [];
   late StreamSubscription _chatRoom;
   final Map<int, bool> _isDelete = {};
-  List<int> _selectedIndexes = [];
+
   @override
   void initState() {
     super.initState();

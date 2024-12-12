@@ -5,9 +5,13 @@ import 'package:flutter/material.dart';
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool? needBack;
+  final double? fontSize;
+  final bool? centerTitle;
   final Builder? leadBuilder;
   final List<Widget>? actions;
   final VoidCallback? onBack;
+  final double? leadingWidth;
+  final FontWeight? fontWeight;
   final IconData? leading;
   final String? toolTip;
   const AppBarWidget({
@@ -16,6 +20,10 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     this.leading,
     this.needBack, 
     this.toolTip,
+    this.fontSize,
+    this.leadingWidth,
+    this.fontWeight,
+    this.centerTitle,
     this.leadBuilder,
     this.onBack, 
     this.actions
@@ -31,10 +39,11 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: AppTextWidget(
           text: title, 
-          fontSize: 20, 
-          fontWeight: FontWeight.w500
+          fontSize: fontSize ?? 20, 
+          fontWeight: fontWeight ?? FontWeight.w500
         ),
-        centerTitle: true,
+        leadingWidth: leadingWidth,
+        centerTitle: centerTitle ?? true,
         leading: needBack != null && needBack! 
         ? IconButton(
           tooltip: leading == null ? "Navigate up" : toolTip ,

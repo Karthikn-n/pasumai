@@ -2,6 +2,7 @@ import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/helper/shared_preference_helper.dart';
 import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/providers/profile_provider.dart';
+import 'package:app_3/screens/sub-screens/profile/chat_screen.dart';
 import 'package:app_3/service/connectivity_helper.dart';
 import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
@@ -38,7 +39,8 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
     'My Addresses',
     'Invoice Listing',
     'Vacation Mode',
-    "Raise a query"
+    "Raise a query",
+    "Chat"
   ];
   @override
   void initState() {
@@ -148,10 +150,15 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
                             ? Theme.of(context).primaryColor
                             : null,
                             onTap: () async {
-                              if (index == images.length -1) {
+                              
+                              if (options[index] == "Raise a query") {
                                 _scaffoldStateKey.currentState?.closeDrawer();
                                await Future.delayed(const Duration(milliseconds: 200));
                                 Navigator.push(context, SideTransistionRoute(screen: const RaiseAQueryWidget()));
+                              } else if(options[index] == "Chat") {
+                                _scaffoldStateKey.currentState?.closeDrawer();
+                               await Future.delayed(const Duration(milliseconds: 200));
+                                Navigator.push(context, SideTransistionRoute(screen: const ChatScreen()));
                               } else {
                                  setState(() {
                                   for (var i = 0; i < options.length; i++) {
@@ -208,6 +215,7 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
     "assets/icons/profile/invoice.png",
     "assets/icons/profile/sunset.png",
     "assets/icons/profile/question-sign.png",
+    "assets/icons/profile/chat.png"
   ];
   
 }

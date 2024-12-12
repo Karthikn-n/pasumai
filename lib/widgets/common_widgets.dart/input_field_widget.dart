@@ -13,6 +13,7 @@ class TextFields extends StatelessWidget {
   final bool? readOnly;
   final Widget? label;
   final double? borderRadius;
+  final double? maxHeight;
   final VoidCallback? onEditingComplete;
   final Function(String value)? onChanged;
   final Function(String value)? onFieldSubmitted;
@@ -34,6 +35,7 @@ class TextFields extends StatelessWidget {
     this.borderRadius,
     this.label,
     this.maxLine,
+    this.maxHeight,
     this.hintTextSize,
     this.readOnly,
     this.onEditingComplete,
@@ -53,7 +55,8 @@ class TextFields extends StatelessWidget {
     Size size = MediaQuery.sizeOf(context);
     return ConstrainedBox(
       constraints: BoxConstraints(
-        maxWidth: size.width > 600 ? size.width  : size.width
+        maxWidth: size.width > 600 ? size.width  : size.width,
+        maxHeight: maxHeight ?? kToolbarHeight
       ),
       child: TextFormField(
         controller: controller,

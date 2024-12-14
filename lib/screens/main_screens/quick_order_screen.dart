@@ -247,14 +247,14 @@ class _QuickOrderScreenState extends State<QuickOrderScreen> {
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: productProvider.quickOrderQuantites[productProvider.quickOrderProductsList[index].id] != null &&  productProvider.quickOrderQuantites[productProvider.quickOrderProductsList[index].id]! >= 1 
                                               ? Theme.of(context).primaryColor
-                                              : Colors.transparent.withOpacity(0.0),
+                                              : Colors.transparent.withValues(alpha: 0.0),
                                             elevation: 0,
                                             alignment: Alignment.centerLeft,
                                             padding: EdgeInsets.fromLTRB(condition ? 13 : 10, 0, 0, 0),
-                                            shadowColor: Colors.transparent.withOpacity(0.0),
+                                            shadowColor: Colors.transparent.withValues(alpha: 0.0),
                                             overlayColor: condition 
                                               ? Colors.white12
-                                              : Colors.transparent.withOpacity(0.1),
+                                              : Colors.transparent.withValues(alpha: 0.1),
                                             shape: RoundedRectangleBorder(
                                               side: condition 
                                               ? BorderSide.none 
@@ -309,12 +309,12 @@ class _QuickOrderScreenState extends State<QuickOrderScreen> {
                                               );
                                             }, 
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.transparent.withOpacity(0.0),
+                                              backgroundColor: Colors.transparent.withValues(alpha: 0.0),
                                               elevation: 0,
                                               alignment: Alignment.centerLeft,
                                               padding: const EdgeInsets.fromLTRB(12, 0, 0, 0),
-                                              shadowColor: Colors.transparent.withOpacity(0.0),
-                                              overlayColor: Colors.transparent.withOpacity(0.1),
+                                              shadowColor: Colors.transparent.withValues(alpha: 0.0),
+                                              overlayColor: Colors.transparent.withValues(alpha: 0.1),
                                               shape: RoundedRectangleBorder(
                                                 side: BorderSide(color: Colors.grey.shade300),
                                                 borderRadius: BorderRadius.circular(5)
@@ -380,7 +380,7 @@ class _QuickOrderScreenState extends State<QuickOrderScreen> {
                             spreadRadius: 1.0,
                             blurRadius: 1.0,
                             offset: const Offset(0, 1),
-                            color: Colors.transparent.withOpacity(0.2)
+                            color: Colors.transparent.withValues(alpha: 0.2)
                           ),
                         ],
                         borderRadius: BorderRadius.circular(10),

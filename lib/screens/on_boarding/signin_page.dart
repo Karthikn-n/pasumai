@@ -120,7 +120,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver, Data
                     text: 'Login into your account',
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
-                    fontColor: Colors.grey.withOpacity(1.0),
+                    fontColor: Colors.grey.withValues(alpha: 1.0),
                     letterSpacing: -0.5
                   ),
                   
@@ -211,7 +211,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver, Data
                               SizedBox(
                                 width: size.width * 0.4,
                                 child: Divider(
-                                  color: Colors.black.withOpacity(0.3),
+                                  color: Colors.black.withValues(alpha: 0.3),
                                   thickness: 1,
                                 ),
                               ),
@@ -219,13 +219,13 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver, Data
                               const AppTextWidget(
                                 text: "or", 
                                 fontWeight: FontWeight.w400, 
-                                // fontColor: Colors.black.withOpacity(0.5),
+                                // fontColor: Colors.black.withValues(alpha: 0.5),
                               ),
                               const SizedBox(width: 10,),
                               SizedBox(
                                 width: size.width * 0.4,
                                 child: Divider(
-                                  color: Colors.black.withOpacity(0.3),
+                                  color: Colors.black.withValues(alpha: 0.3),
                                   thickness: 1,
                                 ),
                               ),
@@ -242,7 +242,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver, Data
                                 color: Colors.transparent,
                                 child: InkWell(
                                   splashFactory: InkRipple.splashFactory,
-                                  splashColor: Colors.transparent.withOpacity(0.1),
+                                  splashColor: Colors.transparent.withValues(alpha: 0.1),
                                   onTap: () {
                                     Navigator.pushReplacement(context, SideTransistionRoute(screen: const RegisterationPage(), ));
                                   },

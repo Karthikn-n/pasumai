@@ -368,9 +368,9 @@ class VacationListWidget extends StatelessWidget {
                                         padding: const EdgeInsets.symmetric(horizontal: 10),
                                         maximumSize: Size(size.width * 0.415, 40),
                                         minimumSize: Size(size.width * 0.415, 40),
-                                        backgroundColor: Colors.transparent.withOpacity(0.0),
-                                        shadowColor: Colors.transparent.withOpacity(0.0),
-                                        overlayColor: Colors.transparent.withOpacity(0.1),
+                                        backgroundColor: Colors.transparent.withValues(alpha: 0.0),
+                                        shadowColor: Colors.transparent.withValues(alpha: 0.0),
+                                        overlayColor: Colors.transparent.withValues(alpha: 0.1),
                                         shape: RoundedRectangleBorder(
                                           side: BorderSide(color: provider.notSet && provider.startDate == null ? Colors.red : Colors.grey.shade300),
                                           borderRadius: BorderRadius.circular(8)
@@ -430,9 +430,9 @@ class VacationListWidget extends StatelessWidget {
                                         padding: const EdgeInsets.symmetric(horizontal: 10),
                                         maximumSize: Size(size.width * 0.415, 40),
                                         minimumSize: Size(size.width * 0.415, 40),
-                                        backgroundColor: Colors.transparent.withOpacity(0.0),
-                                        shadowColor: Colors.transparent.withOpacity(0.0),
-                                        overlayColor: Colors.transparent.withOpacity(0.1),
+                                        backgroundColor: Colors.transparent.withValues(alpha: 0.0),
+                                        shadowColor: Colors.transparent.withValues(alpha: 0.0),
+                                        overlayColor: Colors.transparent.withValues(alpha: 0.1),
                                         shape: RoundedRectangleBorder(
                                           side: BorderSide(color: provider.notSet && provider.endDate == null ? Colors.red :  Colors.grey.shade300),
                                           borderRadius: BorderRadius.circular(8)

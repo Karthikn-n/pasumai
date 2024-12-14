@@ -140,12 +140,12 @@ class WishlistProducts extends StatelessWidget {
                                       
                                     }, 
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor:  Colors.transparent.withOpacity(0.0),
+                                      backgroundColor:  Colors.transparent.withValues(alpha: 0.0),
                                       elevation: 0,
                                       padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
                                       alignment: Alignment.centerLeft,
-                                      shadowColor: Colors.transparent.withOpacity(0.0),
-                                      overlayColor: Colors.transparent.withOpacity(0.1),
+                                      shadowColor: Colors.transparent.withValues(alpha: 0.0),
+                                      overlayColor: Colors.transparent.withValues(alpha: 0.1),
                                       shape: RoundedRectangleBorder(
                                         side: BorderSide(color: Colors.grey.shade300),
                                         borderRadius: BorderRadius.circular(5)
@@ -168,12 +168,12 @@ class WishlistProducts extends StatelessWidget {
                                       
                                     }, 
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor:  Colors.transparent.withOpacity(0.0),
+                                      backgroundColor:  Colors.transparent.withValues(alpha: 0.0),
                                       elevation: 0,
                                       padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
                                       alignment: Alignment.centerLeft,
-                                      shadowColor: Colors.transparent.withOpacity(0.0),
-                                      overlayColor: Colors.transparent.withOpacity(0.1),
+                                      shadowColor: Colors.transparent.withValues(alpha: 0.0),
+                                      overlayColor: Colors.transparent.withValues(alpha: 0.1),
                                       shape: RoundedRectangleBorder(
                                         side: BorderSide(color: Colors.grey.shade300),
                                         borderRadius: BorderRadius.circular(5)

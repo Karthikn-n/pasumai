@@ -142,7 +142,7 @@ class _ChatScreenState extends State<ChatScreen>{
                             Container(
                               width: _isDelete[index] != null && _isDelete[index]! ? double.infinity : null,
                               decoration: BoxDecoration(
-                                color: _isDelete[index] != null && _isDelete[index]! ? Theme.of(context).primaryColor.withOpacity(0.4) : null
+                                color: _isDelete[index] != null && _isDelete[index]! ? Theme.of(context).primaryColor.withValues(alpha: 0.4) : null
                               ),
                               child: _messageWidget(
                                 size.width * 0.7,
@@ -164,7 +164,7 @@ class _ChatScreenState extends State<ChatScreen>{
                             Container(
                               width: _isDelete[index] != null && _isDelete[index]! ? double.infinity : null,
                               decoration: BoxDecoration(
-                                color: _isDelete[index] != null && _isDelete[index]! ? Theme.of(context).primaryColor.withOpacity(0.4) : null
+                                color: _isDelete[index] != null && _isDelete[index]! ? Theme.of(context).primaryColor.withValues(alpha: 0.4) : null
                               ),
                               child: _messageWidget(
                                 size.width * 0.7,
@@ -241,7 +241,7 @@ class _ChatScreenState extends State<ChatScreen>{
     return  Align(
       alignment: alignment,
       child: Material(
-        color: Colors.transparent.withOpacity(0.0),
+        color: Colors.transparent.withValues(alpha: 0.0),
         child: InkWell(
           splashColor: Colors.white10,
           onTap: () {

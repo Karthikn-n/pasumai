@@ -279,7 +279,7 @@ class HomeScreenProducts extends StatelessWidget {
                                 )
                               : IconButton(
                                 // splashRadius:  widget.icon != null ? 0.1 : null,
-                                highlightColor: icon != null ? Colors.transparent.withOpacity(0.0) : null,
+                                highlightColor: icon != null ? Colors.transparent.withValues(alpha: 0.0) : null,
                                 onPressed: () async {
                                   if (icon != null) {
                                     Navigator.push(context, SideTransistionRoute(
@@ -320,7 +320,7 @@ class HomeScreenProducts extends StatelessWidget {
                     message: "View all",
                     child: InkWell(
                       borderRadius: BorderRadius.circular(40),
-                      splashColor: Colors.transparent.withOpacity(0.1),
+                      splashColor: Colors.transparent.withValues(alpha: 0.1),
                       splashFactory: InkRipple.splashFactory,
                       onTap: onViewall,
                       child: Container(
@@ -331,9 +331,9 @@ class HomeScreenProducts extends StatelessWidget {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(40),
                           // border: Border.all(
-                          //   // color: Colors.grey.withOpacity(0.1),
+                          //   // color: Colors.grey.withValues(alpha: 0.1),
                           // ),
-                          color: Colors.grey.withOpacity(0.2),
+                          color: Colors.grey.withValues(alpha: 0.2),
                           // shape: BoxShape.circle
                         ),
                         child: const Center(

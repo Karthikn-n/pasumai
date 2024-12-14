@@ -87,7 +87,7 @@ class _BottomBarState extends State<BottomBar> {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.2),
+                          color: Colors.grey.withValues(alpha: 0.2),
                           spreadRadius: 2,
                           blurRadius: 1,
                           offset: const Offset(0, 2),
@@ -165,7 +165,7 @@ class _BottomBarState extends State<BottomBar> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10)
               ),
-              foregroundColor: Colors.transparent.withOpacity(0.0),
+              foregroundColor: Colors.transparent.withValues(alpha: 0.0),
               onPressed: () async {
                 apiProvider.setQuick(true);
                 apiProvider.setIndex(2);
@@ -288,7 +288,7 @@ class _BottomBarState extends State<BottomBar> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10)
               ),
-              foregroundColor: Colors.transparent.withOpacity(0.0),
+              foregroundColor: Colors.transparent.withValues(alpha: 0.0),
               onPressed: () async {
                 apiProvider.setQuick(true);
                 apiProvider.setIndex(2);
@@ -327,7 +327,7 @@ class _BottomBarState extends State<BottomBar> {
            cartProvider.totalCartProduct < 10 ? -2 : -6, 
             cartProvider.totalCartProduct < 10 ? -5 : -6
           ),
-          backgroundColor: Colors.transparent.withOpacity(0.0),
+          backgroundColor: Colors.transparent.withValues(alpha: 0.0),
           label: AppTextWidget(
             text: '${cartProvider.totalCartProduct > 99 ? '99' : cartProvider.totalCartProduct}',
             fontSize: 12,

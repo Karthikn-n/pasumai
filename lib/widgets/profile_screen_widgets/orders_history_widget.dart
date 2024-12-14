@@ -410,7 +410,7 @@ class OrdersHistoryWidget extends StatelessWidget {
                                   buttonColor: Colors.transparent,
                                   buttonName: 'Cancel', 
                                   borderRadius: 8,
-                                  splashColor: Colors.transparent.withOpacity(0.1),
+                                  splashColor: Colors.transparent.withValues(alpha: 0.1),
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
                                   bordercolor: Colors.red,

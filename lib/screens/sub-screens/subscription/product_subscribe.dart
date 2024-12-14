@@ -173,7 +173,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
             // Start Date Picker
              ListTile(
                minTileHeight: size.height * 0.05,
-               focusColor: Colors.transparent.withOpacity(0.1),
+               focusColor: Colors.transparent.withValues(alpha: 0.1),
                title: subscriptionDate != null
                ? Row(
                  crossAxisAlignment: CrossAxisAlignment.center,
@@ -234,9 +234,9 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
                           color: isSelected ? Theme.of(context).primaryColor : Colors.grey
                         )
                       ),
-                      backgroundColor: isSelected? Theme.of(context).primaryColor : Colors.transparent.withOpacity(0.0),
-                      shadowColor: Colors.transparent.withOpacity(0.0),
-                      overlayColor: isSelected ? Colors.white24 : Colors.transparent.withOpacity(0.1)
+                      backgroundColor: isSelected? Theme.of(context).primaryColor : Colors.transparent.withValues(alpha: 0.0),
+                      shadowColor: Colors.transparent.withValues(alpha: 0.0),
+                      overlayColor: isSelected ? Colors.white24 : Colors.transparent.withValues(alpha: 0.1)
                     ),
                     onPressed: () {
                       ScaffoldMessenger.of(context).hideCurrentSnackBar();

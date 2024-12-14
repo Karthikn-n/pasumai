@@ -199,7 +199,7 @@ class _RegisterationPageState extends State<RegisterationPage> {
                   SizedBox(
                     width: size.width * 0.4,
                     child: Divider(
-                      color: Colors.black.withOpacity(0.3),
+                      color: Colors.black.withValues(alpha: 0.3),
                       thickness: 1,
                     ),
                   ),
@@ -207,13 +207,13 @@ class _RegisterationPageState extends State<RegisterationPage> {
                   const AppTextWidget(
                     text: "or", 
                     fontWeight: FontWeight.w400, 
-                    // fontColor: Colors.black.withOpacity(0.5),
+                    // fontColor: Colors.black.withValues(alpha: 0.5),
                   ),
                   const SizedBox(width: 10,),
                   SizedBox(
                     width: size.width * 0.4,
                     child: Divider(
-                      color: Colors.black.withOpacity(0.3),
+                      color: Colors.black.withValues(alpha: 0.3),
                       thickness: 1,
                     ),
                   ),
@@ -229,7 +229,7 @@ class _RegisterationPageState extends State<RegisterationPage> {
                     color: Colors.transparent,
                     child: InkWell(
                       splashFactory: InkRipple.splashFactory,
-                      splashColor: Colors.transparent.withOpacity(0.1),
+                      splashColor: Colors.transparent.withValues(alpha: 0.1),
                       onTap: () {
                         Navigator.pushReplacement(context, SideTransistionRoute(screen: const LoginPage(), ));
                       },

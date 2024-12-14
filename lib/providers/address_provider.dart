@@ -265,10 +265,10 @@ class AddressProvider extends ChangeNotifier{
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.zero
                       ),
-                      backgroundColor: Colors.transparent.withOpacity(0.0),
-                      shadowColor: Colors.transparent.withOpacity(0.0),
+                      backgroundColor: Colors.transparent.withValues(alpha: 0.1),
+                      shadowColor: Colors.transparent.withValues(alpha: 0.1),
                       elevation: 0,
-                      overlayColor: Colors.transparent.withOpacity(0.1)
+                      overlayColor: Colors.transparent.withValues(alpha: 0.1)
                     ),
                     onPressed: () async{
                       await deleteAddress(context, size, id, index).then((value) => Navigator.pop(context),);
@@ -284,13 +284,13 @@ class AddressProvider extends ChangeNotifier{
                   width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent.withOpacity(0.0),
-                      shadowColor: Colors.transparent.withOpacity(0.0),
+                      backgroundColor: const Color.fromRGBO(128, 128, 128, 0),
+                      shadowColor: const Color.fromRGBO(128, 128, 128, 0),
                       elevation: 0,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.zero
                       ),
-                      overlayColor: Colors.transparent.withOpacity(0.1)
+                      overlayColor: Colors.transparent.withValues(red: 0.1, green: 0.1, blue: 0.1)
                     ),
                     onPressed: () {
                       Navigator.pop(context);
@@ -356,10 +356,10 @@ class AddressProvider extends ChangeNotifier{
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.zero
                       ),
-                      backgroundColor: Colors.transparent.withOpacity(0.0),
-                      shadowColor: Colors.transparent.withOpacity(0.0),
+                      backgroundColor: const Color.fromRGBO(128, 128, 128, 0),
+                      shadowColor: const Color.fromRGBO(128, 128, 128, 0),
                       elevation: 0,
-                      overlayColor: Colors.transparent.withOpacity(0.1)
+                      overlayColor: Colors.transparent.withValues(red: 0.1, green: 0.1, blue: 0.1)
                     ),
                     onPressed: () async{
                       await addressDefault(context, size, id,).then((value) => Navigator.pop(context),);
@@ -375,13 +375,13 @@ class AddressProvider extends ChangeNotifier{
                   width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent.withOpacity(0.0),
-                      shadowColor: Colors.transparent.withOpacity(0.0),
+                      backgroundColor: const Color.fromRGBO(128, 128, 128, 0),
+                      shadowColor: const Color.fromRGBO(128, 128, 128, 0),
                       elevation: 0,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.zero
                       ),
-                      overlayColor: Colors.transparent.withOpacity(0.1)
+                      overlayColor: Colors.transparent.withValues(red: 0.1, green: 0.1, blue: 0.1)
                     ),
                     onPressed: () {
                       Navigator.pop(context);

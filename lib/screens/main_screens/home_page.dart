@@ -123,13 +123,13 @@ class _HomePageState extends State<HomePage> {
               backgroundColor: Colors.white,
               appBar: provider.isQuick ? null
               : AppBar(
-                surfaceTintColor: Colors.transparent.withOpacity(0.0),
+                surfaceTintColor: Colors.transparent.withValues(alpha: 0.0),
                 automaticallyImplyLeading: false,
                 backgroundColor: Colors.white,
                 bottom: PreferredSize(
                 preferredSize: const Size.fromHeight(1.0),
                   child: Container(
-                    color: Colors.grey.withOpacity(0.3),  // Choose your preferred underline color
+                    color: Colors.grey.withValues(alpha: 0.3),  // Choose your preferred underline color
                     height: 1.0,         // Height of the underline
                   ),
                 ),
@@ -157,7 +157,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   )
                   : InkWell(
-                      splashColor: Colors.transparent.withOpacity(0.1),
+                      splashColor: Colors.transparent.withValues(alpha: 0.1),
                       onTap: () async {
                         // await addressProvider.getRegionLocation();
                         Navigator.push(context, downToTop(screen: const AddressSelectionScreen()));
@@ -177,7 +177,7 @@ class _HomePageState extends State<HomePage> {
                                   maxLines: 1,
                                   textOverflow: TextOverflow.ellipsis,
                                   fontWeight: FontWeight.w500,
-                                  fontColor: Colors.black.withOpacity(0.8),
+                                  fontColor: Colors.black.withValues(alpha: 0.8),
                                 ),
                               ),
                               SizedBox(
@@ -187,7 +187,7 @@ class _HomePageState extends State<HomePage> {
                                   fontSize: 12, 
                                   maxLines: 1,
                                   textOverflow: TextOverflow.ellipsis,
-                                  fontColor: Colors.black.withOpacity(0.5),
+                                  fontColor: Colors.black.withValues(alpha: 0.5),
                                   fontWeight: FontWeight.w400
                                 ),
                               ),
@@ -236,7 +236,7 @@ class _HomePageState extends State<HomePage> {
                           automaticallyImplyLeading: false,
                           // pinned: true,
                           backgroundColor: Colors.white,
-                          surfaceTintColor: Colors.transparent.withOpacity(0.0),
+                          surfaceTintColor: Colors.transparent.withValues(alpha: 0.0),
                           flexibleSpace: FlexibleSpaceBar(
                             background: Stack(
                               children: [

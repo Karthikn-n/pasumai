@@ -142,7 +142,7 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
                               Container(
                                 height: size.height * 0.2,
                                 decoration: BoxDecoration(
-                                  color: Colors.transparent.withOpacity(0.1)
+                                  color: Colors.transparent.withValues(alpha: 0.1)
                                 ),
                                 child: const Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -243,7 +243,7 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
                                   border: widget.updateAddress != null 
                                     ? null
                                     : isRegionSelected ?  null : Border.all(color: Colors.red),
-                                  color: Colors.grey.withOpacity(0.2), // Border color for the container
+                                  color: Colors.grey.withValues(alpha: 0.2), // Border color for the container
                                   borderRadius: BorderRadius.circular(8.0), // Rounded corners
                                 ),
                                 child: Center(
@@ -251,7 +251,7 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
                                     value: selectedRegion,
                                     elevation: 0,
                                     hint: Center(child: Text(widget.updateAddress != null ?  widget.updateAddress!.region : 'Select Region')),
-                                    style: TextStyle(color: const Color(0xFF656872).withOpacity(1.0)), // Text color
+                                    style: TextStyle(color: const Color(0xFF656872).withValues(alpha: 1.0)), // Text color
                                     underline: Container(),
                                     dropdownColor: Colors.white,
                                     alignment: Alignment.center,
@@ -282,14 +282,14 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
                                    border: widget.updateAddress != null 
                                     ? null
                                     : isLocationSelected ?  null : Border.all(color: Colors.red),
-                                  color: Colors.grey.withOpacity(0.2), // Border color for the container
+                                  color: Colors.grey.withValues(alpha: 0.2), // Border color for the container
                                   borderRadius: BorderRadius.circular(8.0), // Rounded corners
                                 ),
                                 child: DropdownButton<String>(
                                   value: selectedLocation,
                                   isExpanded: true,
-                                  iconDisabledColor: Colors.transparent.withOpacity(0.0),
-                                  style: TextStyle(color:  const Color(0xFF656872).withOpacity(1.0)),
+                                  iconDisabledColor: Colors.transparent.withValues(alpha: 0.0),
+                                  style: TextStyle(color:  const Color(0xFF656872).withValues(alpha: 1.0)),
                                   hint: Text(widget.updateAddress != null ?  widget.updateAddress!.location : 'Select Town'),
                                   underline: Container(),
                                   dropdownColor: Colors.white,

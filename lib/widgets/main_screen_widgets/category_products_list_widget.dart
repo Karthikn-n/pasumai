@@ -95,7 +95,7 @@ class CategoryProductsListWidget extends StatelessWidget {
                       automaticallyImplyLeading: false,
                       expandedHeight: size.height * 0.18,
                       backgroundColor: Colors.white,
-                      surfaceTintColor: Colors.transparent.withOpacity(0.0),
+                      surfaceTintColor: Colors.transparent.withValues(alpha: 0.0),
                       flexibleSpace: FlexibleSpaceBar(
                         background: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -267,14 +267,14 @@ class CategoryProductsListWidget extends StatelessWidget {
                                                           style: ElevatedButton.styleFrom(
                                                             backgroundColor: cartProvider.cartQuantities[products[index].id] != null 
                                                               ? Theme.of(context).primaryColor
-                                                              : Colors.transparent.withOpacity(0.0),
+                                                              : Colors.transparent.withValues(alpha: 0.0),
                                                             elevation: 0,
                                                             alignment: Alignment.centerLeft,
                                                             padding: EdgeInsets.fromLTRB(cartProvider.cartQuantities[products[index].id] != null ? 13 : 10, 0, 0, 0),
-                                                            shadowColor: Colors.transparent.withOpacity(0.0),
+                                                            shadowColor: Colors.transparent.withValues(alpha: 0.0),
                                                             overlayColor: cartProvider.cartQuantities[products[index].id] != null 
                                                               ? Colors.white12
-                                                              : Colors.transparent.withOpacity(0.1),
+                                                              : Colors.transparent.withValues(alpha: 0.1),
                                                             shape: RoundedRectangleBorder(
                                                               side: cartProvider.cartQuantities[products[index].id] != null
                                                               ? BorderSide.none 
@@ -320,12 +320,12 @@ class CategoryProductsListWidget extends StatelessWidget {
                                                               }
                                                             }, 
                                                             style: ElevatedButton.styleFrom(
-                                                              backgroundColor: Colors.transparent.withOpacity(0.0),
+                                                              backgroundColor: Colors.transparent.withValues(alpha: 0.0),
                                                               elevation: 0,
                                                               alignment: Alignment.centerLeft,
                                                               padding: const EdgeInsets.fromLTRB(12, 0, 0, 0),
-                                                              shadowColor: Colors.transparent.withOpacity(0.0),
-                                                              overlayColor: Colors.transparent.withOpacity(0.1),
+                                                              shadowColor: Colors.transparent.withValues(alpha: 0.0),
+                                                              overlayColor: Colors.transparent.withValues(alpha: 0.1),
                                                               shape: RoundedRectangleBorder(
                                                                 side: BorderSide(color: Colors.grey.shade300),
                                                                 borderRadius: BorderRadius.circular(5)
@@ -395,7 +395,7 @@ class CategoryProductsListWidget extends StatelessWidget {
                               spreadRadius: 1.0,
                               blurRadius: 1.0,
                               offset: const Offset(0, 1),
-                              color: Colors.transparent.withOpacity(0.2)
+                              color: Colors.transparent.withValues(alpha: 0.2)
                             ),
                           ],
                           borderRadius: BorderRadius.circular(10),

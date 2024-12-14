@@ -281,7 +281,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   topRight: Radius.circular(10)
                                 )
                               ),
-                              overlayColor: Colors.grey.withOpacity(0.1)
+                              overlayColor: Colors.grey.withValues(alpha: 0.1)
                             ),
                             child: AppTextWidget(
                               text:  'Apply', 

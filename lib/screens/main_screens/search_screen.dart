@@ -76,7 +76,7 @@ class _SearchScreenState extends State<SearchScreen> {
           child: TextFormField(
             controller: searchController,
             focusNode: initialfoucs ?? widget.focusNode,
-            cursorColor: Colors.black.withOpacity(0.5),
+            cursorColor: Colors.black.withValues(alpha: 0.5),
             onChanged: (value) {
               setState(() {
                 getProducts(searchController.text);
@@ -87,7 +87,7 @@ class _SearchScreenState extends State<SearchScreen> {
               hintStyle: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w500,
-                color:Colors.black.withOpacity(0.5)
+                color:Colors.black.withValues(alpha: 0.5)
               ),
               suffixIcon: IconButton(
                 onPressed: () {
@@ -104,20 +104,20 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.zero,
-                borderSide: BorderSide(color: Colors.transparent.withOpacity(0))
+                borderSide: BorderSide(color: Colors.transparent.withValues(alpha: 0.0))
               ),
               disabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.zero,
-                borderSide: BorderSide(color: Colors.transparent.withOpacity(0))
+                borderSide: BorderSide(color: Colors.transparent.withValues(alpha: 0.0))
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.zero,
-                borderSide: BorderSide(color: Colors.transparent.withOpacity(0))
+                borderSide: BorderSide(color: Colors.transparent.withValues(alpha: 0.0))
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.zero,
                 borderSide: BorderSide(
-                  color: Colors.transparent.withOpacity(0)
+                  color: Colors.transparent.withValues(alpha: 0.0)
                 )
               )
             ),
@@ -126,7 +126,7 @@ class _SearchScreenState extends State<SearchScreen> {
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(0.1),
           child: Container(
-            color: Colors.black.withOpacity(0.5),
+            color: Colors.black.withValues(alpha: 0.5),
             height: 1.0,
           )
         ),
@@ -287,12 +287,12 @@ class _SearchScreenState extends State<SearchScreen> {
                                 await cartProvider.addCart(searchedProducts[index].id, size, context, searchedProducts[index]);
                               }, 
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.transparent.withOpacity(0.0),
+                                backgroundColor: Colors.transparent.withValues(alpha: 0.0),
                                 elevation: 0,
                                 alignment: Alignment.center,
                                 padding: const EdgeInsets.fromLTRB(13, 0, 0, 0),
-                                shadowColor: Colors.transparent.withOpacity(0.0),
-                                overlayColor: Colors.transparent.withOpacity(0.1),
+                                shadowColor: Colors.transparent.withValues(alpha: 0.0),
+                                overlayColor: Colors.transparent.withValues(alpha: 0.1),
                                 shape: RoundedRectangleBorder(
                                   side: BorderSide(color: Colors.grey.shade300),
                                   borderRadius: BorderRadius.circular(5)

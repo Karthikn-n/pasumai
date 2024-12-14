@@ -685,10 +685,10 @@ class ApiProvider extends ChangeNotifier{
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.zero
                       ),
-                      backgroundColor: Colors.transparent.withOpacity(0.0),
-                      shadowColor: Colors.transparent.withOpacity(0.0),
+                      backgroundColor: Colors.transparent.withValues(alpha: 0.0),
+                      shadowColor: Colors.transparent.withValues(alpha: 0.0),
                       elevation: 0,
-                      overlayColor: Colors.transparent.withOpacity(0.1)
+                      overlayColor: Colors.transparent.withValues(alpha: 0.1)
                     ),
                     onPressed: () async{
                       await removeWishlist(productId, name, quantity, context, size);
@@ -704,13 +704,13 @@ class ApiProvider extends ChangeNotifier{
                   width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent.withOpacity(0.0),
-                      shadowColor: Colors.transparent.withOpacity(0.0),
+                      backgroundColor: Colors.transparent.withValues(alpha: 0.0),
+                      shadowColor: Colors.transparent.withValues(alpha: 0.0),
                       elevation: 0,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.zero
                       ),
-                      overlayColor: Colors.transparent.withOpacity(0.1)
+                      overlayColor: Colors.transparent.withValues(alpha: 0.1)
                     ),
                     onPressed: () {
                       Navigator.pop(context);
@@ -738,7 +738,7 @@ class ApiProvider extends ChangeNotifier{
             borderRadius: BorderRadius.circular(10),
           ),
           elevation: 0,
-          // backgroundColor: Colors.transparent.withOpacity(0.1),
+          // backgroundColor: Colors.transparent.withValues(alpha: 0.1),
           child: SizedBox(
             height: size.height * 0.3,
             // width: size.width * 0.,

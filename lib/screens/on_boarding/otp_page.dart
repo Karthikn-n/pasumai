@@ -125,7 +125,7 @@ class _OtpPageState extends State<OtpPage> with WidgetsBindingObserver{
                       AppTextWidget(
                         text: 'Enter received OTP',
                         fontSize: 14,
-                        fontColor: Colors.grey.withOpacity(1.0),
+                        fontColor: Colors.grey.withValues(alpha: 1.0),
                         fontWeight: FontWeight.w300,
                       ),
                       const SizedBox(height: 16,),
@@ -257,7 +257,7 @@ class _OtpPageState extends State<OtpPage> with WidgetsBindingObserver{
                             SizedBox(
                               width: size.width * 0.4,
                               child: Divider(
-                                color: Colors.black.withOpacity(0.3),
+                                color: Colors.black.withValues(alpha: 0.3),
                                 thickness: 1,
                               ),
                             ),
@@ -265,13 +265,13 @@ class _OtpPageState extends State<OtpPage> with WidgetsBindingObserver{
                             const AppTextWidget(
                               text: "or", 
                               fontWeight: FontWeight.w400, 
-                              // fontColor: Colors.black.withOpacity(0.5),
+                              // fontColor: Colors.black.withValues(alpha: 0.5),
                             ),
                             const SizedBox(width: 10,),
                             SizedBox(
                               width: size.width * 0.4,
                               child: Divider(
-                                color: Colors.black.withOpacity(0.3),
+                                color: Colors.black.withValues(alpha: 0.3),
                                 thickness: 1,
                               ),
                             ),
@@ -305,7 +305,7 @@ class _OtpPageState extends State<OtpPage> with WidgetsBindingObserver{
                                       color: Colors.transparent,
                                       child: InkWell(
                                         splashFactory: InkRipple.splashFactory,
-                                        splashColor: Colors.transparent.withOpacity(0.1),
+                                        splashColor: Colors.transparent.withValues(alpha: 0.1),
                                         onTap: () async {
                                           setState(() {
                                             isResending = true;

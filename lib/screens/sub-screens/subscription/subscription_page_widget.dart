@@ -161,12 +161,12 @@ class SubscriptionPageWidget extends StatelessWidget {
                                 screen: ProductSubScription(product: provider.subscribeProducts[index],),
                               )), 
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.transparent.withOpacity(0.0),
+                                backgroundColor: Colors.transparent.withValues(alpha: 0.0),
                                 elevation: 0,
                                 alignment: Alignment.center,
                                 padding: const EdgeInsets.fromLTRB(18, 0, 0, 0),
-                                shadowColor: Colors.transparent.withOpacity(0.0),
-                                overlayColor: Colors.transparent.withOpacity(0.1),
+                                shadowColor: Colors.transparent.withValues(alpha: 0.0),
+                                overlayColor: Colors.transparent.withValues(alpha: 0.1),
                                 shape: RoundedRectangleBorder(
                                   side: BorderSide(color: Colors.grey.shade300),
                                   borderRadius: BorderRadius.circular(5)

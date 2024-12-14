@@ -87,36 +87,36 @@ class TextFields extends StatelessWidget {
           labelStyle: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
-            color:Colors.grey.withOpacity(0.5)
+            color:Colors.grey.withValues(alpha: 0.5)
           ),
           floatingLabelStyle: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
-            color:Colors.grey.withOpacity(0.5)
+            color:Colors.grey.withValues(alpha: 0.5)
           ),
           suffixIcon: suffixIcon,
-          suffixIconColor: const Color(0xFF656872).withOpacity(1.0),
+          suffixIconColor: const Color(0xFF656872).withValues(alpha: 1.0),
           hintText: hintText,
           label: label,
           hintStyle: TextStyle(
             fontSize: hintTextSize ?? 14,
             fontWeight: FontWeight.w500,
-            color:Colors.grey.withOpacity(1.0)
+            color:Colors.grey.withValues(alpha: 1.0)
           ),
           filled: true,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(borderRadius ?? 10),
             borderSide: BorderSide(
-              color: Colors.grey.withOpacity(1.0)
+              color: Colors.grey.withValues(alpha: 1.0)
             )
           ),
           disabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(borderRadius ?? 10),
             borderSide: BorderSide(
-              color: Colors.grey.withOpacity(1.0),
+              color: Colors.grey.withValues(alpha: 1.0),
             )
           ),
-          // fillColor: const Color(0xFF656872).withOpacity(0.1),
+          // fillColor: const Color(0xFF656872).withValues(alpha: 0.1),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(borderRadius ?? 10),
             borderSide: const BorderSide(
@@ -126,13 +126,13 @@ class TextFields extends StatelessWidget {
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(borderRadius ?? 10),
             borderSide: BorderSide(
-              color: Colors.grey.withOpacity(1.0)
+              color: Colors.grey.withValues(alpha: 1.0)
             )
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(borderRadius ?? 10),
             borderSide: BorderSide(
-              color: Colors.grey.withOpacity(1.0)
+              color: Colors.grey.withValues(alpha: 1.0)
             )
           )
         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 
 class TextFields extends StatelessWidget {
@@ -16,6 +17,7 @@ class TextFields extends StatelessWidget {
   final double? maxHeight;
   final VoidCallback? onEditingComplete;
   final Function(String value)? onChanged;
+  final List<TextInputFormatter>? inputFormatters;
   final Function(String value)? onFieldSubmitted;
   final String? Function(String? value)? validator;
   final VoidCallback? onTap;
@@ -23,6 +25,8 @@ class TextFields extends StatelessWidget {
   final double? hintTextSize;
   final String? labelText;
   final String? initalValue;
+  final int? maxLength;
+  final bool? enableSuggestions;
   final TextEditingController? controller;
   const TextFields({
     super.key, 
@@ -36,12 +40,15 @@ class TextFields extends StatelessWidget {
     this.label,
     this.maxLine,
     this.maxHeight,
+    this.maxLength,
+    this.inputFormatters,
     this.hintTextSize,
     this.readOnly,
     this.onEditingComplete,
     this.focusNode,
     this.initalValue,
     this.labelText,
+    this.enableSuggestions,
     this.onFieldSubmitted,
     this.onChanged, 
     this.prefixIcon,
@@ -54,9 +61,9 @@ class TextFields extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
     return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxWidth: size.width > 600 ? size.width  : size.width,
-        maxHeight: maxHeight ?? kToolbarHeight
+      constraints: const BoxConstraints(
+        // maxWidth: size.width > 600 ? size.width  : size.width,
+        // maxHeight: maxHeight ?? kToolbarHeight
       ),
       child: TextFormField(
         controller: controller,
@@ -64,8 +71,9 @@ class TextFields extends StatelessWidget {
         initialValue: initalValue,
         maxLines: maxLine,
         focusNode: focusNode,
-        // expands: false,
-        
+        enableSuggestions: enableSuggestions ?? false,
+        maxLength: maxLength,
+        inputFormatters: inputFormatters,
         keyboardType: keyboardType,
         readOnly: readOnly ?? false,
         onTap: onTap,
@@ -75,6 +83,7 @@ class TextFields extends StatelessWidget {
         onFieldSubmitted: onFieldSubmitted,
         onEditingComplete: onEditingComplete,
         validator: validator,
+        cursorErrorColor: Colors.redAccent,
         style: const TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w500,
@@ -82,6 +91,7 @@ class TextFields extends StatelessWidget {
         ),
         decoration: InputDecoration(
           prefixIcon: prefixIcon,
+          counterText: '',
           contentPadding: contentPadding,
           labelText: labelText,
           labelStyle: TextStyle(
@@ -123,6 +133,13 @@ class TextFields extends StatelessWidget {
               color: Colors.redAccent
             )
           ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(borderRadius ?? 10),
+            borderSide: const BorderSide(
+              color: Colors.redAccent
+            )
+          ),
+          
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(borderRadius ?? 10),
             borderSide: BorderSide(

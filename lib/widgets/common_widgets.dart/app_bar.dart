@@ -7,10 +7,12 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final bool? needBack;
   final double? fontSize;
   final bool? centerTitle;
+  final Color? leadingColor;
   final Builder? leadBuilder;
   final List<Widget>? actions;
   final VoidCallback? onBack;
   final double? leadingWidth;
+  final Color? backgroundColor;
   final FontWeight? fontWeight;
   final IconData? leading;
   final String? toolTip;
@@ -20,6 +22,8 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     this.leading,
     this.needBack, 
     this.toolTip,
+    this.leadingColor,
+    this.backgroundColor,
     this.fontSize,
     this.leadingWidth,
     this.fontWeight,
@@ -31,15 +35,15 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar:  AppBar(
+    return AppBar(
         automaticallyImplyLeading: needBack ?? false,
         surfaceTintColor: Colors.transparent,
         elevation: 1,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: backgroundColor ??  Theme.of(context).scaffoldBackgroundColor,
         title: AppTextWidget(
           text: title, 
           fontSize: fontSize ?? 20, 
+          fontColor: leadingColor,
           fontWeight: fontWeight ?? FontWeight.w500
         ),
         leadingWidth: leadingWidth,
@@ -48,7 +52,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         ? IconButton(
           tooltip: leading == null ? "Navigate up" : toolTip ,
           onPressed: onBack,
-          icon: Icon(leading ?? CupertinoIcons.chevron_back, size: 20,),
+          icon: Icon(leading ?? CupertinoIcons.chevron_back, size: 20, color: leadingColor,),
         )
         : Container(),
         actions: actions,
@@ -59,8 +63,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             height: 1.0,         // Height of the underline
           ),
         ),
-      ),
-    );
+      );
   }
   
   @override

@@ -11,7 +11,7 @@ import 'package:app_3/model/wishlist_products_model.dart';
 import 'package:app_3/repository/app_repository.dart';
 import 'package:app_3/screens/main_screens/bottom_bar.dart';
 import 'package:app_3/screens/on_boarding/otp_page.dart';
-import 'package:app_3/screens/sub-screens/cart/checkout_screen.dart';
+import 'package:app_3/screens/sub-screens/checkout/checkout_screen.dart';
 import 'package:app_3/service/api_service.dart';
 import 'package:app_3/widgets/common_widgets.dart/snackbar_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
@@ -46,28 +46,9 @@ class ApiProvider extends ChangeNotifier{
   List<Products> categoryProducts = [];
   String? categoryBanner;
   List<Products> quickOrderProductsList = [];
+  List<Products> filteredQuickOrderProductList = [];
   List<Products> filteredProducts = [];
-  // List<Attributes> attributesList = [
-  //   Attributes(
-  //     id: 1, 
-  //     name: "Quantity", 
-  //     optionData: [
-  //       OptionData(id: 1, name: "500ml"),
-  //       OptionData(id: 1, name: "1L"),
-  //       OptionData(id: 1, name: "2L"),
-  //     ]
-  //   ),
-  //   Attributes(
-  //     id: 2, 
-  //     name: "Size", 
-  //     optionData: [
-  //       OptionData(id: 1, name: "s"),
-  //       OptionData(id: 1, name: "m"),
-  //       OptionData(id: 1, name: "l"),
-  //     ]
-  //   ),
-  // ]; 
-  
+
   bool clearFilter = false;
   String? selectedAttribute;
   String? selectedOption;
@@ -268,6 +249,11 @@ class ApiProvider extends ChangeNotifier{
     }
   }
 
+  // Filtered Quick order prodcts
+  void filterQuickOrderProducts({List<String>? priceRange}){
+   
+    // filteredQuickOrderProductList = quickOrderProductsList.where(test)
+  }
   // Add Product to wishlist
   Future<void> addWishlist(int productId, Size size, String name, String quantity, BuildContext context) async {
     

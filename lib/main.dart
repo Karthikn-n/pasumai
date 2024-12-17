@@ -4,6 +4,7 @@ import 'package:app_3/providers/locale_provider.dart';
 import 'package:app_3/screens/main_screens/cubits/cart_cubits.dart';
 import 'package:app_3/screens/main_screens/cubits/cart_repository.dart';
 import 'package:app_3/screens/on_boarding/splash_screen.dart';
+import 'package:app_3/screens/sub-screens/checkout/provider/payment_proivider.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,6 +20,7 @@ import 'providers/cart_items_provider.dart';
 import 'providers/profile_provider.dart';
 import 'providers/subscription_provider.dart';
 import 'providers/vacation_provider.dart';
+import 'screens/sub-screens/filter/components/filter_provider.dart';
 import 'service/connectivity_helper.dart';
 
 
@@ -52,7 +54,9 @@ void main() async {
           ChangeNotifierProvider(create: (_) => ProfileProvider(),),
           ChangeNotifierProvider(create: (_) => VacationProvider()),
           ChangeNotifierProvider(create: (_) => ApiProvider(),),
-          ChangeNotifierProvider(create: (_) => Constants(),)
+          ChangeNotifierProvider(create: (_) => Constants(),),
+          ChangeNotifierProvider(create: (_) => PaymentProivider(),),
+          ChangeNotifierProvider(create:  (_) => FilterProvider(),)
         ],
         child: MyApp(userLogged:  prefs.getBool("${prefs.getString("customerId")}_${prefs.getString("mobile")}_logged") ?? false,)
       )

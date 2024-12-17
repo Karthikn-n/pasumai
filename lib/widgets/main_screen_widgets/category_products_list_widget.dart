@@ -76,6 +76,20 @@ class CategoryProductsListWidget extends StatelessWidget {
         title: categoryName,
         needBack: true,
         onBack: () => Navigator.pop(context),
+        actions: [
+          IconButton(
+            onPressed: () {
+              
+            }, 
+            icon: Icon(CupertinoIcons.search)
+          ),
+          IconButton(
+            onPressed: () {
+              
+            }, 
+            icon: Icon(CupertinoIcons.color_filter)
+          ),
+        ],
       ),
       body: Stack(
         alignment: Alignment.center,

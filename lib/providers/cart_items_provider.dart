@@ -7,7 +7,7 @@ import 'package:app_3/model/cart_products_model.dart';
 import 'package:app_3/model/products_model.dart';
 import 'package:app_3/repository/app_repository.dart';
 import 'package:app_3/screens/main_screens/bottom_bar.dart';
-import 'package:app_3/screens/sub-screens/cart/checkout_screen.dart';
+import 'package:app_3/screens/sub-screens/checkout/checkout_screen.dart';
 import 'package:app_3/service/api_service.dart';
 import 'package:app_3/widgets/common_widgets.dart/snackbar_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';

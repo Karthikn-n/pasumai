@@ -6,6 +6,7 @@ import 'package:app_3/providers/cart_items_provider.dart';
 // import 'package:app_3/providers/notification_provider.dart';
 import 'package:app_3/providers/profile_provider.dart';
 import 'package:app_3/screens/sub-screens/address_selection_screen.dart';
+import 'package:app_3/screens/sub-screens/checkout/payment_screen.dart';
 import 'package:app_3/service/connectivity_helper.dart';
 import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
 import 'package:app_3/widgets/common_widgets.dart/input_field_widget.dart';
@@ -729,65 +730,72 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 : FloatingActionButton(
                   // elevation: 1,
                   onPressed: () async {
-                    if (expectedDeliverydate ==  null || expectedDeliveryTime == null || selectedPaymentOption == null) {
-                      if (expectedDeliverydate == null) {
-                        setState(() {
-                          isdeliveryDateSelected = true;
-                        });
-                      }
-                      if(expectedDeliveryTime == null){
-                        setState(() {
-                          isDeliveryTimeSelected = true;
-                        });
-                      }
-                      if(selectedPaymentOption == null){
-                        setState(() {
-                          isPaymentoptionSelected = true;
-                        });
-                      }
-                    }else{
-                      setState(() {
-                        isLoading = true;
-                      });
-                      try {
-                        Map<String, dynamic> checkOutData = {
-                          'customer_id': prefs.getString('customerId'),
-                          'address_id': addressProvider.currentAddress!.id,
-                          'delivery_date': DateFormat('yyyy-MM-dd').format(expectedDeliverydate!),
-                          'delivery_time': expectedDeliveryTime ?? '06:00 AM - 12.00 PM',
-                          'payment_method': selectedPaymentOption ?? 'Cash on delivery'
-                        };
-                        print(widget.fromCart);
-                        /// Quick order Checkout if user add products from quick order this API gives response
-                        if (widget.fromCart ?? true) {
-                          await provider.quickOrderCheckOut(context, size, checkOutData).then((value) async {
-                            provider.clearCoupon();
-                            await profileProvider.orderList();
-                            /// Once order placed it will remove coupon from checkout session
-                            print("Order Placed from Quick order");
-                          });
-                        }else{
-                        /// Cart Checkout if the user added product from cart this API gives response
-                          await cartProvider.cartCheckOut(context, size, checkOutData).then((value) async {
-                              provider.clearCoupon();
-                              await profileProvider.orderList();
-                              // await NotificationProvider().showNotification(
-                              //   title: "Order placed successfully", 
-                              //   body: "See order detail here", 
-                              //   payload: "Open", 
-                              //   id: profileProvider.orderInfoData.last.orderId
-                              // );
-                            },);
+                     Navigator.push(context, SideTransistionRoute(
+                      screen: PaymentScreen(
+                        totalAmount: provider.isCouponApplied 
+                          ? "₹${provider.newTotal}"
+                          : widget.fromCart ?? true ? "₹${provider.totalQuickOrderAmount.toString()}" : "₹${cartProvider.totalCartAmount}",
+                      ))
+                    );
+                    // if (expectedDeliverydate ==  null || expectedDeliveryTime == null || selectedPaymentOption == null) {
+                    //   if (expectedDeliverydate == null) {
+                    //     setState(() {
+                    //       isdeliveryDateSelected = true;
+                    //     });
+                    //   }
+                    //   if(expectedDeliveryTime == null){
+                    //     setState(() {
+                    //       isDeliveryTimeSelected = true;
+                    //     });
+                    //   }
+                    //   if(selectedPaymentOption == null){
+                    //     setState(() {
+                    //       isPaymentoptionSelected = true;
+                    //     });
+                    //   }
+                    // }else{
+                    //   setState(() {
+                    //     isLoading = true;
+                    //   });
+                    //   try {
+                    //     Map<String, dynamic> checkOutData = {
+                    //       'customer_id': prefs.getString('customerId'),
+                    //       'address_id': addressProvider.currentAddress!.id,
+                    //       'delivery_date': DateFormat('yyyy-MM-dd').format(expectedDeliverydate!),
+                    //       'delivery_time': expectedDeliveryTime ?? '06:00 AM - 12.00 PM',
+                    //       'payment_method': selectedPaymentOption ?? 'Cash on delivery'
+                    //     };
+                    //     print(widget.fromCart);
+                    //     /// Quick order Checkout if user add products from quick order this API gives response
+                    //     if (widget.fromCart ?? true) {
+                    //       await provider.quickOrderCheckOut(context, size, checkOutData).then((value) async {
+                    //         provider.clearCoupon();
+                    //         await profileProvider.orderList();
+                    //         /// Once order placed it will remove coupon from checkout session
+                    //         print("Order Placed from Quick order");
+                    //       });
+                    //     }else{
+                    //     /// Cart Checkout if the user added product from cart this API gives response
+                    //       await cartProvider.cartCheckOut(context, size, checkOutData).then((value) async {
+                    //           provider.clearCoupon();
+                    //           await profileProvider.orderList();
+                    //           // await NotificationProvider().showNotification(
+                    //           //   title: "Order placed successfully", 
+                    //           //   body: "See order detail here", 
+                    //           //   payload: "Open", 
+                    //           //   id: profileProvider.orderInfoData.last.orderId
+                    //           // );
+                    //         },);
                           
-                        }
-                      } catch (e) {
-                        print('Error Happened: $e');
-                      } finally {
-                        setState(() {
-                          isLoading = false;
-                        });
-                      }
-                    }
+                    //     }
+                    //   } catch (e) {
+                    //     print('Error Happened: $e');
+                    //   } finally {
+                    //     setState(() {
+                    //       isLoading = false;
+                    //     });
+                    //   }
+                    // }
                   },
                   backgroundColor: Theme.of(context).primaryColor,
                   splashColor: Colors.white24,

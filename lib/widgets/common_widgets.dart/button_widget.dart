@@ -74,12 +74,14 @@ class LoadingButton extends StatelessWidget {
   final double? borderRadius;
   final Color? bordercolor;
   final double? width;
+  final double? height;
   const LoadingButton({
     super.key, 
     this.buttonColor,
     this.borderRadius,
     this.bordercolor,
-    this.width
+    this.width,
+    this.height
     });
 
   @override
@@ -87,7 +89,7 @@ class LoadingButton extends StatelessWidget {
     Size size = MediaQuery.sizeOf(context);
     return SizedBox(
       width: width ?? size.width * 0.8,
-      height: size.height * 0.065,
+      height: height ?? size.height * 0.065,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           elevation: 0,

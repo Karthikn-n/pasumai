@@ -378,6 +378,7 @@ class _HomePageState extends State<HomePage> {
                                         }else{
                                           return HomeScreenProducts(
                                             products: value.subscribeProducts, 
+                                            category: "Subscribe",
                                             icon: Container(
                                               padding: const EdgeInsets.all(5),
                                               decoration: BoxDecoration(
@@ -407,6 +408,7 @@ class _HomePageState extends State<HomePage> {
                                     )
                                       // Subscribe product list
                                     : HomeScreenProducts(
+                                      category: "Subscribe",
                                       products: value.subscribeProducts.sublist(0, 5), 
                                       icon: Container(), 
                                       onViewall: () { 
@@ -465,6 +467,7 @@ class _HomePageState extends State<HomePage> {
                                 const SizedBox(height: 12,),
                                 // Featured Products list
                                 HomeScreenProducts(
+                                  category: "Feature",
                                   products: provider.featuredproductData.sublist(0, 5), 
                                   onViewall: () {  
                                     Navigator.of(context).push(MaterialPageRoute(
@@ -520,6 +523,7 @@ class _HomePageState extends State<HomePage> {
                                 const SizedBox(height: 12,),
                                 // Best Seller Products List
                                 HomeScreenProducts(
+                                  category: "Best Seller",
                                   products: provider.bestSellerProducts, 
                                   onViewall: () { 
                                     Navigator.of(context).push(MaterialPageRoute(

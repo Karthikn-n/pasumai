@@ -1,7 +1,9 @@
 import 'package:app_3/helper/cache_manager_helper.dart';
+import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/model/selected_product_model.dart';
 import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/providers/api_provider.dart';
+import 'package:app_3/screens/sub-screens/filter/filter_screens.dart';
 import 'package:app_3/service/connectivity_helper.dart';
 import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
 import 'package:app_3/widgets/shimmer_widgets/shimmer_list_widget.dart';
@@ -55,8 +57,20 @@ class _QuickOrderScreenState extends State<QuickOrderScreen> {
               productProvider.setQuick(false);
             },
             child: Scaffold(
-              appBar: const AppBarWidget(
+              appBar: AppBarWidget(
                 title: 'Quick order',
+                actions: [
+                  IconButton(
+                    onPressed: (){
+                      Navigator.push(context, NoAnimateTransistion(screen: FilterScreen()));
+                    }, 
+                    icon: SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: Image.asset("assets/icons/filter.png"),
+                    )
+                  )
+                ],
               ),
               body: productProvider.quickOrderProductsList.isEmpty && productProvider.bottomIndex == 2
               ? FutureBuilder(

@@ -2,6 +2,7 @@ import 'package:app_3/model/orders_model.dart';
 import 'package:app_3/providers/profile_provider.dart';
 import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
+import 'package:app_3/widgets/profile_screen_widgets/order_widget/order_tracking.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -169,6 +170,14 @@ class OrderDetailWidget extends StatelessWidget {
                       ],
                     ),
                   ),
+                  const SizedBox(height: 16,),
+                  const AppTextWidget(
+                    text: "Ordered tracking", 
+                    fontSize: 18 , 
+                    fontWeight: FontWeight.w500
+                  ),
+                  const SizedBox(height: 12,),
+                  const OrderTracking(status: "Order processed",),
                   const SizedBox(height: 16,),
                   const AppTextWidget(
                     text: "Ordered products", 

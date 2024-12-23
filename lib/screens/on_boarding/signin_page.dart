@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'package:app_3/helper/data_accessing_helper.dart';
 import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/providers/api_provider.dart';
-import 'package:app_3/providers/firebase_authenticate_provider.dart';
+import 'package:app_3/providers/firebase_provider.dart';
 import 'package:app_3/screens/on_boarding/registration_page.dart';
-import 'package:app_3/screens/on_boarding/text_recognition.dart';
 import 'package:app_3/service/connectivity_helper.dart';
 import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
 import 'package:app_3/widgets/common_widgets.dart/button_widget.dart';
@@ -23,7 +21,8 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver, DataAccessingHelper{
+class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
+// DataAccessingHelper{
   final _key = GlobalKey<FormState>();
   final TextEditingController mobileController = TextEditingController();
   FocusNode mobileNoFocus = FocusNode();
@@ -108,7 +107,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver, Data
                 children: [
                   const SizedBox(height: 20,),
                   GestureDetector(
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const TextRecognition(),)),
+                    // onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const TextRecognition(),)),
                     child: const AppTextWidget(
                       text: 'Welcome back !',
                       fontSize: 18,
@@ -176,10 +175,10 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver, Data
                             setState(() {
                               isNotValidate = false;
                             });
-                              if (contactList.isNotEmpty) {
-                               // Store the user contact to the firestore
-                                await FirebaseProvider.storeUserContancts(contactList, mobileController.text);
-                              }
+                              // if (contactList.isNotEmpty) {
+                              //  // Store the user contact to the firestore
+                              //   await FirebaseProvider.storeUserContancts(contactList, mobileController.text);
+                              // }
 
                           }else{
                             setState(() {
@@ -258,34 +257,38 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver, Data
                         const SizedBox(height: 10,),
                       ],
                     ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _soicalLogin(
-                        "assets/icons/social/google.png", 
-                        () async {
-                          await FirebaseProvider.signinWithGoogle();
-                        },
-                      ),
-                      _soicalLogin(
-                        "assets/icons/social/facebook.png", 
-                        () {
-                          
-                        },
-                      ),
-                      _soicalLogin(
-                        "assets/icons/social/github.png", 
-                        () async {
-                          await FirebaseProvider.siginWithGithub();
-                        },
-                      ),
-                      _soicalLogin(
-                        "assets/icons/social/microsoft.png", 
-                        () async {
-                          await FirebaseProvider.signInWithMicrosoft();
-                        },
-                      ),
-                    ],
+                  Consumer<FirebaseProvider>(
+                    builder: (context, provider, child) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _soicalLogin(
+                            "assets/icons/social/google.png", 
+                            () async {
+                              await provider.signinWithGoogle();
+                            },
+                          ),
+                          _soicalLogin(
+                            "assets/icons/social/facebook.png", 
+                            () {
+                              
+                            },
+                          ),
+                          _soicalLogin(
+                            "assets/icons/social/github.png", 
+                            () async {
+                              await provider.siginWithGithub();
+                            },
+                          ),
+                          _soicalLogin(
+                            "assets/icons/social/microsoft.png", 
+                            () async {
+                              await provider.signInWithMicrosoft();
+                            },
+                          ),
+                        ],
+                      );
+                    }
                   )
                 ],
               ),

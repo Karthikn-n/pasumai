@@ -50,8 +50,13 @@ class HomeScreenProducts extends StatelessWidget {
                   child: InkWell(
                     splashColor: Colors.white10,
                     borderRadius: BorderRadius.circular(5),
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetailScreen(productDetail: product, category: category,),));
+                    onTap: () async {
+                      icon == null  ? await addtoWishlistHelper.similarProductsAPI(product.id) : null;
+                      Navigator.push(context, SideTransistionRoute(
+                        screen: icon != null 
+                        ? ProductSubScription(product: product,) 
+                        : ProductDetailScreen(productDetail: product, category: category,),
+                      ));
                     },
                     child: Ink(
                       // color: Colors.transparent.withValues(alpha: 0.2),
@@ -242,10 +247,8 @@ class HomeScreenProducts extends StatelessWidget {
                                             children: [
                                               GestureDetector(
                                                 onTap: () async {
-                                                  print("ProductId: ${product.id}");
-                                                  print("ProductId: ${cartProvider.cartQuantities}");
-                                                   if (cartProvider.cartQuantities[product.id]  != null && cartProvider.cartQuantities[product.id]  == 1) {
-                                                    cartProvider.confirmDelete(product.id, size, index, context);
+                                                  if (cartProvider.cartQuantities[product.id]  != null && cartProvider.cartQuantities[product.id]  == 1) {
+                                                    cartProvider.confirmDelete(id: product.id, size: size, index: index, context: context);
                                                   } else {
                                                     cartProvider.incrementQuantity(productId: product.id);
                                                     List<Map<String, dynamic>> cartProductData = [];
@@ -343,42 +346,39 @@ class HomeScreenProducts extends StatelessWidget {
               ),
               const SizedBox(width: 12,),
               products.length - 1 == index
-                ? Padding(
-                  padding: EdgeInsets.only(bottom: size.height *0.1,),
-                  child: Tooltip(
-                    message: "View all",
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(40),
-                      splashColor: Colors.transparent.withValues(alpha: 0.1),
-                      splashFactory: InkRipple.splashFactory,
-                      onTap: onViewall,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            height: 50,
-                            width: 50,
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(40),
-                              // border: Border.all(
-                              //   // color: Colors.grey.withValues(alpha: 0.1),
-                              // ),
-                              color: Colors.grey.withValues(alpha: 0.2),
-                              // shape: BoxShape.circle
-                            ),
-                            child: const Center(
-                              child: Icon(
-                                CupertinoIcons.chevron_right,
-                                size: 24,
-                              ),
+                ? Tooltip(
+                  message: "View all",
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      InkWell(
+                        borderRadius: BorderRadius.circular(40),
+                        splashColor: Colors.transparent.withValues(alpha: 0.1),
+                        splashFactory: InkRipple.splashFactory,
+                        onTap: onViewall,
+                        child: Container(
+                          height: 50,
+                          width: 50,
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(40),
+                            // border: Border.all(
+                            //   // color: Colors.grey.withValues(alpha: 0.1),
+                            // ),
+                            color: Colors.grey.withValues(alpha: 0.2),
+                            // shape: BoxShape.circle
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              CupertinoIcons.chevron_right,
+                              size: 24,
                             ),
                           ),
-                          const AppTextWidget(text: "View all", fontWeight: FontWeight.w400, fontSize: 12,)
-                        ],
+                        ),
                       ),
-                    ),
+                      const AppTextWidget(text: "View all", fontWeight: FontWeight.w400, fontSize: 12,)
+                    ],
                   ),
                 )
                 : Container()

@@ -1,3 +1,4 @@
+import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/providers/api_provider.dart';
 import 'package:app_3/providers/cart_items_provider.dart';
 import 'package:app_3/helper/shared_preference_helper.dart';
@@ -5,7 +6,6 @@ import 'package:app_3/providers/profile_provider.dart';
 import 'package:app_3/providers/subscription_provider.dart';
 import 'package:app_3/repository/app_repository.dart';
 import 'package:app_3/screens/main_screens/cart_screen.dart';
-import 'package:app_3/screens/main_screens/cubits/cart_cubits.dart';
 import 'package:app_3/screens/main_screens/profile_screen.dart';
 import 'package:app_3/screens/main_screens/quick_order_screen.dart';
 import 'package:app_3/screens/main_screens/subcribe_products_screen.dart';
@@ -39,7 +39,6 @@ class _BottomBarState extends State<BottomBar> {
   @override
   void initState() {
     super.initState();
-    context.read<CartCubits>().fetchCartItems();
      preloadApi();
   }
 
@@ -351,12 +350,16 @@ class _BottomBarState extends State<BottomBar> {
     final subscription = Provider.of<SubscriptionProvider>(context, listen: false);
     final wishlist = Provider.of<ApiProvider>(context, listen: false);
     final orders = Provider.of<ProfileProvider>(context, listen: false);
+    final cartItems = Provider.of<CartProvider>(context, listen: false);
+    final addressProvider = Provider.of<AddressProvider>(context, listen: false);
     // final startTime = DateTime.now();
     await Future.wait([
+      cartItems.cartItemsAPI(),
       wishlist.quickOrderProducts(),
       subscription.activeSubscription(),
       wishlist.wishlistProductsAPI(),
-      orders.orderList()
+      orders.orderList(),
+      addressProvider.getRegionLocation(),
     ]);
     // final endTime = DateTime.now();
     // print("Difference in parallel API call: ${endTime.difference(startTime).inMilliseconds} ms");

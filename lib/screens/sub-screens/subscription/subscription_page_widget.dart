@@ -24,20 +24,22 @@ class SubscriptionPageWidget extends StatelessWidget {
             itemBuilder: (context, index) {
               return Column(
                 children: [
-                  Container(
-                    padding: EdgeInsets.only(top: 10, bottom:index == provider.subscribeProducts.length - 1 ? 30 : 10),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: index == provider.subscribeProducts.length - 1 
-                        ? BorderSide.none
-                        : BorderSide(color: Colors.grey.shade300)
+                  InkWell(
+                    splashFactory: InkRipple.splashFactory,
+                    splashColor: Colors.transparent.withValues(alpha: 0.0),
+                    onTap: () => Navigator.push(context, SideTransistionRoute(
+                      screen: ProductSubScription(product: provider.subscribeProducts[index],),
+                    )),
+                    child: Container(
+                      padding: EdgeInsets.only(top: 10, bottom:index == provider.subscribeProducts.length - 1 ? 30 : 10),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: index == provider.subscribeProducts.length - 1 
+                          ? BorderSide.none
+                          : BorderSide(color: Colors.grey.shade300)
+                        ),
+                        // borderRadius: BorderRadius.circular(10)
                       ),
-                      // borderRadius: BorderRadius.circular(10)
-                    ),
-                    child: GestureDetector(
-                      onTap: () => Navigator.push(context, SideTransistionRoute(
-                        screen: ProductSubScription(product: provider.subscribeProducts[index],),
-                      )),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

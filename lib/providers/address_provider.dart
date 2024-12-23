@@ -35,20 +35,22 @@ class AddressProvider extends ChangeNotifier{
 
   // Get all the regions and locations
   Future<void> getRegionLocation() async {
-    final response = await _addressRepository.regionLocation();
-    String decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
-    final decodedResponse = json.decode(decryptedResponse);
-    print('Region and Location Response: $decodedResponse');
-    if (response.statusCode == 200) {
-      regionLocationsList.clear();
-      List<dynamic> regions = decodedResponse['results'] as List;
-      regionLocationsList = regions.map((region) => RegionModel.fromMap(region),).toList();
-      // print(object)
-      print('Regions and Location length: ${regionLocationsList.length}');
-    } else {
-      print('Error: ${response.body}');
+    if (regionLocationsList.isEmpty) {
+      final response = await _addressRepository.regionLocation();
+      String decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
+      final decodedResponse = json.decode(decryptedResponse);
+      print('Region and Location Response: $decodedResponse');
+      if (response.statusCode == 200) {
+        regionLocationsList.clear();
+        List<dynamic> regions = decodedResponse['results'] as List;
+        regionLocationsList = regions.map((region) => RegionModel.fromMap(region),).toList();
+        // print(object)
+        print('Regions and Location length: ${regionLocationsList.length}');
+      } else {
+        print('Error: ${response.body}');
+      }
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   // Get All the Address of the User

@@ -68,6 +68,9 @@ class AppRepository{
   Future<http.Response> subscribedProducts(Map<String, dynamic> body) async
     => await apiService.post('/subscribedproducts', body);
 
+  Future<http.Response> similarProducts(Map<String, dynamic> body) async
+    => await apiService.post('/similarproducts', body);
+
   // Get User Address
   Future<http.Response> getAddresses(Map<String, dynamic> body) async
     => await apiService.post('/addresslist', body);
@@ -224,4 +227,24 @@ class AppRepository{
   // Raise a Query
   Future<http.Response> raiseAQuery(Map<String, dynamic> body) async
     => await apiService.post("/raisequery", body);
+
+  // Add UPI id
+  Future<http.Response> addUpi(Map<String, dynamic> body) async
+    => await apiService.post("/customerupi", body);
+
+  // Add Card 
+  Future<http.Response> addCard(Map<String, dynamic> body) async
+    => await apiService.post("/customercard", body);
+  
+  // UPi and Card list
+  Future<http.Response> cardUpiList(Map<String, dynamic> body) async
+    => await apiService.post("/cardupilist", body);
+
+  // Delete UPi id
+  Future<http.Response> deleteUpi(Map<String, dynamic> body) async
+    => await apiService.post("/deleteUPI", body);
+  
+  Future<http.Response> deleteCard(Map<String, dynamic> body) async
+    => await apiService.post("/deleteCard", body);
+
 } 

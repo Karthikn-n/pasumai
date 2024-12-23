@@ -5,21 +5,24 @@ import 'package:app_3/helper/cache_manager_helper.dart';
 import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/providers/api_provider.dart';
+import 'package:app_3/providers/firebase_provider.dart';
 import 'package:app_3/providers/locale_provider.dart';
 import 'package:app_3/providers/subscription_provider.dart';
 import 'package:app_3/screens/main_screens/bottom_bar.dart';
-import 'package:app_3/screens/main_screens/search_screen.dart';
+import 'package:app_3/screens/main_screens/notification_screen.dart';
+// import 'package:app_3/screens/main_screens/search_screen.dart';
 import 'package:app_3/screens/sub-screens/address_selection_screen.dart';
-import 'package:app_3/screens/sub-screens/wishlist_products.dart';
 import 'package:app_3/service/connectivity_helper.dart';
 import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
 import 'package:app_3/widgets/common_widgets.dart/input_field_widget.dart';
+import 'package:app_3/widgets/search/search_widget.dart';
 import 'package:app_3/widgets/shimmer_widgets/shimmer_carousel_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/snackbar_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:app_3/widgets/main_screen_widgets/category_products_list_widget.dart';
 import 'package:app_3/widgets/main_screen_widgets/home_screen_products_widgets.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -104,7 +107,7 @@ class _HomePageState extends State<HomePage> {
                   Padding(
                     padding: const EdgeInsets.only(right: 15),
                     child: Icon(
-                      CupertinoIcons.heart_fill, 
+                      CupertinoIcons.bell, 
                       size: 28,
                       color: Theme.of(context).primaryColor,
                     ),
@@ -200,21 +203,24 @@ class _HomePageState extends State<HomePage> {
                 actions: [
                   Padding(
                     padding: const EdgeInsets.only(right: 15, top: 10),
-                    child: Consumer<ApiProvider>(
+                    child: Consumer<FirebaseProvider>(
                       builder: (context, wishlistProductProvider, child) {
                         return IconButton(
-                          tooltip: "Wishlist",
+                          splashRadius: 80,
+                          tooltip: "Notification",
                           style: ElevatedButton.styleFrom(
                             // overlayColor: Colors.grey.shade400
                           ),
                           onPressed: () async {
-                            wishlistProductProvider.wishlistProductsAPI();
-                            Navigator.push(context, downToTop(screen: const WishlistProducts()));
+                            FirebaseProvider.notificationStorage(RemoteMessage());
+                            // await wishlistProductProvider.
+                            // wishlistProductProvider.wishlistProductsAPI();
+                            // Navigator.push(context, downToTop(screen: const NotificationScreen()));
                           },
-                          icon:  Icon(
-                            CupertinoIcons.heart_fill, 
+                          icon: const Icon(
+                            CupertinoIcons.bell, 
                             size: 28,
-                            color: Theme.of(context).primaryColor,
+                            // color: Theme.of(context).primaryColor,
                           ),
                         );
                       }
@@ -288,7 +294,7 @@ class _HomePageState extends State<HomePage> {
                                   readOnly: true,
                                   suffixIcon: const Icon(CupertinoIcons.search, color: Colors.grey,),
                                   onTap: (){
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen(focusNode: FocusNode(),)));
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => SearchWidget(products: provider.quickOrderProductsList,)));
                                   },
                                 ),
                                 const SizedBox(height: 20),

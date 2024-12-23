@@ -3,8 +3,11 @@ import 'package:app_3/screens/sub-screens/subscription/subscription_page_widget.
 import 'package:app_3/service/connectivity_helper.dart';
 import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../../widgets/search/search_widget.dart';
 
 
 class SubscriptionList extends StatelessWidget {
@@ -17,7 +20,19 @@ class SubscriptionList extends StatelessWidget {
     final subscriptionProductsProvider = Provider.of<SubscriptionProvider>(context);
     if (connectivityService.isConnected) {
       return Scaffold(
-        appBar: const AppBarWidget(title: 'Subscription Products',),
+        appBar: AppBarWidget(
+          title: 'Subscription Products',
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) 
+                  => SearchWidget(products: subscriptionProductsProvider.subscribeProducts, fromSubscription: true,)
+                ));
+              } , 
+              icon: const Icon(CupertinoIcons.search)
+            )
+          ],
+        ),
         body: subscriptionProductsProvider.subscribeProducts.isEmpty
           ? FutureBuilder(
               future: subscriptionProductsProvider.getSubscribProducts(), 

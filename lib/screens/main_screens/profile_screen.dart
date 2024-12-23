@@ -3,6 +3,7 @@ import 'package:app_3/helper/shared_preference_helper.dart';
 import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/providers/profile_provider.dart';
 import 'package:app_3/screens/sub-screens/profile/chat_screen.dart';
+import 'package:app_3/screens/sub-screens/wishlist_products.dart';
 import 'package:app_3/service/connectivity_helper.dart';
 import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
@@ -39,6 +40,7 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
     'My Addresses',
     'Invoice Listing',
     'Vacation Mode',
+    'Wishlist Products',
     "Raise a query",
     "Chat"
   ];
@@ -159,7 +161,11 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
                                 _scaffoldStateKey.currentState?.closeDrawer();
                                await Future.delayed(const Duration(milliseconds: 200));
                                 Navigator.push(context, SideTransistionRoute(screen: const ChatScreen()));
-                              } else {
+                              } else if(options[index] == "Wishlist Products") {
+                                _scaffoldStateKey.currentState?.closeDrawer();
+                               await Future.delayed(const Duration(milliseconds: 200));
+                                Navigator.push(context, SideTransistionRoute(screen: const WishlistProducts()));
+                              }else {
                                  setState(() {
                                   for (var i = 0; i < options.length; i++) {
                                     isOptionSelected[i] = false;
@@ -214,6 +220,7 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
     "assets/icons/profile/location.png",
     "assets/icons/profile/invoice.png",
     "assets/icons/profile/sunset.png",
+    "assets/icons/profile/heart.png",
     "assets/icons/profile/question-sign.png",
     "assets/icons/profile/chat.png"
   ];

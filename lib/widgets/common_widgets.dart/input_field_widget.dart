@@ -59,7 +59,6 @@ class TextFields extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.sizeOf(context);
     return ConstrainedBox(
       constraints: const BoxConstraints(
         // maxWidth: size.width > 600 ? size.width  : size.width,

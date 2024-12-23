@@ -233,7 +233,7 @@ class _CartScreenState extends State<CartScreen> {
                                                 onPressed: () async {
                                                   // Decrease the quantity of the product
                                                   if (cartProvider.cartQuantities[cartProvider.cartItems[index].id]  == 1) {
-                                                    cartProvider.confirmDelete(cartProvider.cartItems[index].id, size, index, context);
+                                                    cartProvider.confirmDelete(id: cartProvider.cartItems[index].id, size: size, index: index, context:context);
                                                     } else {
                                                     cartProvider.incrementQuantity(productId: cartProvider.cartItems[index].id);
                                                     List<Map<String, dynamic>> cartProductData = [];

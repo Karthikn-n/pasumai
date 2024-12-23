@@ -208,9 +208,9 @@ class CartProvider extends ChangeNotifier{
     }
   }
 
-  void confirmDelete( int id, Size size, int index, BuildContext context) {
+  void confirmDelete({int? id, Size? size, int? index, BuildContext? context}) {
     showDialog(
-      context: context,
+      context: context!,
       builder: (context) {
         return Dialog(
           shape: RoundedRectangleBorder(
@@ -262,7 +262,7 @@ class CartProvider extends ChangeNotifier{
                       overlayColor: Colors.transparent.withValues(alpha: 0.1)
                     ),
                     onPressed: () async{
-                      await removeCart(id, size, context, index).then((value) => Navigator.pop(context),);
+                      await removeCart(id!, size!, context, index!).then((value) => Navigator.pop(context),);
                     }, 
                     child: const AppTextWidget(
                       text: "Confirm", 

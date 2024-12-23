@@ -36,6 +36,7 @@ class ApiProvider extends ChangeNotifier{
   List<Products> featuredproductData = [];
   List<Products> bestSellerProducts = [];
   List<CategoryModel> categories = [];
+  List<Products> similarProducts = [];
 
   // Data for wishlist 
   List<WishlistProductsModel> wishlistProducts = [];
@@ -328,6 +329,21 @@ class ApiProvider extends ChangeNotifier{
     notifyListeners();
   }
 
+  // Similar products API
+  Future<void> similarProductsAPI(int productId) async {
+    final Map<String, int> productData = {"product_id": productId};
+    final response = await apiRepository.similarProducts(productData);
+    final decryptedData = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
+    final decodedResponse = json.decode(decryptedData);
+    debugPrint("Similar product response: $decodedResponse Status code: ${response.statusCode}");
+    if (response.statusCode == 200 && decodedResponse["status"] == "success") {
+      List<dynamic> similarProductsJson = decodedResponse["data"];
+      similarProducts = similarProductsJson.map((product) => Products.fromJson(product),).toList();
+    }else{
+      print('Similar Products Error: ${response.body}');
+    }
+    notifyListeners();
+  }
 
   // Get Banners List from the API
   Future<void> getFeturedProducts() async {

@@ -48,7 +48,9 @@ class Products{
     results.addAll({'price': price});
     results.addAll({'final_price': finalPrice});
     results.addAll({'image': image});
+    results.addAll({"offer": offerAmount});
     results.addAll({'quantity': quantity});
+    results.addAll({"cat_id": categoryId});
     results.addAll({'description': description});
     return results;
   }

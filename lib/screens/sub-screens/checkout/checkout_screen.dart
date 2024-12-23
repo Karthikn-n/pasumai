@@ -7,6 +7,7 @@ import 'package:app_3/providers/cart_items_provider.dart';
 import 'package:app_3/providers/profile_provider.dart';
 import 'package:app_3/screens/sub-screens/address_selection_screen.dart';
 import 'package:app_3/screens/sub-screens/checkout/payment_screen.dart';
+import 'package:app_3/screens/sub-screens/checkout/provider/payment_proivider.dart';
 import 'package:app_3/service/connectivity_helper.dart';
 import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
 import 'package:app_3/widgets/common_widgets.dart/input_field_widget.dart';
@@ -71,8 +72,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           needBack: true,
           onBack: () => Navigator.pop(context),
         ),
-        body: Consumer3<ApiProvider, AddressProvider, CartProvider>(
-          builder: (context, provider, addressProvider, cartProvider, child) {
+        body: Consumer4<ApiProvider, AddressProvider, CartProvider, PaymentProivider>(
+          builder: (context, provider, addressProvider, cartProvider, paymentProvider, child) {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: SingleChildScrollView(
@@ -388,115 +389,116 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     ),
                     const SizedBox(height: 16,),
                     // Payment Option heading
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const AppTextWidget(
-                          text: 'Payment option',
-                          fontSize: 16, 
-                          fontWeight: FontWeight.w500
-                        ),
-                        isPaymentoptionSelected 
-                         ? const AppTextWidget(
-                          text: "* required", 
-                          fontSize: 12, fontWeight: FontWeight.w400, fontColor: Colors.red,)
-                         : Container()
-                      ],
-                    ),
-                    const SizedBox(height: 12,),
-                    // Payment options
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 0),
-                      child: Container(
-                        height: (kToolbarHeight -6) * paymentOptions.length,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                            color: Colors.grey.shade300,
-                          )
-                        ),
-                        child: ListView.builder(
-                          itemCount: paymentOptions.length,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              onTap: () {
-                                 setState(() {
-                                  selectedPaymentOption = paymentOptions[index];
-                                  isPaymentoptionSelected = false;
-                                });
-                              },
-                              minTileHeight: kToolbarHeight - 6,
-                              trailing: selectedPaymentOption == paymentOptions[index] 
-                                ? Icon(CupertinoIcons.check_mark_circled, size: 20, color: Theme.of(context).primaryColor,)
-                                : null ,
-                              title: Row(
-                                children: [
-                                  Container(
-                                    height: 24,
-                                    width: 24,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Image.asset(paymentIamges[index], fit: BoxFit.cover,),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  AppTextWidget(
-                                    text: paymentOptions[index], 
-                                    fontSize: 14, 
-                                    fontWeight: FontWeight.w400
-                                  ),
-                                ],
-                              ),
-                            );
-                            // RadioListTile(
-                            //   contentPadding: const EdgeInsets.all(0),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     const AppTextWidget(
+                    //       text: 'Payment option',
+                    //       fontSize: 16, 
+                    //       fontWeight: FontWeight.w500
+                    //     ),
+                    //     isPaymentoptionSelected 
+                    //      ? const AppTextWidget(
+                    //       text: "* required", 
+                    //       fontSize: 12, fontWeight: FontWeight.w400, fontColor: Colors.red,)
+                    //      : Container()
+                    //   ],
+                    // ),
+                    // const SizedBox(height: 12,),
+                    // // Payment options
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(horizontal: 0),
+                    //   child: Container(
+                    //     height: (kToolbarHeight -6) * paymentOptions.length,
+                    //     decoration: BoxDecoration(
+                    //       borderRadius: BorderRadius.circular(5),
+                    //       border: Border.all(
+                    //         color: Colors.grey.shade300,
+                    //       )
+                    //     ),
+                    //     child: ListView.builder(
+                    //       itemCount: paymentOptions.length,
+                    //       physics: const NeverScrollableScrollPhysics(),
+                    //       itemBuilder: (context, index) {
+                    //         return ListTile(
+                    //           onTap: () {
+                    //              setState(() {
+                    //               selectedPaymentOption = paymentOptions[index];
+                    //               isPaymentoptionSelected = false;
+                    //             });
+                    //           },
+                    //           minTileHeight: kToolbarHeight - 6,
+                    //           trailing: selectedPaymentOption == paymentOptions[index] 
+                    //             ? Icon(CupertinoIcons.check_mark_circled, size: 20, color: Theme.of(context).primaryColor,)
+                    //             : null ,
+                    //           title: Row(
+                    //             children: [
+                    //               Container(
+                    //                 height: 24,
+                    //                 width: 24,
+                    //                 decoration: const BoxDecoration(
+                    //                   shape: BoxShape.circle,
+                    //                 ),
+                    //                 child: Image.asset(paymentIamges[index], fit: BoxFit.cover,),
+                    //               ),
+                    //               const SizedBox(width: 8),
+                    //               AppTextWidget(
+                    //                 text: paymentOptions[index], 
+                    //                 fontSize: 14, 
+                    //                 fontWeight: FontWeight.w400
+                    //               ),
+                    //             ],
+                    //           ),
+                    //         );
+                    //         // RadioListTile(
+                    //         //   contentPadding: const EdgeInsets.all(0),
                               
-                            //   shape: RoundedRectangleBorder(
-                            //     borderRadius: index == 0
-                            //     ? const BorderRadius.only(
-                            //       topLeft: Radius.circular(10), topRight: Radius.circular(10)
-                            //     )
-                            //     : index == 2
-                            //       ? const BorderRadius.only(
-                            //         bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)
-                            //       )
-                            //       : BorderRadius.zero
-                            //   ),
-                            //   title: Row(
-                            //     children: [
-                            //       Container(
-                            //         height: 24,
-                            //         width: 24,
-                            //         decoration: const BoxDecoration(
-                            //           shape: BoxShape.circle,
-                            //         ),
-                            //         child: Image.asset(paymentIamges[index], fit: BoxFit.cover,),
-                            //       ),
-                            //       const SizedBox(width: 5),
-                            //       AppTextWidget(
-                            //         text: paymentOptions[index], 
-                            //         fontSize: 14, 
-                            //         fontWeight: FontWeight.w400
-                            //       ),
-                            //     ],
-                            //   ),
-                            //   value: paymentOptions[index], 
-                            //   groupValue: selectedPaymentOption, 
-                            //   onChanged: (value) {
-                            //    
-                            //     print("Selected poption: $selectedPaymentOption");
-                            //   },
-                            //   activeColor: selectedPaymentOption == paymentOptions[index]
-                            //     ? Theme.of(context).primaryColor
-                            //     : null,
-                            // );
+                    //         //   shape: RoundedRectangleBorder(
+                    //         //     borderRadius: index == 0
+                    //         //     ? const BorderRadius.only(
+                    //         //       topLeft: Radius.circular(10), topRight: Radius.circular(10)
+                    //         //     )
+                    //         //     : index == 2
+                    //         //       ? const BorderRadius.only(
+                    //         //         bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)
+                    //         //       )
+                    //         //       : BorderRadius.zero
+                    //         //   ),
+                    //         //   title: Row(
+                    //         //     children: [
+                    //         //       Container(
+                    //         //         height: 24,
+                    //         //         width: 24,
+                    //         //         decoration: const BoxDecoration(
+                    //         //           shape: BoxShape.circle,
+                    //         //         ),
+                    //         //         child: Image.asset(paymentIamges[index], fit: BoxFit.cover,),
+                    //         //       ),
+                    //         //       const SizedBox(width: 5),
+                    //         //       AppTextWidget(
+                    //         //         text: paymentOptions[index], 
+                    //         //         fontSize: 14, 
+                    //         //         fontWeight: FontWeight.w400
+                    //         //       ),
+                    //         //     ],
+                    //         //   ),
+                    //         //   value: paymentOptions[index], 
+                    //         //   groupValue: selectedPaymentOption, 
+                    //         //   onChanged: (value) {
+                    //         //    
+                    //         //     print("Selected poption: $selectedPaymentOption");
+                    //         //   },
+                    //         //   activeColor: selectedPaymentOption == paymentOptions[index]
+                    //         //     ? Theme.of(context).primaryColor
+                    //         //     : null,
+                    //         // );
                           
-                          },
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16,),
+                    //       },
+                    //     ),
+                    //   ),
+                    // ),
+                    
+                    // const SizedBox(height: 16,),
                     // Bil Details
                     const AppTextWidget(
                       text: 'Bill detail',
@@ -727,87 +729,79 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       ),
                     ),
                   )
-                : FloatingActionButton(
-                  // elevation: 1,
-                  onPressed: () async {
-                     Navigator.push(context, SideTransistionRoute(
-                      screen: PaymentScreen(
-                        totalAmount: provider.isCouponApplied 
-                          ? "₹${provider.newTotal}"
-                          : widget.fromCart ?? true ? "₹${provider.totalQuickOrderAmount.toString()}" : "₹${cartProvider.totalCartAmount}",
-                      ))
+                : Consumer<PaymentProivider>(
+                  builder: (context, paymentprovider,child) {
+                    return FloatingActionButton(
+                      // elevation: 1,
+                      onPressed: () async {
+                       
+                        if (expectedDeliverydate ==  null || expectedDeliveryTime == null) {
+                          if (expectedDeliverydate == null) {
+                            setState(() {
+                              isdeliveryDateSelected = true;
+                            });
+                          }
+                          if(expectedDeliveryTime == null){
+                            setState(() {
+                              isDeliveryTimeSelected = true;
+                            });
+                          }
+                          // if(selectedPaymentOption == null){
+                          //   setState(() {
+                          //     isPaymentoptionSelected = true;
+                          //   });
+                          // }
+                        }else{
+                          await paymentprovider.cardUpiList().then((value) {
+                          Map<String, dynamic> checkOutData = {
+                            'customer_id': prefs.getString('customerId'),
+                            'address_id': addressProvider.currentAddress!.id,
+                            'delivery_date': DateFormat('yyyy-MM-dd').format(expectedDeliverydate!),
+                            'delivery_time': expectedDeliveryTime ?? '06:00 AM - 12.00 PM',
+                            // 'payment_method': selectedPaymentOption ?? 'Cash on delivery'
+                          };
+                          paymentprovider.setPaymentDetail(checkOutData);
+                          Navigator.push(context, SideTransistionRoute(
+                            screen: PaymentScreen(
+                              totalAmount: provider.isCouponApplied 
+                                ? "₹${provider.newTotal}"
+                                : widget.fromCart ?? true ? "₹${provider.totalQuickOrderAmount.toString()}" : "₹${cartProvider.totalCartAmount}",
+                              orderDetails: checkOutData,
+                              fromCart: widget.fromCart ?? true,
+                            ))
+                          );
+                        },);
+                        // await NotificationProvider().showNotification(
+                        //   title: "Order placed successfully", 
+                        //   body: "See order detail here", 
+                        //   payload: "Open", 
+                        //   id: profileProvider.orderInfoData.last.orderId
+                        // );
+                          // try {
+                           
+                            
+                          // } catch (e) {
+                          //   print('Error Happened: $e');
+                          // } finally {
+                          //   setState(() {
+                          //     isLoading = false;
+                          //   });
+                          // }
+                        }
+                      },
+                      backgroundColor: Theme.of(context).primaryColor,
+                      splashColor: Colors.white24,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)
+                      ),
+                      child: const AppTextWidget(
+                        text: "Checkout", 
+                        fontSize: 16, 
+                        fontColor: Colors.white,
+                        fontWeight: FontWeight.w500
+                      )
                     );
-                    // if (expectedDeliverydate ==  null || expectedDeliveryTime == null || selectedPaymentOption == null) {
-                    //   if (expectedDeliverydate == null) {
-                    //     setState(() {
-                    //       isdeliveryDateSelected = true;
-                    //     });
-                    //   }
-                    //   if(expectedDeliveryTime == null){
-                    //     setState(() {
-                    //       isDeliveryTimeSelected = true;
-                    //     });
-                    //   }
-                    //   if(selectedPaymentOption == null){
-                    //     setState(() {
-                    //       isPaymentoptionSelected = true;
-                    //     });
-                    //   }
-                    // }else{
-                    //   setState(() {
-                    //     isLoading = true;
-                    //   });
-                    //   try {
-                    //     Map<String, dynamic> checkOutData = {
-                    //       'customer_id': prefs.getString('customerId'),
-                    //       'address_id': addressProvider.currentAddress!.id,
-                    //       'delivery_date': DateFormat('yyyy-MM-dd').format(expectedDeliverydate!),
-                    //       'delivery_time': expectedDeliveryTime ?? '06:00 AM - 12.00 PM',
-                    //       'payment_method': selectedPaymentOption ?? 'Cash on delivery'
-                    //     };
-                    //     print(widget.fromCart);
-                    //     /// Quick order Checkout if user add products from quick order this API gives response
-                    //     if (widget.fromCart ?? true) {
-                    //       await provider.quickOrderCheckOut(context, size, checkOutData).then((value) async {
-                    //         provider.clearCoupon();
-                    //         await profileProvider.orderList();
-                    //         /// Once order placed it will remove coupon from checkout session
-                    //         print("Order Placed from Quick order");
-                    //       });
-                    //     }else{
-                    //     /// Cart Checkout if the user added product from cart this API gives response
-                    //       await cartProvider.cartCheckOut(context, size, checkOutData).then((value) async {
-                    //           provider.clearCoupon();
-                    //           await profileProvider.orderList();
-                    //           // await NotificationProvider().showNotification(
-                    //           //   title: "Order placed successfully", 
-                    //           //   body: "See order detail here", 
-                    //           //   payload: "Open", 
-                    //           //   id: profileProvider.orderInfoData.last.orderId
-                    //           // );
-                    //         },);
-                          
-                    //     }
-                    //   } catch (e) {
-                    //     print('Error Happened: $e');
-                    //   } finally {
-                    //     setState(() {
-                    //       isLoading = false;
-                    //     });
-                    //   }
-                    // }
-                  },
-                  backgroundColor: Theme.of(context).primaryColor,
-                  splashColor: Colors.white24,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)
-                  ),
-                  child: const AppTextWidget(
-                    text: "Checkout", 
-                    fontSize: 16, 
-                    fontColor: Colors.white,
-                    fontWeight: FontWeight.w500
-                  )
+                  }
                 );
               }
             ),

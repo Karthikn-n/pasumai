@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class CardModel {
   final int id;
   final String cardNumber;
@@ -28,11 +26,11 @@ class CardModel {
 
   factory CardModel.fromMap(Map<String, dynamic> map) {
     return CardModel(
-      id: map['id']?.toInt() ?? 0,
-      cardNumber: map['cardNumber'] ?? '',
-      expireDate: map['expireDate'] ?? '',
+      id: map['card_id']?.toInt() ?? 0,
+      cardNumber: map['card_number'] ?? '',
+      expireDate: map['expire_date'] ?? '',
       cvv: map['cvv']?.toInt() ?? 0,
-      cardholderName: map['cardholderName'] ?? '',
+      cardholderName: map['holder_name'] ?? '',
     );
   }
 

@@ -7,7 +7,14 @@ import 'package:flutter/material.dart';
 
 class PaymentScreen extends StatelessWidget {
   final String totalAmount;
-  const PaymentScreen({super.key, required this.totalAmount});
+  final Map<String, dynamic> orderDetails;
+  final bool fromCart;
+  const PaymentScreen({
+    super.key, 
+    required this.totalAmount, 
+    required this.orderDetails,
+    required this.fromCart
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +40,12 @@ class PaymentScreen extends StatelessWidget {
              ),
              const SizedBox(height: 10,),
              // Tile for debit card payment
-             CardPayment(amount: totalAmount,),
+             CardPayment(amount: totalAmount, fromCart: fromCart,),
              // UPI method tile
-             UpiPayment(amount: totalAmount),
+             UpiPayment(amount: totalAmount, fromCart: fromCart,),
              // Cash on delivery tile
-             CashOnDelivery(amount: totalAmount,)
+             CashOnDelivery(amount: totalAmount, fromCart: fromCart,),
+             
             ],
           ),
         )

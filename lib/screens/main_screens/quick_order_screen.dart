@@ -4,8 +4,10 @@ import 'package:app_3/model/selected_product_model.dart';
 import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/providers/api_provider.dart';
 import 'package:app_3/screens/sub-screens/filter/filter_screens.dart';
+import 'package:app_3/screens/sub-screens/productDetail/product_detail_screen.dart';
 import 'package:app_3/service/connectivity_helper.dart';
 import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
+import 'package:app_3/widgets/search/search_widget.dart';
 import 'package:app_3/widgets/shimmer_widgets/shimmer_list_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -62,14 +64,22 @@ class _QuickOrderScreenState extends State<QuickOrderScreen> {
                 actions: [
                   IconButton(
                     onPressed: (){
-                      Navigator.push(context, NoAnimateTransistion(screen: FilterScreen()));
+                      Navigator.push(context, NoAnimateTransistion(screen: FilterScreen(products: productProvider.quickOrderProductsList,)));
                     }, 
                     icon: SizedBox(
                       height: 20,
                       width: 20,
                       child: Image.asset("assets/icons/filter.png"),
                     )
-                  )
+                  ),
+                  IconButton(
+                    onPressed: (){
+                      Navigator.push(context, NoAnimateTransistion(screen: SearchWidget(
+                        products: productProvider.quickOrderProductsList, fromQuickOrder: true,
+                      )));
+                    }, 
+                    icon: const Icon(CupertinoIcons.search)
+                  ),
                 ],
               ),
               body: productProvider.quickOrderProductsList.isEmpty && productProvider.bottomIndex == 2
@@ -116,200 +126,143 @@ class _QuickOrderScreenState extends State<QuickOrderScreen> {
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                          padding: const EdgeInsets.only(top: 10, bottom: 10),
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: index == productProvider.quickOrderProductsList.length - 1 
-                              ? BorderSide.none
-                              : BorderSide(color: Colors.grey.shade300)
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(context, SideTransistionRoute(
+                              screen: ProductDetailScreen(productDetail: productProvider.quickOrderProductsList[index], 
+                              category: "Quick order")
+                            ));
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.only(top: 10, bottom: 10),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: index == productProvider.quickOrderProductsList.length - 1 
+                                ? BorderSide.none
+                                : BorderSide(color: Colors.grey.shade300)
+                              ),
+                              // borderRadius: BorderRadius.circular(10)
                             ),
-                            // borderRadius: BorderRadius.circular(10)
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              // Product Image
-                              SizedBox(
-                                width: 94,
-                                height: 105,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: GestureDetector(
-                                    onTap: () async {
-                                      productProvider.confirmOrder(context, size);
-                                    },
-                                    child: CachedNetworkImage(
-                                      // imageUrl: 'http://192.168.1.5/pasumaibhoomi/public/image/product/${productProvider.quickOrderProductsList[index].image}',
-                                      imageUrl: 'https://maduraimarket.in/public/image/product/${productProvider.quickOrderProductsList[index].image}',
-                                      fit: BoxFit.cover,
-                                      cacheManager: CacheManagerHelper.cacheIt(key: productProvider.quickOrderProductsList[index].image),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                // Product Image
+                                SizedBox(
+                                  width: 94,
+                                  height: 105,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: GestureDetector(
+                                      onTap: () async {
+                                        productProvider.confirmOrder(context, size);
+                                      },
+                                      child: CachedNetworkImage(
+                                        // imageUrl: 'http://192.168.1.5/pasumaibhoomi/public/image/product/${productProvider.quickOrderProductsList[index].image}',
+                                        imageUrl: 'https://maduraimarket.in/public/image/product/${productProvider.quickOrderProductsList[index].image}',
+                                        fit: BoxFit.cover,
+                                        cacheManager: CacheManagerHelper.cacheIt(key: productProvider.quickOrderProductsList[index].image),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              // Product Details
-                              SizedBox(
-                                width: size.width * 0.5,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // Product Name and Quantity
-                                    productProvider.quickOrderQuantites[productProvider.quickOrderProductsList[index].id] != null && productProvider.quickOrderQuantites[productProvider.quickOrderProductsList[index].id]! > 0
-                                    ? RichText(
-                                      text: TextSpan(
-                                        text: "${productProvider.quickOrderQuantites[productProvider.quickOrderProductsList[index].id]}x ",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
-                                          color: Theme.of(context).primaryColor
+                                // Product Details
+                                SizedBox(
+                                  width: size.width * 0.5,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      // Product Name and Quantity
+                                      productProvider.quickOrderQuantites[productProvider.quickOrderProductsList[index].id] != null && productProvider.quickOrderQuantites[productProvider.quickOrderProductsList[index].id]! > 0
+                                      ? RichText(
+                                        text: TextSpan(
+                                          text: "${productProvider.quickOrderQuantites[productProvider.quickOrderProductsList[index].id]}x ",
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            color: Theme.of(context).primaryColor
+                                          ),
+                                          children: [
+                                            TextSpan(
+                                              text: "${productProvider.quickOrderProductsList[index].name}/${productProvider.quickOrderProductsList[index].quantity}",
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.black
+                                              )
+                                            )
+                                          ]
                                         ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      )
+                                      : AppTextWidget(
+                                        text: "${productProvider.quickOrderProductsList[index].name}/${productProvider.quickOrderProductsList[index].quantity}", 
+                                        fontSize: 14, 
+                                        maxLines: 2,
+                                        textOverflow: TextOverflow.ellipsis,
+                                        fontWeight: FontWeight.w500
+                                      ),
+                                      const SizedBox(height: 5,),
+                                      // Product Description
+                                      AppTextWidget(
+                                        text: productProvider.quickOrderProductsList[index].description.replaceAll("<p>", "").replaceAll("</p>", ""), 
+                                        fontSize: 12, 
+                                        maxLines: 2,
+                                        fontColor: Colors.grey,
+                                        textOverflow: TextOverflow.ellipsis,
+                                        fontWeight: FontWeight.w300
+                                      ),
+                                      const SizedBox(height: 5,),
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.end,
                                         children: [
-                                          TextSpan(
-                                            text: "${productProvider.quickOrderProductsList[index].name}/${productProvider.quickOrderProductsList[index].quantity}",
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.black
-                                            )
-                                          )
-                                        ]
-                                      ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    )
-                                    : AppTextWidget(
-                                      text: "${productProvider.quickOrderProductsList[index].name}/${productProvider.quickOrderProductsList[index].quantity}", 
-                                      fontSize: 14, 
-                                      maxLines: 2,
-                                      textOverflow: TextOverflow.ellipsis,
-                                      fontWeight: FontWeight.w500
-                                    ),
-                                    const SizedBox(height: 5,),
-                                    // Product Description
-                                    AppTextWidget(
-                                      text: productProvider.quickOrderProductsList[index].description.replaceAll("<p>", "").replaceAll("</p>", ""), 
-                                      fontSize: 12, 
-                                      maxLines: 2,
-                                      fontColor: Colors.grey,
-                                      textOverflow: TextOverflow.ellipsis,
-                                      fontWeight: FontWeight.w300
-                                    ),
-                                    const SizedBox(height: 5,),
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.end,
-                                      children: [
-                                        // Product Final price
-                                        AppTextWidget(
-                                          text: "₹${productProvider.quickOrderProductsList[index].finalPrice.toString()}", 
-                                          fontSize: 14, 
-                                          fontColor: Theme.of(context).primaryColor,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                        const SizedBox(width: 5,),
-                                        // Product Price 
-                                        Text(
-                                          "₹${productProvider.quickOrderProductsList[index].price.toString()}",
-                                          style: const TextStyle(
+                                          // Product Final price
+                                          AppTextWidget(
+                                            text: "₹${productProvider.quickOrderProductsList[index].finalPrice.toString()}", 
                                             fontSize: 14, 
-                                            fontWeight: FontWeight.w400,
-                                            decorationThickness: 2,
-                                            decorationColor: Colors.grey,
-                                            color: Colors.grey,
-                                            decoration: TextDecoration.lineThrough,
+                                            fontColor: Theme.of(context).primaryColor,
+                                            fontWeight: FontWeight.w500,
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              // Increment and Decrement Button
-                              SizedBox(
-                                height: 105,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
-                                      width: 40,
-                                      height: productProvider.quickOrderQuantites[productProvider.quickOrderProductsList[index].id] != null 
-                                      && productProvider.quickOrderQuantites[productProvider.quickOrderProductsList[index].id]! >= 1 ? 50: 105,
-                                      child: AnimatedSize(
-                                        duration: const Duration(milliseconds: 500),
-                                        curve: Curves.easeInOut,
-                                        child: ElevatedButton(
-                                          onPressed: () {
-                                            productProvider.incrementQuickOrderQuantity(
-                                              productPrice: productProvider.quickOrderProductsList[index].finalPrice, 
-                                              productId: productProvider.quickOrderProductsList[index].id,
-                                              isIncrement: true
-                                            );
-                                            // Add the product to selected list
-                                            productProvider.addSelectedProducts(
-                                              SelectedProductModel(
-                                                id: productProvider.quickOrderProductsList[index].id, 
-                                                productName: productProvider.quickOrderProductsList[index].name,
-                                                productQuantity: productProvider.quickOrderProductsList[index].quantity, 
-                                                quantityIndex: index, 
-                                                quantity: productProvider.quickOrderQuantites[productProvider.quickOrderProductsList[index].id]!, 
-                                                listPrice: productProvider.quickOrderProductsList[index].price, 
-                                                finalPrice: productProvider.quickOrderProductsList[index].finalPrice
-                                              ),
-                                            );
-                                          }, 
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: productProvider.quickOrderQuantites[productProvider.quickOrderProductsList[index].id] != null &&  productProvider.quickOrderQuantites[productProvider.quickOrderProductsList[index].id]! >= 1 
-                                              ? Theme.of(context).primaryColor
-                                              : Colors.transparent.withValues(alpha: 0.0),
-                                            elevation: 0,
-                                            alignment: Alignment.centerLeft,
-                                            padding: EdgeInsets.fromLTRB(condition ? 13 : 10, 0, 0, 0),
-                                            shadowColor: Colors.transparent.withValues(alpha: 0.0),
-                                            overlayColor: condition 
-                                              ? Colors.white12
-                                              : Colors.transparent.withValues(alpha: 0.1),
-                                            shape: RoundedRectangleBorder(
-                                              side: condition 
-                                              ? BorderSide.none 
-                                              : BorderSide(color: Colors.grey.shade300),
-                                              borderRadius: BorderRadius.circular(5)
-                                            )
+                                          const SizedBox(width: 5,),
+                                          // Product Price 
+                                          Text(
+                                            "₹${productProvider.quickOrderProductsList[index].price.toString()}",
+                                            style: const TextStyle(
+                                              fontSize: 14, 
+                                              fontWeight: FontWeight.w400,
+                                              decorationThickness: 2,
+                                              decorationColor: Colors.grey,
+                                              color: Colors.grey,
+                                              decoration: TextDecoration.lineThrough,
+                                            ),
                                           ),
-                                          child: Icon(
-                                            CupertinoIcons.plus,
-                                            color: condition 
-                                            ? Colors.white
-                                            : Theme.of(context).primaryColor,
-                                            size: condition ? 13 : 20,
-                                          ) 
-                                        ),
+                                        ],
                                       ),
-                                    ),
-                                    // productProvider.quantities[index] >= 1
-                                    // ? AppTextWidget(
-                                    //   text: , 
-                                    //   fontSize: 13, 
-                                    //   fontWeight: FontWeight.w400,
-                                    //   fontColor: Colors.black54,
-                                    // )
-                                    // : Container(),
-                                    condition
-                                    ? SizedBox(
+                                    ],
+                                  ),
+                                ),
+                                // Increment and Decrement Button
+                                SizedBox(
+                                  height: 105,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      SizedBox(
                                         width: 40,
-                                        height: 50,
+                                        height: productProvider.quickOrderQuantites[productProvider.quickOrderProductsList[index].id] != null 
+                                        && productProvider.quickOrderQuantites[productProvider.quickOrderProductsList[index].id]! >= 1 ? 50: 105,
                                         child: AnimatedSize(
                                           duration: const Duration(milliseconds: 500),
                                           curve: Curves.easeInOut,
                                           child: ElevatedButton(
                                             onPressed: () {
-                                              // Decrease the quantity of the product
                                               productProvider.incrementQuickOrderQuantity(
                                                 productPrice: productProvider.quickOrderProductsList[index].finalPrice, 
                                                 productId: productProvider.quickOrderProductsList[index].id,
-                                                // index: index,
+                                                isIncrement: true
                                               );
-                                              // Remove the product from the selected list
+                                              // Add the product to selected list
                                               productProvider.addSelectedProducts(
                                                 SelectedProductModel(
                                                   id: productProvider.quickOrderProductsList[index].id, 
@@ -319,35 +272,100 @@ class _QuickOrderScreenState extends State<QuickOrderScreen> {
                                                   quantity: productProvider.quickOrderQuantites[productProvider.quickOrderProductsList[index].id]!, 
                                                   listPrice: productProvider.quickOrderProductsList[index].price, 
                                                   finalPrice: productProvider.quickOrderProductsList[index].finalPrice
-                                                )
+                                                ),
                                               );
                                             }, 
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.transparent.withValues(alpha: 0.0),
+                                              backgroundColor: productProvider.quickOrderQuantites[productProvider.quickOrderProductsList[index].id] != null &&  productProvider.quickOrderQuantites[productProvider.quickOrderProductsList[index].id]! >= 1 
+                                                ? Theme.of(context).primaryColor
+                                                : Colors.transparent.withValues(alpha: 0.0),
                                               elevation: 0,
                                               alignment: Alignment.centerLeft,
-                                              padding: const EdgeInsets.fromLTRB(12, 0, 0, 0),
+                                              padding: EdgeInsets.fromLTRB(condition ? 13 : 10, 0, 0, 0),
                                               shadowColor: Colors.transparent.withValues(alpha: 0.0),
-                                              overlayColor: Colors.transparent.withValues(alpha: 0.1),
+                                              overlayColor: condition 
+                                                ? Colors.white12
+                                                : Colors.transparent.withValues(alpha: 0.1),
                                               shape: RoundedRectangleBorder(
-                                                side: BorderSide(color: Colors.grey.shade300),
+                                                side: condition 
+                                                ? BorderSide.none 
+                                                : BorderSide(color: Colors.grey.shade300),
                                                 borderRadius: BorderRadius.circular(5)
                                               )
                                             ),
                                             child: Icon(
-                                              CupertinoIcons.minus,
-                                              color: Theme.of(context).primaryColor,
-                                              size: 15,
-                                            )
+                                              CupertinoIcons.plus,
+                                              color: condition 
+                                              ? Colors.white
+                                              : Theme.of(context).primaryColor,
+                                              size: condition ? 13 : 20,
+                                            ) 
                                           ),
                                         ),
-                                      )
-                                    : Container()
-                                  ],
+                                      ),
+                                      // productProvider.quantities[index] >= 1
+                                      // ? AppTextWidget(
+                                      //   text: , 
+                                      //   fontSize: 13, 
+                                      //   fontWeight: FontWeight.w400,
+                                      //   fontColor: Colors.black54,
+                                      // )
+                                      // : Container(),
+                                      condition
+                                      ? SizedBox(
+                                          width: 40,
+                                          height: 50,
+                                          child: AnimatedSize(
+                                            duration: const Duration(milliseconds: 500),
+                                            curve: Curves.easeInOut,
+                                            child: ElevatedButton(
+                                              onPressed: () {
+                                                // Decrease the quantity of the product
+                                                productProvider.incrementQuickOrderQuantity(
+                                                  productPrice: productProvider.quickOrderProductsList[index].finalPrice, 
+                                                  productId: productProvider.quickOrderProductsList[index].id,
+                                                  // index: index,
+                                                );
+                                                // Remove the product from the selected list
+                                                productProvider.addSelectedProducts(
+                                                  SelectedProductModel(
+                                                    id: productProvider.quickOrderProductsList[index].id, 
+                                                    productName: productProvider.quickOrderProductsList[index].name,
+                                                    productQuantity: productProvider.quickOrderProductsList[index].quantity, 
+                                                    quantityIndex: index, 
+                                                    quantity: productProvider.quickOrderQuantites[productProvider.quickOrderProductsList[index].id]!, 
+                                                    listPrice: productProvider.quickOrderProductsList[index].price, 
+                                                    finalPrice: productProvider.quickOrderProductsList[index].finalPrice
+                                                  )
+                                                );
+                                              }, 
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.transparent.withValues(alpha: 0.0),
+                                                elevation: 0,
+                                                alignment: Alignment.centerLeft,
+                                                padding: const EdgeInsets.fromLTRB(12, 0, 0, 0),
+                                                shadowColor: Colors.transparent.withValues(alpha: 0.0),
+                                                overlayColor: Colors.transparent.withValues(alpha: 0.1),
+                                                shape: RoundedRectangleBorder(
+                                                  side: BorderSide(color: Colors.grey.shade300),
+                                                  borderRadius: BorderRadius.circular(5)
+                                                )
+                                              ),
+                                              child: Icon(
+                                                CupertinoIcons.minus,
+                                                color: Theme.of(context).primaryColor,
+                                                size: 15,
+                                              )
+                                            ),
+                                          ),
+                                        )
+                                      : Container()
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            
-                            ],
+                              
+                              ],
+                            ),
                           ),
                         ),
                         SizedBox(height: productProvider.quickOrderProductsList.length - 1 == index ? 105 :0,)

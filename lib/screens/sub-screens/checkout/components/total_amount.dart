@@ -1,5 +1,4 @@
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class TotalAmount extends StatelessWidget {

@@ -1,10 +1,11 @@
-import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/model/products_model.dart';
 import 'package:app_3/providers/api_provider.dart';
-import 'package:app_3/screens/sub-screens/checkout/payment_screen.dart';
-import 'package:app_3/screens/sub-screens/productDetail/components/review_counts.dart';
-import 'package:app_3/screens/sub-screens/productDetail/components/reviews_dashbaord.dart';
-import 'package:app_3/screens/sub-screens/productDetail/components/reviews_listing.dart';
+import 'package:app_3/providers/cart_items_provider.dart';
+import 'package:app_3/screens/sub-screens/productDetail/components/similar_products.dart';
+// import 'package:app_3/screens/sub-screens/checkout/payment_screen.dart';
+// import 'package:app_3/screens/sub-screens/productDetail/components/review_counts.dart';
+// import 'package:app_3/screens/sub-screens/productDetail/components/reviews_dashbaord.dart';
+// import 'package:app_3/screens/sub-screens/productDetail/components/reviews_listing.dart';
 import 'package:app_3/screens/sub-screens/productDetail/provider/product_detail_provider.dart';
 import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
 import 'package:app_3/widgets/common_widgets.dart/button_widget.dart';
@@ -13,6 +14,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../helper/shared_preference_helper.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   final Products productDetail;
@@ -24,6 +28,7 @@ class ProductDetailScreen extends StatelessWidget {
     Size size = MediaQuery.sizeOf(context);
     return Consumer<ApiProvider>(
       builder: (context, provider, child) {
+        SharedPreferences prefs = SharedPreferencesHelper.getSharedPreferences();
         return Scaffold(
           appBar: AppBarWidget(
             title: productDetail.name,
@@ -34,7 +39,18 @@ class ProductDetailScreen extends StatelessWidget {
               Navigator.pop(context);
             },
             actions: [
-              IconButton(onPressed: (){}, icon: const Icon(CupertinoIcons.heart))
+              IconButton(
+                onPressed: ()async{
+                   await provider.addWishlist(productDetail.id, size, productDetail.name, productDetail.quantity, context);
+                }, 
+                icon: Icon(
+                  prefs.getBool('${productDetail.id}${productDetail.name}${productDetail.quantity}') ?? false
+                  ? CupertinoIcons.heart_fill
+                  : CupertinoIcons.heart,
+                  color: prefs.getBool('${productDetail.id}${productDetail.name}${productDetail.quantity}') ?? false
+                  ? Theme.of(context).primaryColor : null,
+                )
+              )
             ],
           ),
           body: Column(
@@ -168,115 +184,51 @@ class ProductDetailScreen extends StatelessWidget {
                             // Similar product list
                             SizedBox(
                               height: size.height * 0.28,
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: provider.quickOrderProductsList.length,
-                                itemBuilder: (context, index) {
-                                  Products products = provider.quickOrderProductsList[index]; 
-                                  return Row(
-                                    spacing: 10,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(context, SideTransistionRoute(screen: ProductDetailScreen(productDetail: products, category: category)));
-                                        },
-                                        child: Card(
-                                          elevation: 2,
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(5)
-                                            ),
-                                            height: size.height * 0.28,
-                                            width: size.width / 3,
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                ClipRRect(
-                                                  borderRadius: const BorderRadius.only(topLeft: Radius.circular(5), topRight: Radius.circular(5)),
-                                                  child: CachedNetworkImage(
-                                                    height: size.height * 0.2,
-                                                      width: size.width / 3,
-                                                      fit: BoxFit.cover,
-                                                    imageUrl: 'https://maduraimarket.in/public/image/product/${products.image}'
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.only(left: 3, right: 3),
-                                                  child: SizedBox(
-                                                    // width: size.width / 4,
-                                                    child: AppTextWidget(
-                                                      text: products.name, 
-                                                      fontWeight: FontWeight.w400,
-                                                      maxLines: 2,
-                                                      fontSize: 12,
-                                                      textOverflow: TextOverflow.ellipsis,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.only(left: 3, right: 3),
-                                                  child: AppTextWidget(
-                                                    text: '₹${products.finalPrice}', 
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: 12,
-                                                    maxLines: 2,
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Container()
-                                    ],
-                                  );
-                                },
-                              ),
+                              child: SimilarProducts(similarProducts: provider.similarProducts)
                             ),
                             // Review heading
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                AppTextWidget(
-                                  text: "Customer reviews", 
-                                  fontWeight: FontWeight.w600, 
-                                  fontSize: 16, 
-                                  fontColor: Theme.of(context).primaryColorDark.withValues(alpha: 0.7),
-                                ),
-                                InkWell(
-                                  onTap: () {
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //   children: [
+                            //     AppTextWidget(
+                            //       text: "Customer reviews", 
+                            //       fontWeight: FontWeight.w600, 
+                            //       fontSize: 16, 
+                            //       fontColor: Theme.of(context).primaryColorDark.withValues(alpha: 0.7),
+                            //     ),
+                            //     InkWell(
+                            //       onTap: () {
                                    
-                                  },
-                                  child: AppTextWidget(
-                                    text: "Write a review", 
-                                    fontWeight: FontWeight.w400, 
-                                    fontSize: 13, 
-                                    fontColor: Theme.of(context).primaryColor,
-                                  ),
-                                )
-                              ],
-                            ),
-                            // Review counts and stars
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              spacing: 5,
-                              children: [
-                                ReviewCounts(average: (4.5).toInt()),
-                                const AppTextWidget(
-                                  text: "332 total ratings, 58 with reviews", 
-                                  fontWeight: FontWeight.w400, 
-                                  fontSize: 14, 
-                                ),
-                              ],
-                            ),
-                            // Reviews dash board
-                            const ReviewsDashbaord(
-                              ratings: [126, 24, 55, 65, 62], // 126 + 24 + 
-                              totalRating: 332
-                            ),
-                            // Reviews listing
-                            const ReviewsListing(reviews: 3)
+                            //       },
+                            //       child: AppTextWidget(
+                            //         text: "Write a review", 
+                            //         fontWeight: FontWeight.w400, 
+                            //         fontSize: 13, 
+                            //         fontColor: Theme.of(context).primaryColor,
+                            //       ),
+                            //     )
+                            //   ],
+                            // ),
+                            // // Review counts and stars
+                            // Column(
+                            //   crossAxisAlignment: CrossAxisAlignment.start,
+                            //   spacing: 5,
+                            //   children: [
+                            //     ReviewCounts(average: (4.5).toInt()),
+                            //     const AppTextWidget(
+                            //       text: "332 total ratings, 58 with reviews", 
+                            //       fontWeight: FontWeight.w400, 
+                            //       fontSize: 14, 
+                            //     ),
+                            //   ],
+                            // ),
+                            // // Reviews dash board
+                            // const ReviewsDashbaord(
+                            //   ratings: [126, 24, 55, 65, 62], // 126 + 24 + 
+                            //   totalRating: 332
+                            // ),
+                            // // Reviews listing
+                            // const ReviewsListing(reviews: 3)
                           ],
                         ),
                       ),
@@ -288,36 +240,109 @@ class ProductDetailScreen extends StatelessWidget {
               // Product buying button
               SizedBox(
                 height: kToolbarHeight + 14,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ButtonWidget(
-                          width: size.width * 0.45,
-                          buttonName: "Add to Cart", 
-                          buttonColor: Colors.white,
-                          fontSize: 16,
-                          splashColor: Colors.transparent.withValues(alpha: 0.4),
-                          fontColor: Theme.of(context).primaryColor,
-                          bordercolor: Theme.of(context).primaryColor,
-                          onPressed: () {
-                            
-                          },
-                        ),
-                        ButtonWidget(
-                          width: size.width * 0.45,
-                          buttonName: "Buy now", 
-                          fontSize: 16,
-                          onPressed: () {
-                            
-                          },
-                        )
-                      ],
-                    ),
-                  ),
+                child: Consumer<CartProvider>(
+                  builder: (context, cartProvider, child) {
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+                      child: cartProvider.cartQuantities[productDetail.id] != null 
+                      ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            splashRadius: 120,
+                            onPressed: () async {
+                              if (cartProvider.cartQuantities[productDetail.id]  != null && cartProvider.cartQuantities[productDetail.id]  == 1) {
+                                cartProvider.confirmDelete(id: productDetail.id, size: size, context: context);
+                              } else {
+                                cartProvider.incrementQuantity(productId: productDetail.id);
+                                List<Map<String, dynamic>> cartProductData = [];
+                                cartProvider.cartQuantities.forEach((key, value) {
+                                  cartProductData.add({
+                                    "prdt_id": key,
+                                    "prdt_qty": value,
+                                    "prdt_total": value * productDetail.finalPrice
+                                  });
+                                },);
+                                await cartProvider.updateCart(size, context, cartProductData, false);
+                              }
+                            },
+                            icon: Icon(
+                              cartProvider.cartQuantities[productDetail.id] != null && cartProvider.cartQuantities[productDetail.id] == 1 
+                              ? CupertinoIcons.delete
+                              : CupertinoIcons.minus, 
+                              size: 34, 
+                              color: cartProvider.cartQuantities[productDetail.id] != null && cartProvider.cartQuantities[productDetail.id] == 1
+                              ? Colors.red
+                              : null,
+                            )
+                          ),
+                                              
+                          // Indicator quantity
+                          Column(
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                  text: "${cartProvider.cartQuantities[productDetail.id]}x ",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: Theme.of(context).primaryColor
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: cartProvider.cartQuantities[productDetail.id]! >= 1 ? "items" :"item",
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    )
+                                  ]
+                                )
+                              ),
+                              // AppTextWidget(
+                                // text:  
+                              //   fontWeight: FontWeight.w400,
+                              //   fontSize: 14,
+                              // ),
+                              AppTextWidget(
+                                text: "In total - ₹${cartProvider.cartQuantities[productDetail.id]! * productDetail.finalPrice}", 
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                              )
+                            ],
+                          ),
+
+                           IconButton(
+                              onPressed: () async {
+                                cartProvider.incrementQuantity(productId: productDetail.id, isIncrement: true);
+                                List<Map<String, dynamic>> cartProductData = [];
+                                cartProvider.cartQuantities.forEach((key, value) {
+                                  cartProductData.add({
+                                    "prdt_id": key,
+                                    "prdt_qty": value,
+                                    "prdt_total": value * productDetail.finalPrice
+                                  });
+                                },);
+                                await cartProvider.updateCart(size, context, cartProductData, false);
+                              },
+                              icon: Icon(
+                                CupertinoIcons.plus, 
+                                size: 34,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                        ],
+                      )
+                      : ButtonWidget(
+                        width: double.infinity,
+                        buttonName: "Add to Cart", 
+                        fontSize: 16,
+                        onPressed: () async {
+                          await cartProvider.addCart(productDetail.id, size, context, productDetail);
+                        },
+                      ),
+                    );
+                  }
                 ),
               )
             ],

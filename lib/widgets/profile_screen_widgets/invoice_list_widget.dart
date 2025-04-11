@@ -17,7 +17,7 @@ class InvoiceListWidget extends StatelessWidget {
     return Consumer<ProfileProvider>(
       builder: (context, provider, child) {
         return provider.invoices.isEmpty
-          ? FutureBuilder<String?>(
+          ? FutureBuilder(
             future: provider.getInvoice(), 
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -38,15 +38,7 @@ class InvoiceListWidget extends StatelessWidget {
                     ],
                   ),
                 );
-              }else if(snapshot.hasError || snapshot.data == null){
-                return const Center(
-                  child: AppTextWidget(
-                    text: "No invoices found",
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                );
-              } else{
+              }else{
                 return Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,32 +115,6 @@ class InvoiceListWidget extends StatelessWidget {
                           children: [
                             // Invoice Id and download Button
                             SubscriptionDetailWidget(title: 'Invoice No ', value: invoices[index].invoiceNo.toString()),
-                            // Row(
-                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            //   children: [
-                            //     // Row(
-                            //     //   children: [
-                            //     //     const AppTextWidget(
-                            //     //       text: "Invoice No: ", 
-                            //     //       fontSize: 14, 
-                            //     //       fontWeight: FontWeight.w500
-                            //     //     ),
-                            //     //     AppTextWidget(
-                            //     //       text: , 
-                            //     //       fontSize: 12, 
-                            //     //       fontWeight: FontWeight.w400
-                            //     //     )
-                            //     //   ],
-                            //     // ),
-                            //     // Icon(
-                            //     //   CupertinoIcons.down_arrow, 
-                            //     //   size: 20, 
-                            //     //   color: Theme.of(context).primaryColor,
-                            //     // )
-                                
-                            //   ],
-                            // ),
-                            
                             // Order ID
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,

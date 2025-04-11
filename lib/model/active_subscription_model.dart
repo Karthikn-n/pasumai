@@ -36,7 +36,7 @@ class ActiveSubscriptionModel {
 
     return ActiveSubscriptionModel(
       subId: json['sub_id'] ?? 0,
-      subRefId: json['sub_ref_id'] ?? json['sub_id'],
+      subRefId: int.tryParse(json['sub_ref_id'] ?? json['sub_id'].toString()) ?? 0,
       startDate: json['start_date'] ?? '',
       endDate: json['end_date'],
       status: json['status'] ?? '',
@@ -44,7 +44,7 @@ class ActiveSubscriptionModel {
       frequency: json['frequency'] ?? '',
       productId: json['product_id'] ?? 0,
       productName: json['product_name'] ?? '',
-      productPrice: json['product_price'] ?? '',
+      productPrice: int.tryParse(json['product_price']?.toString() ?? '0') ?? 0,
       productImage: json['product_image'] ?? '',
       frequencyData: frequencyDataJson.map((data) => FrequencyData.fromJson(data)).toList(),
       frequencyMobData: frequencyMobDataJson.map((data) => FrequencyDataMob.fromJson(data)).toList(),
@@ -85,8 +85,8 @@ class FrequencyDataMob {
   factory FrequencyDataMob.fromJson(Map<String, dynamic> json) {
     return FrequencyDataMob(
       day: json['day'],
-      mrgQuantity: json['mrg_quantity'],
-      evgQuantity: json['evg_quantity'],
+      mrgQuantity: int.tryParse(json['mrg_quantity']?.toString() ?? '0') ?? 0,
+      evgQuantity: int.tryParse(json['evg_quantity']?.toString() ?? '0') ?? 0,
     );
   }
 }

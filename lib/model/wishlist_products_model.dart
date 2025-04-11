@@ -3,7 +3,7 @@ class WishlistProductsModel{
   final String title;
   final String description;
   final String image;
-  final String finalPrice;
+  final int finalPrice;
   final String quantity;
   final int price;
 
@@ -32,11 +32,11 @@ class WishlistProductsModel{
     return WishlistProductsModel(
       productId: map['product_id'], 
       title: map['title'], 
-      finalPrice: map["final_price"].toString(),
-      description: map["description"], 
-      quantity: map["quantity"],
-      image: map["image"], 
-      price: map["price"]
+      finalPrice: int.tryParse(map["final_price"].toString()) ?? 0,
+      description: map["description"] ?? "", 
+      quantity: map["quantity"] ?? "",
+      image: map["image"] ?? "", 
+      price: int.tryParse(map["price"].toString()) ?? 0,
     );
   }
 }

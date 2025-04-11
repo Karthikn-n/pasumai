@@ -1,3 +1,5 @@
+import 'dart:developer' as dev;
+
 import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/providers/firebase_provider.dart';
 import 'package:app_3/providers/locale_provider.dart';
@@ -30,6 +32,8 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  final stopwatch = Stopwatch()..start();
   await SharedPreferencesHelper.init();
   final SharedPreferences prefs = SharedPreferencesHelper.getSharedPreferences();
   await FirebaseProvider.init();
@@ -61,17 +65,38 @@ void main() async {
           ChangeNotifierProvider(create: (_) => FirebaseProvider(),),
           ChangeNotifierProvider(create: (_) => FilterProvider(),)
         ],
-        child: MyApp(userLogged:  prefs.getBool("${prefs.getString("customerId")}_${prefs.getString("mobile")}_logged") ?? false,)
+        child: MyApp(userLogged:  prefs.getBool("${prefs.getString("customerId")}_${prefs.getString("mobile")}_logged") ?? false, stopwatch: stopwatch,),
       )
     );
   });
-  
+  dev.Service.getInfo().then((info) {
+    print('VM Service URL: ${info.serverUri}');
+  });
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   final bool userLogged;
-  const MyApp({super.key, required this.userLogged});
+  final Stopwatch stopwatch;
+  const MyApp({super.key, required this.userLogged, required this.stopwatch});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+
+  @override
+  void initState() {
+    super.initState();
+    
+    // Stop the stopwatch when the first frame is rendered
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.stopwatch.stop();
+      dev.log('Startup time: ${widget.stopwatch.elapsedMilliseconds} ms');
+      debugPrint('Startup time: ${widget.stopwatch.elapsedMilliseconds} ms');
+    });
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Consumer<LocaleProvider>(
@@ -119,7 +144,7 @@ class MyApp extends StatelessWidget {
             primaryColorDark: Colors.black,
             scaffoldBackgroundColor: Colors.white,
           ),
-          home: SplashScreen(userLogged: userLogged,),
+          home: SplashScreen(userLogged: widget.userLogged,),
         );
       },
     );

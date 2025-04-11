@@ -25,7 +25,7 @@ class CartProducts{
       total: json['total'], 
       listPrice: json["price"].toString(),
       image: json['product_image'], 
-      quantity: json['quantity']
+      quantity: int.tryParse(json['quantity']?.toString() ?? '0') ?? 0
     );
   }
 }

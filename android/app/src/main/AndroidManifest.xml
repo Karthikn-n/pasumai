@@ -6,11 +6,11 @@
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
+    <!-- <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/> -->
     <uses-permission android:name="android.permission.CAMERA"/>
     <!-- Get the contact from the user -->
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
-    <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
+    <!-- <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.WRITE_CONTACTS"/> -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <!-- Read the messages from the default message app and receive it from the sender -->
@@ -19,6 +19,9 @@
     <!-- This will allow reschedule notifications upon device reboot -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- <uses-permission android:name="android.permission.RECEIVE_SMS"/> -->
+    <!-- <uses-permission android:name="android.permission.READ_SMS"/> -->
+
     <!-- This will allow to set the notification in exact timing -->
     <!-- <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/> -->
     <!-- <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/> -->
@@ -52,12 +55,6 @@
             <!-- This service is used to get the notification in foreground application as well
             https://firebase.google.com/docs/cloud-messaging/android/client?authuser=0&hl=en#manifest -->
             
-            <meta-data
-                android:name="firebase_messaging_auto_init_enabled"
-                android:value="false" />
-            <meta-data
-                android:name="firebase_analytics_collection_enabled"
-                android:value="false" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

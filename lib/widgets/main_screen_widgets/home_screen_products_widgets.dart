@@ -82,6 +82,16 @@ class HomeScreenProducts extends StatelessWidget {
                                           child: CachedNetworkImage(
                                             imageUrl: imageUrl,
                                             fit: BoxFit.cover,
+                                            imageBuilder: (context, imageProvider) {
+                                              return Container(
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                    image: imageProvider,
+                                                    fit: BoxFit.cover
+                                                  )
+                                                ),
+                                              );
+                                            },
                                             cacheManager: CacheManagerHelper.cacheIt(key: product.image),
                                           ),
                                         ),
@@ -97,9 +107,9 @@ class HomeScreenProducts extends StatelessWidget {
                                             onTap: () async {
                                               // await addWishlist(product.id, size, product.name, product.quantity);
                                               if (prefs.getBool('${product.id}${product.name}${product.quantity}') ?? true) {
-                                                prefs.setBool('${product.id}${product.name}${product.quantity}',  true);
+                                               await prefs.setBool('${product.id}${product.name}${product.quantity}',  true);
                                               }else{
-                                                prefs.setBool('${product.id}${product.name}${product.quantity}',  false);
+                                               await prefs.setBool('${product.id}${product.name}${product.quantity}',  false);
                                               }
                                               await addtoWishlistHelper.addWishlist(product.id, size, product.name, product.quantity, context);
                                             },

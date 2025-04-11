@@ -26,7 +26,7 @@ class _SplashScreenState extends State<SplashScreen>{
 
 
   Future<void> initializeApp() async {
-    await Future.wait([
+    Future.wait([
       preLoadAPi(),
     ]);
   }

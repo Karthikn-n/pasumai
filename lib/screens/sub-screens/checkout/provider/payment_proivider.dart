@@ -53,24 +53,26 @@ class PaymentProivider extends ChangeNotifier{
   }
   // Card list
   Future<void> cardUpiList() async {
-    final Map<String, dynamic> userdata = {"customer_id": prefs.getString("customerId")};
-    final response = await paymentRepo.cardUpiList(userdata);
-    final decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), "");
-    final decodedReponse = json.decode(decryptedResponse);
-    print('Card Upi list response: $decodedReponse, Stauts code: ${response.statusCode}');
-    if (response.statusCode == 200 ) {
-      if (decodedReponse["upi_data"] != "No UPI data" ) {
-        List<dynamic> upiData = decodedReponse["upi_data"];
-        upis = upiData.map((upi) => UpiModel.fromMap(upi),).toList();
-      }
-      if (decodedReponse["upi_data"] != "No Card data") {
-        List<dynamic> cardData = decodedReponse["card_data"];
-        cards = cardData.map((card) => CardModel.fromMap(card),).toList();
-      }
-    }
-    else{
-      print('CardUPi Error: $decodedReponse');
-    }
+    cards.clear();
+    upis.clear();
+    // final Map<String, dynamic> userdata = {"customer_id": prefs.getString("customerId")};
+    // final response = await paymentRepo.cardUpiList(userdata);
+    // final decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), "");
+    // final decodedReponse = json.decode(decryptedResponse);
+    // print('Card Upi list response: $decodedReponse, Stauts code: ${response.statusCode}');
+    // if (response.statusCode == 200 ) {
+    //   if (decodedReponse["upi_data"] != "No UPI data" ) {
+    //     List<dynamic> upiData = decodedReponse["upi_data"];
+    //     upis = upiData.map((upi) => UpiModel.fromMap(upi),).toList();
+    //   }
+    //   if (decodedReponse["upi_data"] != "No Card data") {
+    //     List<dynamic> cardData = decodedReponse["card_data"];
+    //     cards = cardData.map((card) => CardModel.fromMap(card),).toList();
+    //   }
+    // }
+    // else{
+    //   print('CardUPi Error: $decodedReponse');
+    // }
     notifyListeners();
   }
   

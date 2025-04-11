@@ -17,7 +17,7 @@ class ProductOrdered {
     return ProductOrdered(
       productId: json['product_id'],
       productName: json['product_name'],
-      quantity: json['quantity'],
+      quantity: int.tryParse(json['quantity'].toString()) ?? 0,
       price: json['price'],
       total: json['total'].toString(),
     );

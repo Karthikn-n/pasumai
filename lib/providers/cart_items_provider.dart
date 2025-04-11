@@ -77,7 +77,7 @@ class CartProvider extends ChangeNotifier{
       cartItems = results.map((result) => CartProducts.fromJson(result)).toList();
       createCartQuantities();
       totalCartProduct = int.parse(decodedResponse['cart_count'].toString());
-      totalCartAmount = decodedResponse["cart_total"];
+      totalCartAmount = int.tryParse(decodedResponse["cart_total"]?.toString() ?? '0') ?? 0;
     } else {
       print('Something went wrong ${response.body}');
     }
@@ -148,6 +148,7 @@ class CartProvider extends ChangeNotifier{
           cartQuantities[productId] = 1;
           totalCartProduct++;
           totalCartAmount += product.finalPrice;
+          print("Total AMount: $totalCartAmount");
           await cartItemsAPI();
           notifyListeners();
       },);

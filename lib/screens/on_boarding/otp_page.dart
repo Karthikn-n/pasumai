@@ -3,6 +3,7 @@ import 'package:app_3/helper/shared_preference_helper.dart';
 import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/providers/api_provider.dart';
+import 'package:app_3/providers/otp_provider.dart';
 import 'package:app_3/repository/app_repository.dart';
 import 'package:app_3/screens/main_screens/bottom_bar.dart';
 import 'package:app_3/service/api_service.dart';
@@ -14,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 
 
 class OtpPage extends StatefulWidget {
@@ -42,6 +44,8 @@ class _OtpPageState extends State<OtpPage> with WidgetsBindingObserver{
   bool isKeyboard = false;
   bool isResending = false;
 
+  String _code = "";
+
   @override
   void initState() {
     super.initState();
@@ -66,6 +70,7 @@ class _OtpPageState extends State<OtpPage> with WidgetsBindingObserver{
     _resendTimer.cancel();
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
+    SmsAutoFill().unregisterListener();
   }
 
 
@@ -130,37 +135,65 @@ class _OtpPageState extends State<OtpPage> with WidgetsBindingObserver{
                       ),
                       const SizedBox(height: 16,),
                       // OTP Field
-                      Center(
-                        child: SizedBox(
-                          width: size.width,
-                          height: kToolbarHeight,
-                          child: Pinput(
-                            focusedPinTheme: PinTheme(
-                              height: kToolbarHeight,
-                              width: kToolbarHeight + 10,
-                              decoration: BoxDecoration(
-                              border: Border.all(color: Theme.of(context).primaryColor),
-                              borderRadius: BorderRadius.circular(5),
-                              // color: 
-                             )
-                            ),
-                            defaultPinTheme: PinTheme(
-                             height:  kToolbarHeight,
-                             width: kToolbarHeight + 10,
-                             decoration: BoxDecoration(
-                              border: Border.all(
-                                color: const Color.fromARGB(145, 136, 141, 146)
-                              ),
-                              borderRadius: BorderRadius.circular(5),
-                              // color: 
-                             )
-                            ),
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            controller: otpController,
-                            length: 4,
-                          ),
+                      PinFieldAutoFill(
+                        codeLength: 4,
+                        decoration: UnderlineDecoration(
+                          textStyle: const TextStyle(fontSize: 20, color: Colors.black),
+                          colorBuilder: FixedColorBuilder(Colors.black.withValues(alpha: 0.3)),
                         ),
+                        currentCode: _code,
+                        onCodeChanged: (code) async {
+                          if (code!.length == 4) {
+                            setState(() {
+                              _code = code;
+                            });
+                            FocusScope.of(context).requestFocus(FocusNode());
+                          }
+                          try {
+                            await addressProvider.getRegionLocation();
+                              if(widget.fromRegister){
+                                Navigator.push(context, SideTransistionRoute(screen: const NewAddressFormWidget(fromOnboarding: true,)));
+                              }else{
+                                addressProvider.getAddressesAPI();
+                                Navigator.pushAndRemoveUntil(context,  SideTransistionRoute(screen: const BottomBar()), (route) => false);
+                              }
+                          } catch (e) {
+                            print("Error occured: $e");
+                          }
+                        },
                       ),
+                      // Center(
+                      //   child: SizedBox(
+                      //     width: size.width,
+                      //     height: kToolbarHeight,
+                      //     child: Pinput(
+                      //       focusedPinTheme: PinTheme(
+                      //         height: kToolbarHeight,
+                      //         width: kToolbarHeight + 10,
+                      //         decoration: BoxDecoration(
+                      //         border: Border.all(color: Theme.of(context).primaryColor),
+                      //         borderRadius: BorderRadius.circular(5),
+                      //         // color: 
+                      //        )
+                      //       ),
+                      //       defaultPinTheme: PinTheme(
+                      //        height:  kToolbarHeight,
+                      //        width: kToolbarHeight + 10,
+                      //        decoration: BoxDecoration(
+                      //         border: Border.all(
+                      //           color: const Color.fromARGB(145, 136, 141, 146)
+                      //         ),
+                      //         borderRadius: BorderRadius.circular(5),
+                      //         // color: 
+                      //        )
+                      //       ),
+                      //       mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      //       controller: otpController,
+                      //       length: 4,
+                      //     ),
+                      //   ),
+                      // ),
+                      
                       const SizedBox(height: 16),
                       // Verify OTP button
                       Center(

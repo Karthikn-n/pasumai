@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:app_3/model/pre_order_model.dart';
 import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/providers/subscription_provider.dart';
@@ -162,8 +164,9 @@ class _PreOrderProductScreen extends State<PreOrderProductsScreen>{
                         await payProvider.preorderAPi(context, size).then((value) async {
                           await payProvider.activeSubscription();
                         },);
-                      } catch (e) {
-                        print("Somthing happend in subscription: $e");
+                      } catch (e, st) {
+                        log("Subscription log", error: e, stackTrace: st);
+                        // print("Somthing happend in subscription: $e");
                       } finally{
                         setState(() {
                           isLoading = false;

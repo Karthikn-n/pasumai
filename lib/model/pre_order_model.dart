@@ -94,7 +94,7 @@ class CustomerAddress {
   factory CustomerAddress.fromJson(Map<String, dynamic> json) {
     return CustomerAddress(
       id: json['id'] ?? 0,
-      customerId: json['customer_id'] ?? 0,
+      customerId: int.tryParse(json['customer_id']?.toString() ?? '0' )?? 0,
       pincode: json['pincode'] ?? "",
       flatNo: json['flat_no'] ?? "",
       address: json['address'] ?? "",

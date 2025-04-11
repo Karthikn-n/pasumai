@@ -152,16 +152,23 @@ class _QuickOrderScreenState extends State<QuickOrderScreen> {
                                   height: 105,
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(8),
-                                    child: GestureDetector(
-                                      onTap: () async {
-                                        productProvider.confirmOrder(context, size);
+                                    child: CachedNetworkImage(
+                                      // imageUrl: 'http://192.168.1.5/pasumaibhoomi/public/image/product/${productProvider.quickOrderProductsList[index].image}',
+                                      imageUrl: 'https://maduraimarket.in/public/image/product/${productProvider.quickOrderProductsList[index].image}',
+                                      fit: BoxFit.cover,
+                                      memCacheHeight: 105,
+                                      memCacheWidth: 94,
+                                      cacheManager: CacheManagerHelper.cacheIt(key: productProvider.quickOrderProductsList[index].image),
+                                      imageBuilder: (context, imageProvider) {
+                                        return Container(
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              image: imageProvider,
+                                              fit: BoxFit.cover
+                                            )
+                                          ),
+                                        );
                                       },
-                                      child: CachedNetworkImage(
-                                        // imageUrl: 'http://192.168.1.5/pasumaibhoomi/public/image/product/${productProvider.quickOrderProductsList[index].image}',
-                                        imageUrl: 'https://maduraimarket.in/public/image/product/${productProvider.quickOrderProductsList[index].image}',
-                                        fit: BoxFit.cover,
-                                        cacheManager: CacheManagerHelper.cacheIt(key: productProvider.quickOrderProductsList[index].image),
-                                      ),
                                     ),
                                   ),
                                 ),

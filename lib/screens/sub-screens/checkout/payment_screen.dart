@@ -45,7 +45,6 @@ class PaymentScreen extends StatelessWidget {
              UpiPayment(amount: totalAmount, fromCart: fromCart,),
              // Cash on delivery tile
              CashOnDelivery(amount: totalAmount, fromCart: fromCart,),
-             
             ],
           ),
         )

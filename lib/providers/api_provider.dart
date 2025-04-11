@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:app_3/data/encrypt_ids.dart';
 // import 'package:app_3/data/profile_data.dart';
@@ -8,6 +9,7 @@ import 'package:app_3/model/category_model.dart';
 import 'package:app_3/model/products_model.dart';
 import 'package:app_3/model/selected_product_model.dart';
 import 'package:app_3/model/wishlist_products_model.dart';
+import 'package:app_3/providers/otp_provider.dart';
 import 'package:app_3/repository/app_repository.dart';
 import 'package:app_3/screens/main_screens/bottom_bar.dart';
 import 'package:app_3/screens/on_boarding/otp_page.dart';
@@ -91,32 +93,34 @@ class ApiProvider extends ChangeNotifier{
   // User Register API
   Future<void> registerUser(Map<String, dynamic> registerData, BuildContext context, Size size) async {
     try{
-    final response = await apiRepository.registration(registerData);
-    String decryptedResponse =  decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
-    final decodedResponse = json.decode(decryptedResponse);
-    print('Registration Response: $decodedResponse, Status Code: ${response.statusCode}');
-    final registrationMessage = snackBarMessage(
-      context: context, 
-      message: decodedResponse['message'], 
-      backgroundColor: Theme.of(context).primaryColor, 
-      sidePadding: size.width * 0.1, 
-      bottomPadding: size.height * 0.05
-    );
-    if (response.statusCode == 200 && decodedResponse['status'] == "success")  {
-      prefs.setString('customerId', decodedResponse["customer_id"].toString());
-      try {
-        ScaffoldMessenger.of(context).showSnackBar(registrationMessage).closed.then((value) async {
-          await userProfileAPI();
-          prefs.setString("mobile", decodedResponse["mobile_no"]);
-          Navigator.push(context, SideTransistionRoute(screen: const OtpPage(fromRegister: true,),));
-        });
-      } catch (e) {
-        print('Error decoding JSON: $e');
+      final response = await apiRepository.registration(registerData);
+      String decryptedResponse =  decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
+      final decodedResponse = json.decode(decryptedResponse);
+      print('Registration Response: $decodedResponse, Status Code: ${response.statusCode}');
+      final registrationMessage = snackBarMessage(
+        context: context, 
+        message: decodedResponse['message'], 
+        backgroundColor: Theme.of(context).primaryColor, 
+        sidePadding: size.width * 0.1, 
+        bottomPadding: size.height * 0.05
+      );
+      if (response.statusCode == 200 && decodedResponse['status'] == "success")  {
+        prefs.setString('customerId', decodedResponse["customer_id"].toString());
+        try {
+          ScaffoldMessenger.of(context).showSnackBar(registrationMessage).closed.then((value) async {
+            await userProfileAPI();
+            prefs.setString("mobile", decodedResponse["mobile_no"]);
+            // TODO: Uncomment this line once the OTP provider is fully implemented
+            // await OTPProvider().twilioOTPSender(registerData["mobile_no"]);
+            Navigator.push(context, SideTransistionRoute(screen: const OtpPage(fromRegister: true,),));
+          });
+        } catch (e) {
+          print('Error decoding JSON: $e');
+        }
+      }else{
+        ScaffoldMessenger.of(context).showSnackBar(registrationMessage);
+        print('Error: ${response.body}');
       }
-    }else{
-      ScaffoldMessenger.of(context).showSnackBar(registrationMessage);
-      print('Error: ${response.body}');
-    }
     } catch(e){
       print('Something wrong: $e');
     }
@@ -125,128 +129,152 @@ class ApiProvider extends ChangeNotifier{
 
   // Login API
   Future<void> userLogin(String mobileNo, Size size, BuildContext context) async {
-    Map<String, dynamic> userData = {
-      "mobile_no": mobileNo
-    };
-    // Call Login API
-    final response = await apiRepository.signin(userData);
-    // Decrypt the Data 
-    String decryptedData = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
-    final decodedResponse = json.decode(decryptedData);
-    SnackBar loginMessage = snackBarMessage(
-      context: context, 
-      message: decodedResponse['message'], 
-      backgroundColor: const Color(0xFF60B47B), 
-      sidePadding: size.width * 0.1, 
-      bottomPadding: size.height * 0.05
-    );
-    debugPrint('Login Response: $decodedResponse, Status Code: ${response.statusCode}', wrapWidth: 1064);
-    if (response.statusCode == 200 && decodedResponse['status'] == 'success') {
-      prefs.setString('customerId', decodedResponse["customer_id"].toString());
-      prefs.setString("mobile", mobileNo);
-      prefs.setBool("${prefs.getString("customerId")}_${prefs.getString("mobile")}_logged", true);
-      ScaffoldMessenger.of(context).showSnackBar(loginMessage).closed.then(
-        (value) async {
-          // Save User id In Cache
-          await userProfileAPI();
-          Navigator.push(context, SideTransistionRoute(
-            screen: const OtpPage(fromRegister: false,), 
-          ));
-        },
+    try {
+      Map<String, dynamic> userData = {
+        "mobile_no": mobileNo
+      };
+      // Call Login API
+      final response = await apiRepository.signin(userData);
+      // Decrypt the Data 
+      String decryptedData = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
+      final decodedResponse = json.decode(decryptedData);
+      SnackBar loginMessage = snackBarMessage(
+        context: context, 
+        message: decodedResponse['message'], 
+        backgroundColor: const Color(0xFF60B47B), 
+        sidePadding: size.width * 0.1, 
+        bottomPadding: size.height * 0.05
       );
-      
-    }else{
-        ScaffoldMessenger.of(context).showSnackBar(loginMessage);
+      debugPrint('Login Response: $decodedResponse, Status Code: ${response.statusCode}', wrapWidth: 1064);
+      if (response.statusCode == 200 && decodedResponse['status'] == 'success') {
+        prefs.setString('customerId', decodedResponse["customer_id"].toString());
+        prefs.setString("mobile", mobileNo);
+        prefs.setBool("${prefs.getString("customerId")}_${prefs.getString("mobile")}_logged", true);
+        ScaffoldMessenger.of(context).showSnackBar(loginMessage).closed.then(
+          (value) async {
+            // Save User id In Cache
+            await userProfileAPI();
+            // TODO: Uncomment this line once the OTP provider is fully implemented
+            // await OTPProvider().twilioOTPSender(mobileNo);
+            Navigator.push(context, SideTransistionRoute(
+              screen: const OtpPage(fromRegister: false,), 
+            ));
+          },
+        );
+        
+      }else{
+          ScaffoldMessenger.of(context).showSnackBar(loginMessage);
+      }
+      notifyListeners();
+    } on Exception catch (e) {
+        print('Error: $e');
     }
-    notifyListeners();
   }
 
   // Customer Profile
   Future<void> userProfileAPI() async {
-    Map<String, dynamic> userData = {
-      'customer_id': prefs.getString('customerId')
-    };
-    final response = await apiRepository.userprofile(userData);
-    String decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
-    final decodedResponse = json.decode(decryptedResponse);
-    print('Profile Response: $decodedResponse, Status Code: ${response.statusCode}');
-
-    if (response.statusCode == 200 && decodedResponse['status'] == 'success') {
-
-      prefs.setString('firstname', '${decodedResponse['results']['first_name'] ?? ''}');
-      prefs.setString('lastname', '${decodedResponse['results']['last_name'] ?? ''}');
-      prefs.setString('mail', '${decodedResponse['results']['email'] ?? ''}');
-      prefs.setString('mobile', '${decodedResponse['results']['mobile_no'] ?? ''}');
-    } else {
-      print('Error: ${response.body}');
+    try {
+      Map<String, dynamic> userData = {
+        'customer_id': prefs.getString('customerId')
+      };
+      final response = await apiRepository.userprofile(userData);
+      String decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
+      final decodedResponse = json.decode(decryptedResponse);
+      print('Profile Response: $decodedResponse, Status Code: ${response.statusCode}');
+      
+      if (response.statusCode == 200 && decodedResponse['status'] == 'success') {
+      
+        prefs.setString('firstname', '${decodedResponse['results']['first_name'] ?? ''}');
+        prefs.setString('lastname', '${decodedResponse['results']['last_name'] ?? ''}');
+        prefs.setString('mail', '${decodedResponse['results']['email'] ?? ''}');
+        prefs.setString('mobile', '${decodedResponse['results']['mobile_no'] ?? ''}');
+      } else {
+        print('Error: ${response.body}');
+      }
+    } on Exception catch (e) {
+        print('Error: $e');
     }
   }
 
   // Resend OTP api
   Future<void> resendOTP(BuildContext context, Size size, String mobileNo) async {
-    Map<String, dynamic> resendOtpData = {
-      'mobile_no': mobileNo,
-    };
-   
-    final response = await apiRepository.resendOtp(resendOtpData);
-    String decryptedData = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
-    final decodedResponse = json.decode(decryptedData);
-    print('Resend OTP Response: $decodedResponse, Status Code: ${response.statusCode}');
-      SnackBar resendOtpMessage = snackBarMessage(
-      context: context, 
-      message: decodedResponse['message'], 
-      backgroundColor: const Color(0xFF60B47B), 
-      sidePadding: size.width * 0.1, 
-      bottomPadding: size.height * 0.05
-    );
-    if (response.statusCode == 200) {
-     ScaffoldMessenger.of(context).showSnackBar(resendOtpMessage);
-    } else {
+    // TODO: Uncomment this line once the OTP provider is fully implemented
+    // await OTPProvider().twilioOTPSender(mobileNo);
+    try {
+      Map<String, dynamic> resendOtpData = {
+        'mobile_no': mobileNo,
+      };
+        
+      final response = await apiRepository.resendOtp(resendOtpData);
+      String decryptedData = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
+      final decodedResponse = json.decode(decryptedData);
+      print('Resend OTP Response: $decodedResponse, Status Code: ${response.statusCode}');
+        SnackBar resendOtpMessage = snackBarMessage(
+        context: context, 
+        message: decodedResponse['message'], 
+        backgroundColor: const Color(0xFF60B47B), 
+        sidePadding: size.width * 0.1, 
+        bottomPadding: size.height * 0.05
+      );
+      if (response.statusCode == 200) {
       ScaffoldMessenger.of(context).showSnackBar(resendOtpMessage);
-      print('Error: ${response.body}');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(resendOtpMessage);
+        print('Error: ${response.body}');
+      }
+    } on Exception catch (e) {
+        print('Error: $e');
     }
   }
 
   // All Products List API
   Future<void> allProducts(int catId) async {
-    Map<String, dynamic> productData = {'cat_id': catId};
-    print("Category ID: $productData");
-    final response = await apiRepository.allProducts(productData);
-    String decrptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
-    final decodedResponse = json.decode(decrptedResponse);
-    debugPrint('All Products Response: $decodedResponse, Status Code: ${response.statusCode}', wrapWidth: 1064);
-    if (response.statusCode == 200) {
-      final List<dynamic> productJson = decodedResponse['products'];
-      List<Products> productsList = productJson.map((json) => Products.fromJson(json)).toList();
-      categoryProducts.clear();
-      categoryBanner = "";
-      print(decodedResponse["banner_image"]);
-      categoryBanner = decodedResponse["banner_image"];
-      categoryProducts = productsList;
-    
+    try {
+      Map<String, dynamic> productData = {'cat_id': catId};
+      print("Category ID: $productData");
+      final response = await apiRepository.allProducts(productData);
+      String decrptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
+      final decodedResponse = json.decode(decrptedResponse);
+      debugPrint('All Products Response: $decodedResponse, Status Code: ${response.statusCode}', wrapWidth: 1064);
+      if (response.statusCode == 200) {
+        final List<dynamic> productJson = decodedResponse['products'];
+        List<Products> productsList = productJson.map((json) => Products.fromJson(json)).toList();
+        categoryProducts.clear();
+        categoryBanner = "";
+        print(decodedResponse["banner_image"]);
+        categoryBanner = decodedResponse["banner_image"];
+        categoryProducts = productsList;
       
-      // attributesList = decodedResponse['attributes'].map<Attributes>((attr) => Attributes.fromJson(attr)).toList();
-    } else {
-      print('Error: ${response.body}');
+        
+        // attributesList = decodedResponse['attributes'].map<Attributes>((attr) => Attributes.fromJson(attr)).toList();
+      } else {
+        print('Error: ${response.body}');
+      }
+      notifyListeners();
+    } on Exception catch (e) {
+        print('Error: $e');
     }
-    notifyListeners();
   }
 
   // All Products List API
   Future<void> quickOrderProducts() async {
-    final response = await apiRepository.quickOrderProducts();
-    String decrptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
-    final decodedResponse = json.decode(decrptedResponse);
-    debugPrint('Quick Order Products Response: $decodedResponse, Status Code: ${response.statusCode}', wrapWidth: 1064);
-    if (response.statusCode == 200) {
-      final List<dynamic> productJson = decodedResponse['results'];
-      List<Products> productsList = productJson.map((json) => Products.fromJson(json)).toList();
-      quickOrderProductsList.clear();
-      quickOrderProductsList = productsList;
-      createQuickorderQuantities();
-      // attributesList = decodedResponse['attributes'].map<Attributes>((attr) => Attributes.fromJson(attr)).toList();
-    } else {
-      print('Error: ${response.body}');
+    try {
+      final response = await apiRepository.quickOrderProducts();
+      String decrptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
+      final decodedResponse = json.decode(decrptedResponse);
+      debugPrint('Quick Order Products Response: $decodedResponse, Status Code: ${response.statusCode}', wrapWidth: 1064);
+      if (response.statusCode == 200) {
+        final List<dynamic> productJson = decodedResponse['results'];
+        List<Products> productsList = productJson.map((json) => Products.fromJson(json)).toList();
+        quickOrderProductsList.clear();
+        quickOrderProductsList = productsList;
+        createQuickorderQuantities();
+        // attributesList = decodedResponse['attributes'].map<Attributes>((attr) => Attributes.fromJson(attr)).toList();
+      } else {
+        print('Error: ${response.body}');
+      }
+    } on Exception catch (e) {
+        print('Error: $e');
     }
   }
 
@@ -258,29 +286,34 @@ class ApiProvider extends ChangeNotifier{
   // Add Product to wishlist
   Future<void> addWishlist(int productId, Size size, String name, String quantity, BuildContext context) async {
     
-    Map<String, dynamic> wishlistData = {
-      'customer_id': prefs.getString('customerId'),
-      'product_id': productId
-    };
-    print('product Data: $wishlistData');
-    final response = await apiRepository.addWishList(wishlistData);
-    final decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), "");
-    final decodedReponse = json.decode(decryptedResponse);
-    print('Wishlist added Message: $decodedReponse, Stauts code: ${response.statusCode}');
-    SnackBar wishlistAddedMessage = snackBarMessage(
-      context: context, 
-      message: decodedReponse['message'],
-      backgroundColor: Theme.of(context).primaryColor, 
-      sidePadding: size.width * 0.1, bottomPadding: size.height * 0.05);
-    if (response.statusCode == 200 && decodedReponse['status'] == 'success') {
-      ScaffoldMessenger.of(context).showSnackBar(wishlistAddedMessage);
-      prefs.setBool('$productId$name$quantity', decodedReponse['message'] == "Wishlist added successfully" ? true : decodedReponse['message'] == "Wishlist removed successfully" ? false : false);
+    try {
+      Map<String, dynamic> wishlistData = {
+        'customer_id': prefs.getString('customerId'),
+        'product_id': productId
+      };
+      print('product Data: $wishlistData');
+      final response = await apiRepository.addWishList(wishlistData);
+      final decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), "");
+      final decodedReponse = json.decode(decryptedResponse);
+      print('Wishlist added Message: $decodedReponse, Stauts code: ${response.statusCode}');
+      SnackBar wishlistAddedMessage = snackBarMessage(
+        context: context, 
+        message: decodedReponse['message'],
+        backgroundColor: Theme.of(context).primaryColor, 
+        sidePadding: size.width * 0.1, bottomPadding: size.height * 0.05);
+      if (response.statusCode == 200 && decodedReponse['status'] == 'success') {
+        ScaffoldMessenger.of(context).showSnackBar(wishlistAddedMessage);
+        prefs.setBool('$productId$name$quantity', decodedReponse['message'] == "Wishlist added successfully" ? true : decodedReponse['message'] == "Wishlist removed successfully" ? false : false);
+        await wishlistProductsAPI();
+        notifyListeners();
+      }else{
+        ScaffoldMessenger.of(context).showSnackBar(wishlistAddedMessage);
+        prefs.remove('$productId$name$quantity');
+      }
       notifyListeners();
-    }else{
-      ScaffoldMessenger.of(context).showSnackBar(wishlistAddedMessage);
-      prefs.remove('$productId$name$quantity');
+    } on Exception catch (e) {
+      log("Add wishlist Error: ", error: e, stackTrace: StackTrace.current);
     }
-    notifyListeners();
   }
 
 
@@ -331,145 +364,174 @@ class ApiProvider extends ChangeNotifier{
 
   // Similar products API
   Future<void> similarProductsAPI(int productId) async {
-    final Map<String, int> productData = {"product_id": productId};
-    final response = await apiRepository.similarProducts(productData);
-    final decryptedData = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
-    final decodedResponse = json.decode(decryptedData);
-    debugPrint("Similar product response: $decodedResponse Status code: ${response.statusCode}");
-    if (response.statusCode == 200 && decodedResponse["status"] == "success") {
-      List<dynamic> similarProductsJson = decodedResponse["data"];
-      similarProducts = similarProductsJson.map((product) => Products.fromJson(product),).toList();
-    }else{
-      print('Similar Products Error: ${response.body}');
+    try {
+      final Map<String, int> productData = {"product_id": productId};
+      final response = await apiRepository.similarProducts(productData);
+      final decryptedData = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
+      final decodedResponse = json.decode(decryptedData);
+      debugPrint("Similar product response: $decodedResponse Status code: ${response.statusCode}");
+      if (response.statusCode == 200 && decodedResponse["status"] == "success") {
+        List<dynamic> similarProductsJson = decodedResponse["data"];
+        similarProducts = similarProductsJson.map((product) => Products.fromJson(product),).toList();
+      }else{
+        print('Similar Products Error: ${response.body}');
+      }
+      notifyListeners();
+    } on Exception catch (e) {
+        print('Error: $e');
     }
-    notifyListeners();
   }
 
   // Get Banners List from the API
   Future<void> getFeturedProducts() async {
-    final response = await apiRepository.featuredProducts();
-    String decryptedResponse= decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
-    final decodedResponse= json.decode(decryptedResponse);
-    debugPrint('Featured Decrypted Data: $decodedResponse, Status Code: ${response.statusCode}', wrapWidth: 1064);
-    if (response.statusCode == 200) {
-      final List<dynamic> productJson = decodedResponse['products'];
-      List<Products> productsList = productJson.map((product) => Products.fromJson(product)).toList();
-      featuredproductData = productsList;
-    } else if(response.statusCode == 508){
-      serverDown = true;
-    } else {
-      print('Featured Products Error: ${response.body}');
+    try {
+      final response = await apiRepository.featuredProducts();
+      String decryptedResponse= decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
+      final decodedResponse= json.decode(decryptedResponse);
+      debugPrint('Featured Decrypted Data: $decodedResponse, Status Code: ${response.statusCode}', wrapWidth: 1064);
+      if (response.statusCode == 200) {
+        final List<dynamic> productJson = decodedResponse['products'];
+        List<Products> productsList = productJson.map((product) => Products.fromJson(product)).toList();
+        featuredproductData = productsList;
+      } else if(response.statusCode == 508){
+        serverDown = true;
+      } else {
+        print('Featured Products Error: ${response.body}');
+      }
+      notifyListeners();
+    } on Exception catch (e) {
+        print('Error: $e');
     }
-    notifyListeners();
   }
   
   // Best seller Products
   Future<void> getBestSellers() async {
-    final response = await apiRepository.bestSellers();
-    print('Best Seller Products Response: ${response.body}, Code: ${response.statusCode}');
-    String decryptedResponse= decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
-    final decodedResponse = json.decode(decryptedResponse);
-    debugPrint('Best Seller Response: $decryptedResponse, Status Code: ${response.statusCode}', wrapWidth: 1064);
-    if (response.statusCode == 200) {
-      final List<dynamic> productJson = decodedResponse['products'];
-      List<Products> productsList = productJson.map((product) => Products.fromJson(product)).toList();
-      bestSellerProducts = productsList;
-    } else if(response.statusCode == 508){
-      serverDown = true;
-    } else {
-      print('Featured Products Error: ${response.body}');
+    try {
+      final response = await apiRepository.bestSellers();
+      print('Best Seller Products Response: ${response.body}, Code: ${response.statusCode}');
+      String decryptedResponse= decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
+      final decodedResponse = json.decode(decryptedResponse);
+      debugPrint('Best Seller Response: $decryptedResponse, Status Code: ${response.statusCode}', wrapWidth: 1064);
+      if (response.statusCode == 200) {
+        final List<dynamic> productJson = decodedResponse['products'];
+        List<Products> productsList = productJson.map((product) => Products.fromJson(product)).toList();
+        bestSellerProducts = productsList;
+      } else if(response.statusCode == 508){
+        serverDown = true;
+      } else {
+        print('Featured Products Error: ${response.body}');
+      }
+      notifyListeners();
+    } on Exception catch (e) {
+      print('Error: $e');
     }
-    notifyListeners();
   }
 
   // Categories 
   Future<void> getCatgories() async {
-    final response = await apiRepository.categories();
-    String decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
-    final decodedResponse = json.decode(decryptedResponse);
-    debugPrint('Category Response: $decodedResponse, Status code: ${response.statusCode}', wrapWidth: 1064);
-    if (response.statusCode == 200) {
-      final List<dynamic> categoriesReponse = decodedResponse['results'];
-      List<CategoryModel> categoryList = categoriesReponse.map((json) => CategoryModel.fromMap(json)).toList();
-      categories = categoryList;
-    } else if(response.statusCode == 508){
-      serverDown = true;
-    } else {
-      print('Error Banner: ${response.body}');
+    try {
+      final response = await apiRepository.categories();
+      String decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
+      final decodedResponse = json.decode(decryptedResponse);
+      debugPrint('Category Response: $decodedResponse, Status code: ${response.statusCode}', wrapWidth: 1064);
+      if (response.statusCode == 200) {
+        final List<dynamic> categoriesReponse = decodedResponse['results'];
+        List<CategoryModel> categoryList = categoriesReponse.map((json) => CategoryModel.fromMap(json)).toList();
+        categories = categoryList;
+      } else if(response.statusCode == 508){
+        serverDown = true;
+      } else {
+        print('Error Banner: ${response.body}');
+      }
+      notifyListeners();
+    } on Exception catch (e) {
+        print('Error: $e');
     }
-    notifyListeners();
   }
 
   // Get Banners
   Future<void> getBanners() async {
     // Get Banners and print Response
-    final response = await apiRepository.banners();
-    String decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
-    final decodedResponse = json.decode(decryptedResponse);
-    print('Banners Response: $decodedResponse, Status Code: ${response.statusCode}');
-    if (response.statusCode == 200) {
-      banners.clear();
-        for (var result in decodedResponse['results']) {
-          String bannerImage = result['image'];
-          banners.add(bannerImage);
-        }
-      prefs.setStringList('banners', banners);
-    } else {
-      print('Error Banner: ${response.body}');
+    try {
+      final response = await apiRepository.banners();
+      String decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
+      final decodedResponse = json.decode(decryptedResponse);
+      print('Banners Response: $decodedResponse, Status Code: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        banners.clear();
+          for (var result in decodedResponse['results']) {
+            String bannerImage = result['image'];
+            banners.add(bannerImage);
+          }
+        prefs.setStringList('banners', banners);
+      } else {
+        print('Error Banner: ${response.body}');
+      }
+      notifyListeners();
+    } on Exception catch (e) {
+          print('Error: $e');
     }
-    notifyListeners();
   }
 
   // Wishlist products
   Future<void> wishlistProductsAPI() async {
-    Map<String, dynamic> wishlistData = {'customer_id': prefs.getString("customerId")};
-    final response = await apiRepository.wishlistProducts(wishlistData);
-    
-    final decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), "");
-    final decodedReponse = json.decode(decryptedResponse);
-    print('Wishlist Products response: $decodedReponse, Stauts code: ${response.statusCode}');
-    if (response.statusCode == 200) {
-      if (decodedReponse["message"] != null && decodedReponse['status'] == "not_found") {
-        message = decodedReponse['message'];
-      }else{
-        List<dynamic> wishlistItems = decodedReponse['results'];
-        wishlistProducts = wishlistItems.map((product) => WishlistProductsModel.fromMap(product),).toList();
-        // Navigator.push(context, downToTop(screen: WishlistProducts(wishlistProducts: wishlistProducts)));
+    try {
+      Map<String, dynamic> wishlistData = {'customer_id': prefs.getString("customerId")};
+      final response = await apiRepository.wishlistProducts(wishlistData);
+      
+      final decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), "");
+      final decodedReponse = json.decode(decryptedResponse);
+      print('Wishlist Products response: $decodedReponse, Stauts code: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        if (decodedReponse["message"] != null && decodedReponse['status'] == "not_found") {
+          message = decodedReponse['message'];
+        }else{
+          List<dynamic> wishlistItems = decodedReponse['results'];
+          wishlistProducts = wishlistItems.map((product) => WishlistProductsModel.fromMap(product),).toList();
+          // Navigator.push(context, downToTop(screen: WishlistProducts(wishlistProducts: wishlistProducts)));
+        }
       }
+      else{
+        print('Wishlist Error: $decodedReponse');
+      }
+      notifyListeners();
+    } catch (e) {
+      log("Get wishlist Error: ", error: e, stackTrace: StackTrace.current);
+      rethrow;
     }
-    else{
-      print('Wishlist Error: $decodedReponse');
-    }
-    notifyListeners();
   }
 
   // Delete Product From wishlist
   Future<void> removeWishlist(int productId, String name, String quantity, BuildContext context, Size size) async {
-    Map<String, dynamic> removeWishlistProductData = {
-      "customer_id": prefs.getString("customerId"),
-      "product_id": productId
-    };
-    final response = await apiRepository.removeWishlist(removeWishlistProductData);
-    final decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), "");
-    final decodedReponse = json.decode(decryptedResponse);
-    print('Wishlist Remove response: $decodedReponse, Stauts code: ${response.statusCode}');
-    if (response.statusCode == 200) {
-       SnackBar wishlistMessage = snackBarMessage(
-        context: context, 
-        message: "Product Removed from Wishlist", 
-        backgroundColor: Theme.of(context).primaryColor, 
-        sidePadding: size.width * 0.1, 
-        bottomPadding: size.height * 0.05
-      );
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(wishlistMessage);
-      wishlistProducts.removeWhere((element) => element.productId == productId,);
-      prefs.remove('$productId$name$quantity');
+    try {
+      Map<String, dynamic> removeWishlistProductData = {
+        "customer_id": prefs.getString("customerId"),
+        "product_id": productId
+      };
+      final response = await apiRepository.removeWishlist(removeWishlistProductData);
+      final decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), "");
+      final decodedReponse = json.decode(decryptedResponse);
+      print('Wishlist Remove response: $decodedReponse, Stauts code: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        SnackBar wishlistMessage = snackBarMessage(
+          context: context, 
+          message: "Product Removed from Wishlist", 
+          backgroundColor: Theme.of(context).primaryColor, 
+          sidePadding: size.width * 0.1, 
+          bottomPadding: size.height * 0.05
+        );
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(wishlistMessage);
+        wishlistProducts.removeWhere((element) => element.productId == productId,);
+        prefs.remove('$productId$name$quantity');
+      }
+      else{
+        print('Wishlist Error: $decodedReponse');
+      }
+      notifyListeners();
+    } on Exception catch (e) {
+          print('Error: $e');
     }
-    else{
-      print('Wishlist Error: $decodedReponse');
-    }
-    notifyListeners();
   }
 
   // Add Quick Order
@@ -607,33 +669,36 @@ class ApiProvider extends ChangeNotifier{
 
   // Quick order Checkout
   Future<void> quickOrderCheckOut(BuildContext context, Size size, Map<String, dynamic> checkoutData) async {
-    final response = await apiRepository.quickOrderCheckout(checkoutData);
-    String decryptedResponse= decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
-    final decodedResponse = json.decode(decryptedResponse);
-    debugPrint("Quick order Placed Response: $decodedResponse, Status code: ${response.statusCode}", wrapWidth: 1064);
-    //  final quickOrderMessage = snackBarMessage(
-    //   context: context, 
-    //   message: decodedResponse['message'], 
-    //   backgroundColor: Theme.of(context).primaryColor, 
-    //   sidePadding: size.width * 0.1, 
-    //   bottomPadding: size.height * 0.05
-    // );
-    if (response.statusCode == 200 && decodedResponse["status"] == "success") {
-      clearQuickOrder();
-      confirmOrder(context, size);
-      Future.delayed(const Duration(seconds: 3), () {
-        Navigator.pop(context);
-        bottomIndex = 0;
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const BottomBar(),),
-          (route) => false
-        );
-        
-      },);
-      // ScaffoldMessenger.of(context).showSnackBar(quickOrderMessage).closed.then((value){
-      // });
-    } else {
-      print('Error: ${response.statusCode}');
+    try {
+      final response = await apiRepository.quickOrderCheckout(checkoutData);
+      String decryptedResponse= decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
+      final decodedResponse = json.decode(decryptedResponse);
+      debugPrint("Quick order Placed Response: $decodedResponse, Status code: ${response.statusCode}", wrapWidth: 1064);
+      //  final quickOrderMessage = snackBarMessage(
+      //   context: context, 
+      //   message: decodedResponse['message'], 
+      //   backgroundColor: Theme.of(context).primaryColor, 
+      //   sidePadding: size.width * 0.1, 
+      //   bottomPadding: size.height * 0.05
+      // );
+      if (response.statusCode == 200 && decodedResponse["status"] == "success") {
+        clearQuickOrder();
+        confirmOrder(context, size);
+        Future.delayed(const Duration(seconds: 3), () {
+          Navigator.pop(context);
+          bottomIndex = 0;
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const BottomBar(),),
+            (route) => false
+          );
+        },);
+        // ScaffoldMessenger.of(context).showSnackBar(quickOrderMessage).closed.then((value){
+        // });
+      } else {
+        print('Error: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw e.toString();
     }
   }
 

@@ -35,4 +35,10 @@ class Constants extends ChangeNotifier{
     _categoryListScrollController.dispose();
     super.dispose();
   }
+
+  static const String appHash = "S4HH6GWSpfZ";
+  static const String twilioPhone = "+19497750386";
+  static const String twilioAccountSID = "ACfc099d19e4c9753774ebbae5ab1970fe";
+  static const String twilioAPIKey = "SKbc551db8999a8c4ca0b498578b166487";
+  static const String twilioAPISecret = "7BnapKMZcbXrOzy0im8Ow0Yau9d8QKWn";
 }

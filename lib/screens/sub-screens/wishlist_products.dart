@@ -65,7 +65,20 @@ class WishlistProducts extends StatelessWidget {
                                 child: CachedNetworkImage(
                                   imageUrl: image,
                                   fit: BoxFit.cover,
-                                  cacheManager: CacheManagerHelper.cacheIt(key: image)
+                                  cacheManager: CacheManagerHelper.cacheIt(key: image),
+                                  memCacheHeight: 105,
+                                  memCacheWidth: 94,
+                                  imageBuilder: (context, imageProvider) {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover
+                                        )
+                                      ),
+                                    );
+                                  },
+                                  
                                 ),
                               ),
                             ),
@@ -130,7 +143,7 @@ class WishlistProducts extends StatelessWidget {
                                           id: product.productId, 
                                           name: product.title, 
                                           price: product.price, 
-                                          finalPrice: int.parse(product.finalPrice), 
+                                          finalPrice: product.finalPrice, 
                                           image: product.image, 
                                           quantity: product.quantity, 
                                           description: product.description,

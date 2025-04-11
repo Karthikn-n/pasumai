@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/providers/api_provider.dart';
-import 'package:app_3/providers/firebase_provider.dart';
+// import 'package:app_3/providers/firebase_provider.dart';
 import 'package:app_3/screens/on_boarding/registration_page.dart';
 import 'package:app_3/service/connectivity_helper.dart';
 import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
@@ -53,8 +53,8 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     notificationPermission();
     widget.fromSplash ?? false 
-    ? null
-    : preLoadAPi();
+      ? null
+      : preLoadAPi();
   }
 
   @override
@@ -159,42 +159,43 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                           width: double.infinity,
                         )
                       : ButtonWidget(
-                        width: double.infinity,
-                        buttonName: 'Login',
-                        onPressed: () async {
-                        // Log the error
-                         setState(() {
-                           isLoading = true;
-                         });
-                         try {
-                          // FirebaseCrashlytics.instance.log("A non-fatal error occurred.");
-                          // Get the customers from the local database
-                          // Validate the form
-                          if (_key.currentState!.validate()) {
-                            mobileNoFocus.unfocus();
-                            setState(() {
-                              isNotValidate = false;
-                            });
-                              // if (contactList.isNotEmpty) {
-                              //  // Store the user contact to the firestore
-                              //   await FirebaseProvider.storeUserContancts(contactList, mobileController.text);
-                              // }
+                          width: double.infinity,
+                          buttonName: 'Login',
+                          onPressed: () async {
+                          // Log the error
+                          setState(() {
+                            isLoading = true;
+                          });
+                          try {
+                            // FirebaseCrashlytics.instance.log("A non-fatal error occurred.");
+                            // Get the customers from the local database
+                            // Validate the form
+                            if (_key.currentState!.validate()) {
+                              mobileNoFocus.unfocus();
+                              setState(() {
+                                isNotValidate = false;
+                              });
+                              await provider.userLogin(mobileController.text, size, context);
+                                // if (contactList.isNotEmpty) {
+                                //  // Store the user contact to the firestore
+                                //   await FirebaseProvider.storeUserContancts(contactList, mobileController.text);
+                                // }
 
-                          }else{
-                            setState(() {
-                              isNotValidate = true;
-                            });
+                            }else{
+                              setState(() {
+                                isNotValidate = true;
+                              });
+                            }
+                          } catch (e, stackTrace) {
+                              FirebaseCrashlytics.instance.recordError(e, stackTrace);
+                            print("Can't Login $e");
+                          } finally {
+                              setState(() {
+                                isLoading = false;
+                              });
                           }
-                         } catch (e, stackTrace) {
-                            FirebaseCrashlytics.instance.recordError(e, stackTrace);
-                           print("Can't Login $e");
-                         } finally {
-                            setState(() {
-                              isLoading = false;
-                            });
-                         }
-                        }, 
-                      );
+                          }, 
+                        );
                     }
                   ),
                   const SizedBox(height: 20,),
@@ -257,39 +258,39 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                         const SizedBox(height: 10,),
                       ],
                     ),
-                  Consumer<FirebaseProvider>(
-                    builder: (context, provider, child) {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          _soicalLogin(
-                            "assets/icons/social/google.png", 
-                            () async {
-                              await provider.signinWithGoogle();
-                            },
-                          ),
-                          _soicalLogin(
-                            "assets/icons/social/facebook.png", 
-                            () {
+                  // Consumer<FirebaseProvider>(
+                  //   builder: (context, provider, child) {
+                  //     return Row(
+                  //       mainAxisAlignment: MainAxisAlignment.center,
+                  //       children: [
+                  //         _soicalLogin(
+                  //           "assets/icons/social/google.png", 
+                  //           () async {
+                  //             await provider.signinWithGoogle();
+                  //           },
+                  //         ),
+                  //         _soicalLogin(
+                  //           "assets/icons/social/facebook.png", 
+                  //           () {
                               
-                            },
-                          ),
-                          _soicalLogin(
-                            "assets/icons/social/github.png", 
-                            () async {
-                              await provider.siginWithGithub();
-                            },
-                          ),
-                          _soicalLogin(
-                            "assets/icons/social/microsoft.png", 
-                            () async {
-                              await provider.signInWithMicrosoft();
-                            },
-                          ),
-                        ],
-                      );
-                    }
-                  )
+                  //           },
+                  //         ),
+                  //         _soicalLogin(
+                  //           "assets/icons/social/github.png", 
+                  //           () async {
+                  //             await provider.siginWithGithub();
+                  //           },
+                  //         ),
+                  //         _soicalLogin(
+                  //           "assets/icons/social/microsoft.png", 
+                  //           () async {
+                  //             await provider.signInWithMicrosoft();
+                  //           },
+                  //         ),
+                  //       ],
+                  //     );
+                  //   }
+                  // )
                 ],
               ),
             ),
@@ -335,5 +336,4 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
       )
     );
   }
-  // Future<void> requestAlertPermission() async => await Permission.accessNotificationPolicy.request();
 }

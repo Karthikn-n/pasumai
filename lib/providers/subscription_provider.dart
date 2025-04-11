@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:app_3/data/encrypt_ids.dart';
 import 'package:app_3/helper/page_transition_helper.dart';
@@ -69,8 +70,24 @@ class SubscriptionProvider extends ChangeNotifier{
     if (response.statusCode == 200) {
       List<dynamic> activeSubscriptionsList = decodedResponse['results'] as List;
       activeSubscriptions.clear();
-      activeSubscriptions = activeSubscriptionsList.map((subscription) => ActiveSubscriptionModel.fromJson(subscription) ,).toList();
-      options = List.generate(activeSubscriptions.length, (index) => ["Edit", "Cancel", "Renew"],);
+      try {
+        activeSubscriptions = activeSubscriptionsList.map((subscription) {
+          try {
+            return ActiveSubscriptionModel.fromJson(subscription);
+          } catch (e, stack) {
+            log("Error parsing subscription: $subscription", error: e, stackTrace: stack);
+            return null; // Return null instead of breaking the loop
+          }
+        }).whereType<ActiveSubscriptionModel>().toList();
+
+        options = List.generate(activeSubscriptions.length, (index) => ["Edit", "Cancel", "Renew"]);
+        
+        debugPrint("Parsed subscriptions count: ${activeSubscriptions.length}");
+      } catch (e, stack) {
+        log("Error in activeSubscriptions mapping", error: e, stackTrace: stack);
+      }
+
+    // notifyListeners();
     } else if(response.statusCode == 508){
       serverDown = true;
     } else {

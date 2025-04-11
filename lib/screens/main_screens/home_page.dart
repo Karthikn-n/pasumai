@@ -9,7 +9,7 @@ import 'package:app_3/providers/firebase_provider.dart';
 import 'package:app_3/providers/locale_provider.dart';
 import 'package:app_3/providers/subscription_provider.dart';
 import 'package:app_3/screens/main_screens/bottom_bar.dart';
-import 'package:app_3/screens/main_screens/notification_screen.dart';
+import 'package:app_3/screens/on_boarding/otp_page.dart';
 // import 'package:app_3/screens/main_screens/search_screen.dart';
 import 'package:app_3/screens/sub-screens/address_selection_screen.dart';
 import 'package:app_3/service/connectivity_helper.dart';
@@ -208,11 +208,9 @@ class _HomePageState extends State<HomePage> {
                         return IconButton(
                           splashRadius: 80,
                           tooltip: "Notification",
-                          style: ElevatedButton.styleFrom(
-                            // overlayColor: Colors.grey.shade400
-                          ),
                           onPressed: () async {
-                            FirebaseProvider.notificationStorage(RemoteMessage());
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => OtpPage(fromRegister: false),));
+                            // wishlistProductProvider.notificationStorage(const RemoteMessage());
                             // await wishlistProductProvider.
                             // wishlistProductProvider.wishlistProductsAPI();
                             // Navigator.push(context, downToTop(screen: const NotificationScreen()));
@@ -261,6 +259,16 @@ class _HomePageState extends State<HomePage> {
                                         imageUrl: imageUrl,
                                         fit: BoxFit.fitWidth,
                                         cacheManager: CacheManagerHelper.cacheIt(key: provider.banners[index]),
+                                        imageBuilder: (context, imageProvider) {
+                                          return Container(
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image: imageProvider,
+                                                fit: BoxFit.cover
+                                              )
+                                            ),
+                                          );
+                                        },
                                       )
                                     );
                                   },
@@ -336,6 +344,16 @@ class _HomePageState extends State<HomePage> {
                                                           child: CachedNetworkImage(
                                                             imageUrl: imageUrl,
                                                             fit: BoxFit.cover,
+                                                            // imageBuilder: (context, imageProvider) {
+                                                            //   return Container(
+                                                            //     decoration: BoxDecoration(
+                                                            //       image: DecorationImage(
+                                                            //         image: imageProvider,
+                                                            //         fit: BoxFit.cover
+                                                            //       )
+                                                            //     ),
+                                                            //   );
+                                                            // },
                                                             cacheManager: CacheManagerHelper.cacheIt(key: provider.categories[index].categoryImage),
                                                           ),
                                                         ),

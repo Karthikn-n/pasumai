@@ -130,7 +130,7 @@ class CategoryProductsListWidget extends StatelessWidget {
                               child: CachedNetworkImage(
                                 imageUrl: "https://maduraimarket.in/public/image/category/$bannerImage",
                                 fit: BoxFit.scaleDown,
-                                cacheManager: CacheManagerHelper.cacheIt(key: bannerImage,)
+                                cacheManager: CacheManagerHelper.cacheIt(key: bannerImage,),
                               ),
                             ),
                           ),

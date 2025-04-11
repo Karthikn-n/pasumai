@@ -29,14 +29,14 @@ class Products{
     return Products(
       id: json['id'] ?? 0, 
       name: json['title'] ?? '', 
-      price: json['price'] ?? 0, 
-      finalPrice: json['final_price'] ?? 0, 
+      price: int.tryParse(json['price']?.toString() ?? '0') ?? 0, 
+      finalPrice: int.tryParse(json['final_price']?.toString() ?? '0') ?? 0, 
       image: json['image'] ?? '', 
       quantity: json['quantity'] ?? '',
       productPosition: json["product_position"],
       description: json['description'] ?? '',
       subscribed: json["subscription_status"] ?? "",
-      categoryId: json["cat_id"] ?? 0,
+      categoryId: int.tryParse(json["cat_id"]?.toString() ?? '0') ?? 0,
       offerAmount: json["offers"].toString()
     );
   }

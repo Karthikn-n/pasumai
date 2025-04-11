@@ -2,7 +2,7 @@ import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/helper/shared_preference_helper.dart';
 import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/providers/profile_provider.dart';
-import 'package:app_3/screens/sub-screens/profile/chat_screen.dart';
+// import 'package:app_3/screens/sub-screens/profile/chat_screen.dart';
 import 'package:app_3/screens/sub-screens/wishlist_products.dart';
 import 'package:app_3/service/connectivity_helper.dart';
 import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
@@ -42,7 +42,7 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
     'Vacation Mode',
     'Wishlist Products',
     "Raise a query",
-    "Chat"
+    // "Chat"
   ];
   @override
   void initState() {
@@ -157,11 +157,13 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
                                 _scaffoldStateKey.currentState?.closeDrawer();
                                await Future.delayed(const Duration(milliseconds: 200));
                                 Navigator.push(context, SideTransistionRoute(screen: const RaiseAQueryWidget()));
-                              } else if(options[index] == "Chat") {
-                                _scaffoldStateKey.currentState?.closeDrawer();
-                               await Future.delayed(const Duration(milliseconds: 200));
-                                Navigator.push(context, SideTransistionRoute(screen: const ChatScreen()));
-                              } else if(options[index] == "Wishlist Products") {
+                              } 
+                              // else if(options[index] == "Chat") {
+                              //   _scaffoldStateKey.currentState?.closeDrawer();
+                              //  await Future.delayed(const Duration(milliseconds: 200));
+                              //   Navigator.push(context, SideTransistionRoute(screen: const ChatScreen()));
+                              // } 
+                              else if(options[index] == "Wishlist Products") {
                                 _scaffoldStateKey.currentState?.closeDrawer();
                                await Future.delayed(const Duration(milliseconds: 200));
                                 Navigator.push(context, SideTransistionRoute(screen: const WishlistProducts()));
@@ -222,7 +224,7 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
     "assets/icons/profile/sunset.png",
     "assets/icons/profile/heart.png",
     "assets/icons/profile/question-sign.png",
-    "assets/icons/profile/chat.png"
+    // "assets/icons/profile/chat.png"
   ];
   
 }

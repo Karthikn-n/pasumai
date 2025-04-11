@@ -24,7 +24,7 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.example.app_3"
-    compileSdkVersion 34
+    compileSdkVersion = 35
     ndkVersion "27.2.12479018"
     applicationVariants.all { variant ->
         variant.outputs.all { output ->

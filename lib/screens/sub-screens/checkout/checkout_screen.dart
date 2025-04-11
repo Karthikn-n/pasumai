@@ -651,33 +651,20 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Row(
-                                  children: [
-                                    SizedBox(
-                                      width: size.width * 0.7,
-                                      child: Row(
-                                        children: [
-                                          SizedBox(
-                                            height: 20,
-                                            width: 20,
-                                            child: Image.asset(
-                                              "assets/icons/profile/location.png"
-                                            ),
-                                          ),
-                                          const SizedBox(width: 5,),
-                                          AppTextWidget(
-                                            text: addressProvider.currentAddress!.location, 
-                                            fontSize: 14, 
-                                            fontWeight: FontWeight.w500
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ), 
+                                SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: Image.asset(
+                                    "assets/icons/profile/location.png"
+                                  ),
+                                ),
+                                const SizedBox(width: 5,),
+                                AppTextWidget(
+                                  text: addressProvider.currentAddress!.location, 
+                                  fontSize: 14, 
+                                  fontWeight: FontWeight.w500
+                                ),
                               ],
                             ),
                             const SizedBox(height: 5,),
@@ -752,7 +739,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           //   });
                           // }
                         }else{
-                          await paymentprovider.cardUpiList().then((value) {
                           Map<String, dynamic> checkOutData = {
                             'customer_id': prefs.getString('customerId'),
                             'address_id': addressProvider.currentAddress!.id,
@@ -770,7 +756,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               fromCart: widget.fromCart ?? true,
                             ))
                           );
-                        },);
+                        //   await paymentprovider.cardUpiList().then((value) {
+                        // },);
                         // await NotificationProvider().showNotification(
                         //   title: "Order placed successfully", 
                         //   body: "See order detail here", 

@@ -349,7 +349,6 @@ class VacationListWidget extends StatelessWidget {
                                 Consumer<VacationProvider>(
                                     builder: (context, provider, child) {
                                     return ElevatedButton(
-                                      iconAlignment: IconAlignment.end,
                                       onPressed: () async {
                                         DateTime? startDate = await showDatePicker(
                                           context: context, 
@@ -365,6 +364,7 @@ class VacationListWidget extends StatelessWidget {
                                         }
                                       },
                                       style: ElevatedButton.styleFrom(
+                                        iconAlignment: IconAlignment.end,
                                         padding: const EdgeInsets.symmetric(horizontal: 10),
                                         maximumSize: Size(size.width * 0.415, 40),
                                         minimumSize: Size(size.width * 0.415, 40),
@@ -411,7 +411,6 @@ class VacationListWidget extends StatelessWidget {
                                  Consumer<VacationProvider>(
                                     builder: (context, provider, child) {
                                      return ElevatedButton(
-                                      iconAlignment: IconAlignment.end,
                                       onPressed: () async {
                                         DateTime? endDate = await showDatePicker(
                                           context: context, 
@@ -427,6 +426,7 @@ class VacationListWidget extends StatelessWidget {
                                         }
                                       },
                                       style: ElevatedButton.styleFrom(
+                                        iconAlignment: IconAlignment.end,
                                         padding: const EdgeInsets.symmetric(horizontal: 10),
                                         maximumSize: Size(size.width * 0.415, 40),
                                         minimumSize: Size(size.width * 0.415, 40),

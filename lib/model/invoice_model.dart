@@ -27,7 +27,7 @@ class InvoiceModel {
     return InvoiceModel(
       id: json['id'] ?? '',
       orderId: json['order_id'] ?? '',
-      customerId: json['customer_id'] ?? '',
+      customerId: int.tryParse(json['customer_id'].toString()) ?? 0,
       invoiceNo: json['invoice_no'] ?? '',
       invoiceFile: json['invoice_file'] ?? '',
       invoiceDate: json['invoice_date'] ?? '',

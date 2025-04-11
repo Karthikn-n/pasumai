@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:app_3/data/encrypt_ids.dart';
@@ -120,31 +121,35 @@ class ProfileProvider extends ChangeNotifier{
 
   // User ordered List
   Future<void> orderList({String? filter}) async {
-    Map<String, dynamic> orderListData = {
-      'customer_id': prefs.getString('customerId'),
-      'sort_by': filter ?? '1y'
-    };
-    print(orderListData);
-    final response = await profileRepository.orderList(orderListData);
-    String decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
-    final decodedResponse = json.decode(decryptedResponse);
-    debugPrint('Response Order list: $decodedResponse, Status Code: ${response.statusCode}', wrapWidth: 1064);
-    
-    if (response.statusCode == 200) {
-      List<dynamic> results = decodedResponse['results'] as List;
-      print('Orders List length before parsing: ${results.length}');
-      orderInfoData.clear();
-      selectedFilter = filter != null 
-        ? filter == "1y" 
-          ? "" : filter == "3m" ? "3 months" : filter == "6m" ? "6 months" : filter == "9m"
-          ? "9 months" : "" : ""; 
-      orderInfoData = results.map((order) => OrderInfo.fromMap(order)).toList();
-      print('Orders List length after parsing: ${orderInfoData.length}');
-    } else {
-      print('Failed to fetch data: $decodedResponse');
-      throw "${decodedResponse["message"]} && Something went wrong ${response.statusCode}";
+    try {
+      Map<String, dynamic> orderListData = {
+        'customer_id': prefs.getString('customerId'),
+        'sort_by': filter ?? '1y'
+      };
+      print(orderListData);
+      final response = await profileRepository.orderList(orderListData);
+      String decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
+      final decodedResponse = json.decode(decryptedResponse);
+      debugPrint('Response Order list: $decodedResponse, Status Code: ${response.statusCode}', wrapWidth: 1064);
+      
+      if (response.statusCode == 200) {
+        List<dynamic> results = decodedResponse['results'] as List;
+        print('Orders List length before parsing: ${results.length}');
+        // selectedFilter = filter != null 
+        //   ? filter == "1y" 
+        //     ? "" : filter == "3m" ? "3 months" : filter == "6m" ? "6 months" : filter == "9m"
+        //     ? "9 months" : "" : ""; 
+        orderInfoData = results.map((order) => OrderInfo.fromMap(order)).toList();
+        print('Orders List length after parsing: ${orderInfoData.length}');
+        notifyListeners();
+      } else {
+        print('Failed to fetch data: $decodedResponse');
+        throw "${decodedResponse["message"]} && Something went wrong ${response.statusCode}";
+      }
+    } catch (e, st) {
+      log("Error in order list", error: e, stackTrace: st);
+      print("${e}Error in order list",);
     }
-    notifyListeners();
   }
 
 
@@ -240,7 +245,7 @@ class ProfileProvider extends ChangeNotifier{
 
  
   // Invoices API
-  Future<String?> getInvoice() async {
+  Future<void> getInvoice() async {
     Map<String, dynamic> invoiceData = {
       'customer_id': prefs.getString('customerId')
     };
@@ -248,22 +253,24 @@ class ProfileProvider extends ChangeNotifier{
     String decryptedResponse = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
     final decodedResponse = json.decode(decryptedResponse);
     print('Invoice List Response: $decodedResponse, Status Code: ${response.statusCode}');
+    try {
     if (response.statusCode == 200) {
       if (decodedResponse["status"] == "not_found") {
         invoices = [];
         notifyListeners();
-        return null;
       }else{
         List<dynamic> invoiceList = decodedResponse['results'] as List;
         invoices = invoiceList.map((invoice) => InvoiceModel.fromJson(invoice) ,).toList();
         notifyListeners();
-        return "success";
       }
     } else {
       print('Failed to fetch data: ${response.statusCode}');
     }
+  } on Exception catch (e, st) {
+    log("Error in invoice list", error: e, stackTrace: st);
+  }
+    print( 'invoice length: ${invoices.length}');
     notifyListeners();
-    return null;
   }
 
   Future<void> downloadInvoice(String fileName, BuildContext context, Size size) async {

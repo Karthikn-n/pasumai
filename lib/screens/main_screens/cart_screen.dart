@@ -89,8 +89,19 @@ class _CartScreenState extends State<CartScreen> {
                                       child: CachedNetworkImage(
                                         // imageUrl: 'http://192.168.1.5/pasumaibhoomi/public/image/product/${cartProvider.cartItems[index].image}',
                                         imageUrl: 'https://maduraimarket.in/public/image/product/${cartProvider.cartItems[index].image}',
-                                        fit: BoxFit.cover,
                                         cacheManager: CacheManagerHelper.cacheIt(key: cartProvider.cartItems[index].image),
+                                        memCacheHeight: 105,
+                                        memCacheWidth: 94,
+                                        imageBuilder: (context, imageProvider) {
+                                          return Container(
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image: imageProvider,
+                                                fit: BoxFit.cover
+                                              )
+                                            ),
+                                          );
+                                        },
                                       ),
                                     ),
                                   ),

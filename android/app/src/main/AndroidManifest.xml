@@ -6,25 +6,11 @@
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <!-- <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/> -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.CAMERA"/>
-    <!-- Get the contact from the user -->
-    <!-- <uses-permission android:name="android.permission.READ_CONTACTS"/>
-    <uses-permission android:name="android.permission.WRITE_CONTACTS"/> -->
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <!-- Read the messages from the default message app and receive it from the sender -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <!-- <uses-permission android:name="android.permission.RECEIVE_SMS"/> -->
-    <!-- This will allow reschedule notifications upon device reboot -->
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <!-- <uses-permission android:name="android.permission.RECEIVE_SMS"/> -->
-    <!-- <uses-permission android:name="android.permission.READ_SMS"/> -->
-
-    <!-- This will allow to set the notification in exact timing -->
-    <!-- <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/> -->
-    <!-- <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/> -->
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <application
         android:label="Madurai Market"
         android:name="${applicationName}"

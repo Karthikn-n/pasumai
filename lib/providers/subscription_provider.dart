@@ -12,6 +12,7 @@ import 'package:app_3/providers/profile_provider.dart';
 import 'package:app_3/repository/app_repository.dart';
 import 'package:app_3/screens/sub-screens/subscription/preorder_subscribe_screen.dart';
 import 'package:app_3/service/api_service.dart';
+import 'package:app_3/service/notification_service.dart';
 import 'package:app_3/widgets/common_widgets.dart/snackbar_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SubscriptionProvider extends ChangeNotifier{
   final SharedPreferences prefs = SharedPreferencesHelper.getSharedPreferences();
   final AppRepository subscribeRepository = AppRepository(ApiService("https://maduraimarket.in/api"));
+  final NotificationService _notificationService = NotificationService();
   // final AppRepository subscribeRepository = AppRepository(ApiService("http://192.168.1.5/pasumaibhoomi/public/api"));
   List<Products> subscribeProducts = [];
   List<RenewSubscriptionModel?>? renewSubscriptionResponse;
@@ -32,6 +34,7 @@ class SubscriptionProvider extends ChangeNotifier{
   bool isCancellingSubscription = false;
   bool isSubscriped = false;
   bool serverDown = false;
+  int notificationId = DateTime.now().millisecondsSinceEpoch ~/ 1000;
   
   // Get all the Subscribe Product in Login Page
   Future<void> getSubscribProducts() async {
@@ -158,6 +161,12 @@ class SubscriptionProvider extends ChangeNotifier{
     // );
     if (response.statusCode == 200 && decodedResponse["status"] == "success") {
       confirmSubscriptionMessage(context, size, decodedResponse["message"], "assets/icons/happy-face.png");
+      _notificationService.showNotification(
+          id: notificationId,
+          title: "Product Subscribed",
+          body: "Product has been subscribed successfully!",
+          payload: json.encode({"type": "subscription"}),
+        );
       Future.delayed(const Duration(seconds: 2), (){
         Navigator.pop(context);
         Navigator.pop(context);
@@ -226,15 +235,15 @@ class SubscriptionProvider extends ChangeNotifier{
     String decrptedData = decryptAES(response.body);
     final decodedResponse = json.decode(decrptedData.replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), ''));
     print('Canncel Subscription Response: $decodedResponse, Code: ${response.statusCode}');
-    //  final cancelSubscriptinoMessage = snackBarMessage(
-    //   context: context, 
-    //   message: decodedResponse['message'], 
-    //   backgroundColor: Theme.of(context).primaryColor, 
-    //   sidePadding: size.width * 0.1,
-    //   bottomPadding: size.height * 0.05
-    // );
+    
     if(response.statusCode == 200 && decodedResponse['status'] == "success"){
       confirmSubscriptionMessage(context, size, decodedResponse["message"], "assets/icons/sad-face.png");
+      _notificationService.showNotification(
+          id: notificationId,
+          title: "Subscription Cancelled",
+          body: "Your order has been cancelled successfully!",
+          payload: json.encode({"type": "subscription"}),
+        );
       Future.delayed(const Duration(seconds: 2), () {
         Navigator.pop(context);
         Navigator.pop(context);
@@ -263,16 +272,8 @@ class SubscriptionProvider extends ChangeNotifier{
     String decrptedData = decryptAES(response.body);
     final decodedResponse = json.decode(decrptedData.replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), ''));
     print('Resume Subscription Response: $decodedResponse, Code: ${response.statusCode}');
-    //  final resumeSubscriptinoMessage = snackBarMessage(
-    //   context: context, 
-    //   message: decodedResponse['message'], 
-    //   backgroundColor: Theme.of(context).primaryColor, 
-    //   sidePadding: size.width * 0.1, 
-    //   bottomPadding: size.height * 0.05
-    // );
     if(response.statusCode == 200 && decodedResponse['status'] == "success"){
         confirmSubscriptionMessage(context, size, decodedResponse["message"], "assets/icons/happy-face.png");
-
         Future.delayed(const Duration(seconds: 2), () async {
           Navigator.pop(context);
          await activeSubscription().then((value) async {
@@ -295,16 +296,15 @@ class SubscriptionProvider extends ChangeNotifier{
     String decrptedData = decryptAES(response.body);
     final decodedResponse = json.decode(decrptedData.replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), ''));
     print('Confirm Re-Subscription Response: $decodedResponse, Code: ${response.statusCode}');
-    //  final renewsubscriptionMessage = snackBarMessage(
-    //   context: context, 
-    //   message: decodedResponse['message'], 
-    //   backgroundColor: Theme.of(context).primaryColor, 
-    //   sidePadding: size.width * 0.1, 
-    //   bottomPadding: size.height * 0.05
-    // );
     if (response.statusCode == 200) {
       // ScaffoldMessenger.of(context).showSnackBar(renewsubscriptionMessage);
       confirmSubscriptionMessage(context, size, decodedResponse['message'], "assets/icons/happy-face.png");
+      _notificationService.showNotification(
+          id: notificationId,
+          title: "Subscription Resumed",
+          body: "Your order has been resumed successfully!",
+          payload: json.encode({"type": "subscription"}),
+        );
     } else {
       print('Error: ${response.body}');
     }

@@ -1,0 +1,2 @@
+D:/Projects/Madurai_Market/Madurai_Market/android/app/.cxx/Debug/122z5b58/armeabi-v7a/CMakeFiles/edit_cache.dir
+D:/Projects/Madurai_Market/Madurai_Market/android/app/.cxx/Debug/122z5b58/armeabi-v7a/CMakeFiles/rebuild_cache.dir

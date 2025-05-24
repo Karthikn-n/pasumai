@@ -50,23 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyA7JhKa1a8xNKHfUw986_cTy_E_UdHP1j4',
-    appId: '1:712803607053:android:8b72777821fcff3abaab44',
-    messagingSenderId: '712803607053',
-    projectId: 'e-learning-app-5f316',
-    databaseURL: 'https://e-learning-app-5f316-default-rtdb.asia-southeast1.firebasedatabase.app',
-    storageBucket: 'e-learning-app-5f316.firebasestorage.app',
+    apiKey: 'AIzaSyAhd-xJz-cZTnphEQM08WiCdC_MTbf014g',
+    appId: '1:650244784208:android:12de1181c36542718b9155',
+    messagingSenderId: '650244784208',
+    projectId: 'embark-99c37',
+    storageBucket: 'embark-99c37.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAj5xz6kJkfNc5P-WDWNbgVpYsncSK89IY',
-    appId: '1:712803607053:ios:e13bed7789d14841baab44',
-    messagingSenderId: '712803607053',
-    projectId: 'e-learning-app-5f316',
-    databaseURL: 'https://e-learning-app-5f316-default-rtdb.asia-southeast1.firebasedatabase.app',
-    storageBucket: 'e-learning-app-5f316.firebasestorage.app',
-    androidClientId: '712803607053-brnhb8jvahdaqst8of56sn6dmhur6r1v.apps.googleusercontent.com',
-    iosClientId: '712803607053-90kg3nmak8en41q2qceb0dft1ac1d4sj.apps.googleusercontent.com',
+    apiKey: 'AIzaSyAtCt37v1ch9H_8fVlnCR7yYFNaVjl77b4',
+    appId: '1:650244784208:ios:63d0a90fc299fbc78b9155',
+    messagingSenderId: '650244784208',
+    projectId: 'embark-99c37',
+    storageBucket: 'embark-99c37.firebasestorage.app',
     iosBundleId: 'com.example.pasumai',
   );
+
 }

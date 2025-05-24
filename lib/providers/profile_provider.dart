@@ -17,6 +17,7 @@ import 'package:app_3/repository/app_repository.dart';
 import 'package:app_3/screens/on_boarding/otp_page.dart';
 import 'package:app_3/screens/on_boarding/signin_page.dart';
 import 'package:app_3/service/api_service.dart';
+import 'package:app_3/service/notification_service.dart';
 import 'package:app_3/widgets/common_widgets.dart/snackbar_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,7 @@ class ProfileProvider extends ChangeNotifier{
   AppRepository profileRepository = AppRepository(ApiService("https://maduraimarket.in/api"));
   // AppRepository profileRepository = AppRepository(ApiService("http://192.168.1.5/pasumaibhoomi/public/api"));
   SharedPreferences prefs = SharedPreferencesHelper.getSharedPreferences();
-
+  final NotificationService _notification = NotificationService();
   // Order Section Data
   bool reordered = false;
   List<OrderInfo> orderInfoData = [];
@@ -39,9 +40,22 @@ class ProfileProvider extends ChangeNotifier{
   List<ProductOrdered> orderedProducts = [];
   String selectedFilter = "";
   List<String> filterOption = ['3 months', '6 months', '9 months', ];
-
+  int selectedbody = 0;
+  bool isOrdersSelected = true;
+  List<bool> isOptionSelected = [];
+  int notificationID = DateTime.now().millisecondsSinceEpoch ~/ 1000;
   
-
+   List<String> options = [
+    'Order History',
+    'Active Subscriptions',
+    'Subscription History',
+    'My Addresses',
+    'Invoice Listing',
+    'Vacation Mode',
+    'Wishlist Products',
+    "Raise a query",
+    // "Chat"
+  ];
   // invoice Data
   List<InvoiceModel> invoices = [];
   
@@ -68,6 +82,41 @@ class ProfileProvider extends ChangeNotifier{
     "Wrong Subscription product",
     "Other"
   ];
+
+  
+  List<String> images = [
+    "assets/icons/profile/shopping-bag.png",
+    "assets/icons/profile/surprise-box.png",
+    "assets/icons/profile/time.png",
+    "assets/icons/profile/location.png",
+    "assets/icons/profile/invoice.png",
+    "assets/icons/profile/sunset.png",
+    "assets/icons/profile/heart.png",
+    "assets/icons/profile/question-sign.png",
+    // "assets/icons/profile/chat.png"
+  ];
+  
+
+  Future<void> loadSelectedOption() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    int savedIndex = prefs.getInt('selectedOptionIndex') ?? 0;
+      selectedbody = savedIndex;
+      isOptionSelected = List.generate(options.length, (index) {
+        return index == selectedbody;
+      });
+      notifyListeners();
+  }
+
+
+  void changeBody(int index) async {
+    for (var i = 0; i < options.length; i++) {
+        isOptionSelected[i] = false;
+      }
+    selectedbody = index;
+    isOptionSelected[index] = true;
+    await prefs.setInt('selectedOptionIndex', index); 
+    notifyListeners();
+  }
 
   // Set selected Query
   void selectQuery(int? index){
@@ -198,6 +247,12 @@ class ProfileProvider extends ChangeNotifier{
     if (response.statusCode == 200) {
       
       messagePopUp(context, size, decodedResponse["message"], "assets/icons/happy-face.png");
+       _notification.showNotification(
+          id: notificationID,
+          title: "Order again placed",
+          body: "Your order has been re-ordered",
+          payload: json.encode({"type": "order"}),
+        );
       // ScaffoldMessenger.of(context).showSnackBar(reOrderedMessage).closed.then((event) async {
       Future.delayed(const Duration(seconds: 2), () async {
         await orderList().then((value) {
@@ -230,6 +285,12 @@ class ProfileProvider extends ChangeNotifier{
       // ScaffoldMessenger.of(context).showSnackBar(cancelOrderedMessage);
       messagePopUp(context, size, decodedResponse["message"], "assets/icons/sad-face.png");
       // orderInfoData.removeWhere((element) => element.orderId == orderId,);,
+      _notification.showNotification(
+          id: notificationID,
+          title: "Order Cancelled",
+          body: "Your order has been cancelled",
+          payload: json.encode({"type": "order"}),
+        );
       Future.delayed(const Duration(seconds: 2), () async {
         await orderList().then((value) {
           Navigator.pop(context);

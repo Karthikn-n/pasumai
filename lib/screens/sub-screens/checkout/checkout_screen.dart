@@ -756,24 +756,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               fromCart: widget.fromCart ?? true,
                             ))
                           );
-                        //   await paymentprovider.cardUpiList().then((value) {
-                        // },);
-                        // await NotificationProvider().showNotification(
-                        //   title: "Order placed successfully", 
-                        //   body: "See order detail here", 
-                        //   payload: "Open", 
-                        //   id: profileProvider.orderInfoData.last.orderId
-                        // );
-                          // try {
-                           
-                            
-                          // } catch (e) {
-                          //   print('Error Happened: $e');
-                          // } finally {
-                          //   setState(() {
-                          //     isLoading = false;
-                          //   });
-                          // }
                         }
                       },
                       backgroundColor: Theme.of(context).primaryColor,

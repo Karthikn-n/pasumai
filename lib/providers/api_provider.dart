@@ -15,6 +15,7 @@ import 'package:app_3/screens/main_screens/bottom_bar.dart';
 import 'package:app_3/screens/on_boarding/otp_page.dart';
 import 'package:app_3/screens/sub-screens/checkout/checkout_screen.dart';
 import 'package:app_3/service/api_service.dart';
+import 'package:app_3/service/notification_service.dart';
 import 'package:app_3/widgets/common_widgets.dart/snackbar_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,9 @@ class ApiProvider extends ChangeNotifier{
   AppRepository apiRepository = AppRepository(ApiService("https://maduraimarket.in/api"));
   // AppRepository apiRepository = AppRepository(ApiService("http://192.168.1.5/pasumaibhoomi/public/api"));
   SharedPreferences prefs = SharedPreferencesHelper.getSharedPreferences();
+  final NotificationService _notification = NotificationService();
 
+  int notificationID = DateTime.now().millisecondsSinceEpoch ~/ 1000;
   bool serverDown = false;
   bool isQuick = false;
   int bottomIndex = 0;
@@ -155,7 +158,7 @@ class ApiProvider extends ChangeNotifier{
             // Save User id In Cache
             await userProfileAPI();
             // TODO: Uncomment this line once the OTP provider is fully implemented
-            // await OTPProvider().twilioOTPSender(mobileNo);
+            await OTPProvider().twilioOTPSender(mobileNo);
             Navigator.push(context, SideTransistionRoute(
               screen: const OtpPage(fromRegister: false,), 
             ));
@@ -684,6 +687,12 @@ class ApiProvider extends ChangeNotifier{
       if (response.statusCode == 200 && decodedResponse["status"] == "success") {
         clearQuickOrder();
         confirmOrder(context, size);
+        _notification.showNotification(
+          id: notificationID,
+          title: "Quick Order Placed",
+          body: "Your order has been successfully placed!",
+          payload: json.encode({"type": "order"}),
+        );
         Future.delayed(const Duration(seconds: 3), () {
           Navigator.pop(context);
           bottomIndex = 0;

@@ -1,8 +1,6 @@
 import 'package:app_3/helper/page_transition_helper.dart';
-import 'package:app_3/helper/shared_preference_helper.dart';
 import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/providers/profile_provider.dart';
-// import 'package:app_3/screens/sub-screens/profile/chat_screen.dart';
 import 'package:app_3/screens/sub-screens/wishlist_products.dart';
 import 'package:app_3/service/connectivity_helper.dart';
 import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
@@ -18,7 +16,6 @@ import 'package:app_3/widgets/profile_screen_widgets/your_address_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class NewProfileScreen extends StatefulWidget {
   const NewProfileScreen({super.key});
@@ -28,39 +25,19 @@ class NewProfileScreen extends StatefulWidget {
 }
 
 class _NewProfileScreenState extends State<NewProfileScreen> {
-  SharedPreferences prefs = SharedPreferencesHelper.getSharedPreferences();
-  List<bool> isOptionSelected = [];
-  bool isOrdersSelected = true;
-  int selectedbody = 0;
   final GlobalKey<ScaffoldState> _scaffoldStateKey = GlobalKey<ScaffoldState>();
-  List<String> options = [
-    'Order History',
-    'Active Subscriptions',
-    'Subscription History',
-    'My Addresses',
-    'Invoice Listing',
-    'Vacation Mode',
-    'Wishlist Products',
-    "Raise a query",
-    // "Chat"
-  ];
+ 
   @override
   void initState() {
     super.initState();
     _loadSelectedOption();
   }
- 
+  
+    void _loadSelectedOption() {
+      final provider = Provider.of<ProfileProvider>(context, listen: false);
+      provider.loadSelectedOption();
+    }
 
-  Future<void> _loadSelectedOption() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    int savedIndex = prefs.getInt('selectedOptionIndex') ?? 0;
-    setState(() {
-      selectedbody = savedIndex;
-      isOptionSelected = List.generate(options.length, (index) {
-        return index == selectedbody;
-      });
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +112,7 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
                   ),
                   // Your orders
                   ...List.generate(
-                    options.length, 
+                    provider.options.length, 
                     (index) {
                       return Consumer2<ProfileProvider, AddressProvider>(
                         builder: (context, profileProvider, addressProvider, child) {
@@ -144,46 +121,33 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
                               height: 20,
                               width: 20,
                               child: Image.asset(
-                                images[index],
-                                color: isOptionSelected[index] ? Colors.white : null,
+                                provider.images[index],
+                                color: provider.isOptionSelected[index] ? Colors.white : null,
                               ),
                             ),
-                            tileColor: isOptionSelected[index]
+                            tileColor: provider.isOptionSelected[index]
                             ? Theme.of(context).primaryColor
                             : null,
                             onTap: () async {
-                              
-                              if (options[index] == "Raise a query") {
+                              if (provider.options[index] == "Raise a query") {
                                 _scaffoldStateKey.currentState?.closeDrawer();
                                await Future.delayed(const Duration(milliseconds: 200));
                                 Navigator.push(context, SideTransistionRoute(screen: const RaiseAQueryWidget()));
                               } 
-                              // else if(options[index] == "Chat") {
-                              //   _scaffoldStateKey.currentState?.closeDrawer();
-                              //  await Future.delayed(const Duration(milliseconds: 200));
-                              //   Navigator.push(context, SideTransistionRoute(screen: const ChatScreen()));
-                              // } 
-                              else if(options[index] == "Wishlist Products") {
+                              else if(provider.options[index] == "Wishlist Products") {
                                 _scaffoldStateKey.currentState?.closeDrawer();
                                await Future.delayed(const Duration(milliseconds: 200));
                                 Navigator.push(context, SideTransistionRoute(screen: const WishlistProducts()));
                               }else {
-                                 setState(() {
-                                  for (var i = 0; i < options.length; i++) {
-                                    isOptionSelected[i] = false;
-                                  }
-                                  selectedbody = index;
-                                  isOptionSelected[index] = true;
-                                });
-                                await prefs.setInt('selectedOptionIndex', index); 
+                                  provider.changeBody(index);
                                 _scaffoldStateKey.currentState?.closeDrawer();
                               }
                             },
                             title: AppTextWidget(
-                              text: options[index], 
+                              text: provider.options[index], 
                               fontSize: 14, 
                               fontWeight: FontWeight.w400,
-                              fontColor: isOptionSelected[index] ? Theme.of(context).scaffoldBackgroundColor : null,
+                              fontColor: provider.isOptionSelected[index] ? Theme.of(context).scaffoldBackgroundColor : null,
                             ),
                           );
                         }
@@ -195,9 +159,9 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
             ),
             body: Column(
               children: [
-                UserProfileWidget(prefs: prefs),
+                UserProfileWidget(prefs: provider.prefs),
                 const SizedBox(height: 16,),
-                optionsBody[prefs.getInt('selectedOptionIndex') ?? selectedbody],
+                optionsBody[provider.prefs.getInt('selectedOptionIndex') ?? provider.selectedbody],
               ],
             ),
           );
@@ -215,16 +179,4 @@ class _NewProfileScreenState extends State<NewProfileScreen> {
     const VacationListWidget(),
   ];
 
-  List<String> images = [
-    "assets/icons/profile/shopping-bag.png",
-    "assets/icons/profile/surprise-box.png",
-    "assets/icons/profile/time.png",
-    "assets/icons/profile/location.png",
-    "assets/icons/profile/invoice.png",
-    "assets/icons/profile/sunset.png",
-    "assets/icons/profile/heart.png",
-    "assets/icons/profile/question-sign.png",
-    // "assets/icons/profile/chat.png"
-  ];
-  
 }

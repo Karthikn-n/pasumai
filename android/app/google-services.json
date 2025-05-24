@@ -1,64 +1,26 @@
 {
   "project_info": {
-    "project_number": "712803607053",
-    "firebase_url": "https://e-learning-app-5f316-default-rtdb.asia-southeast1.firebasedatabase.app",
-    "project_id": "e-learning-app-5f316",
-    "storage_bucket": "e-learning-app-5f316.firebasestorage.app"
+    "project_number": "650244784208",
+    "project_id": "embark-99c37",
+    "storage_bucket": "embark-99c37.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:712803607053:android:8b72777821fcff3abaab44",
+        "mobilesdk_app_id": "1:650244784208:android:12de1181c36542718b9155",
         "android_client_info": {
           "package_name": "com.example.app_3"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "712803607053-kfljlla34t3edn4e92jk6tcf5ecclnsp.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.app_3",
-            "certificate_hash": "a97972ea5a50fb0103c4d93a6db11f2363b15e7d"
-          }
-        },
-        {
-          "client_id": "712803607053-q50qollrftu5cnj6dtb8tiqh24j6hr6h.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.app_3",
-            "certificate_hash": "7dc5d1061062556c06d2144e1c171650478412d0"
-          }
-        },
-        {
-          "client_id": "712803607053-rolt886jv8lc5ucj1moa756cq2e0l4eb.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.app_3",
-            "certificate_hash": "b719b0c5d7a205bfa6bd68a2eaffd4103f0cf5a7"
-          }
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyA7JhKa1a8xNKHfUw986_cTy_E_UdHP1j4"
+          "current_key": "AIzaSyAhd-xJz-cZTnphEQM08WiCdC_MTbf014g"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "712803607053-a2dem60nnjj00e49ca1tkvng5idmafcn.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "712803607053-90kg3nmak8en41q2qceb0dft1ac1d4sj.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.pasumai"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

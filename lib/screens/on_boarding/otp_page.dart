@@ -3,7 +3,6 @@ import 'package:app_3/helper/shared_preference_helper.dart';
 import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/providers/api_provider.dart';
-import 'package:app_3/providers/otp_provider.dart';
 import 'package:app_3/repository/app_repository.dart';
 import 'package:app_3/screens/main_screens/bottom_bar.dart';
 import 'package:app_3/service/api_service.dart';
@@ -12,7 +11,6 @@ import 'package:app_3/widgets/common_widgets.dart/button_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:app_3/widgets/sub_screen_widgets/new_address_form_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sms_autofill/sms_autofill.dart';
@@ -203,6 +201,7 @@ class _OtpPageState extends State<OtpPage> with WidgetsBindingObserver{
                           width: double.infinity,
                           buttonName: 'Verify',
                           onPressed: () async {
+                            
                             setState(() {
                               isLoading = true;
                             });
@@ -318,12 +317,15 @@ class _OtpPageState extends State<OtpPage> with WidgetsBindingObserver{
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              AppTextWidget(
-                                text: _timerSeconds == 0 
-                                ? "Didn't receive OTP "
-                                : "Didn't receive OTP wait ", 
-                                fontWeight: FontWeight.w500, 
-                                fontSize: 14,
+                              GestureDetector(
+                                onTap: () => print(SmsAutoFill().getAppSignature),
+                                child: AppTextWidget(
+                                  text: _timerSeconds == 0 
+                                  ? "Didn't receive OTP "
+                                  : "Didn't receive OTP wait ", 
+                                  fontWeight: FontWeight.w500, 
+                                  fontSize: 14,
+                                ),
                               ),
                               Consumer<ApiProvider>(
                                 builder: (context, provider, child) {

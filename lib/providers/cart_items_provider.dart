@@ -9,6 +9,7 @@ import 'package:app_3/repository/app_repository.dart';
 import 'package:app_3/screens/main_screens/bottom_bar.dart';
 import 'package:app_3/screens/sub-screens/checkout/checkout_screen.dart';
 import 'package:app_3/service/api_service.dart';
+import 'package:app_3/service/notification_service.dart';
 import 'package:app_3/widgets/common_widgets.dart/snackbar_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class CartProvider extends ChangeNotifier{
   static final SharedPreferences prefs = SharedPreferencesHelper.getSharedPreferences();
   static final cartRepository = AppRepository(ApiService("https://maduraimarket.in/api"));
   // static final cartRepository = AppRepository(ApiService("http://192.168.1.5/pasumaibhoomi/public/api"));
-
+  final NotificationService _notificationService = NotificationService();
   int totalCartProduct = 0;
   int totalCartAmount = 0;
   List<CartProducts> cartItems = [];
@@ -193,8 +194,15 @@ class CartProvider extends ChangeNotifier{
     //   bottomPadding: size.height * 0.05
     // );
     if (response.statusCode == 200 && decodedResponse["status"] == "success") {
-      clearCartItems();
-      confirmOrder(context, size);
+        clearCartItems();
+        confirmOrder(context, size);
+      
+        NotificationService().showNotification(
+          id: 1,
+          title: "Order Placed",
+          body: "Your order has been successfully placed!",
+          payload: json.encode({"type": "order"}),
+        );
        Future.delayed(const Duration(seconds: 2), () {
         Navigator.pop(context);
         Navigator.of(context).pushAndRemoveUntil(

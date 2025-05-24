@@ -9,10 +9,10 @@ import 'package:app_3/providers/firebase_provider.dart';
 import 'package:app_3/providers/locale_provider.dart';
 import 'package:app_3/providers/subscription_provider.dart';
 import 'package:app_3/screens/main_screens/bottom_bar.dart';
-import 'package:app_3/screens/on_boarding/otp_page.dart';
 // import 'package:app_3/screens/main_screens/search_screen.dart';
 import 'package:app_3/screens/sub-screens/address_selection_screen.dart';
 import 'package:app_3/service/connectivity_helper.dart';
+import 'package:app_3/service/notification_service.dart';
 import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
 import 'package:app_3/widgets/common_widgets.dart/input_field_widget.dart';
 import 'package:app_3/widgets/search/search_widget.dart';
@@ -22,7 +22,6 @@ import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:app_3/widgets/main_screen_widgets/category_products_list_widget.dart';
 import 'package:app_3/widgets/main_screen_widgets/home_screen_products_widgets.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -209,8 +208,9 @@ class _HomePageState extends State<HomePage> {
                           splashRadius: 80,
                           tooltip: "Notification",
                           onPressed: () async {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => OtpPage(fromRegister: false),));
-                            // wishlistProductProvider.notificationStorage(const RemoteMessage());
+                            
+                            // Navigator.push(context, MaterialPageRoute(builder: (context) => const OtpPage(fromRegister: false),));
+                            // wishlistProductProvider.getFCMToken();
                             // await wishlistProductProvider.
                             // wishlistProductProvider.wishlistProductsAPI();
                             // Navigator.push(context, downToTop(screen: const NotificationScreen()));

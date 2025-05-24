@@ -5,6 +5,7 @@ import 'package:app_3/providers/firebase_provider.dart';
 import 'package:app_3/providers/locale_provider.dart';
 import 'package:app_3/screens/on_boarding/splash_screen.dart';
 import 'package:app_3/screens/sub-screens/checkout/provider/payment_proivider.dart';
+import 'package:app_3/service/notification_service.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +45,15 @@ void main() async {
       FirebaseCrashlytics.instance.recordFlutterError(errorDetails);
     }
   };
+  final profileProvider = ProfileProvider();
+  final apiProvider = ApiProvider();
 
+  NotificationService.instance.init(
+    profileProvider: profileProvider,
+    apiProvider: apiProvider,
+  );
+
+  // _initializeFirebaseMessaging(navigatorKey.currentState!.context);
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -57,9 +66,9 @@ void main() async {
           ChangeNotifierProvider(create: (_) => CartProvider()),
           ChangeNotifierProvider(create: (_) => SubscriptionProvider()),
           ChangeNotifierProvider(create: (_) => LocaleProvider()),
-          ChangeNotifierProvider(create: (_) => ProfileProvider(),),
+          ChangeNotifierProvider(create: (_) => profileProvider,),
           ChangeNotifierProvider(create: (_) => VacationProvider()),
-          ChangeNotifierProvider(create: (_) => ApiProvider(),),
+          ChangeNotifierProvider(create: (_) => apiProvider,),
           ChangeNotifierProvider(create: (_) => Constants(),),
           ChangeNotifierProvider(create: (_) => PaymentProivider(),),
           ChangeNotifierProvider(create: (_) => FirebaseProvider(),),
@@ -88,13 +97,18 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    
+    getFirebaseToken();
     // Stop the stopwatch when the first frame is rendered
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.stopwatch.stop();
       dev.log('Startup time: ${widget.stopwatch.elapsedMilliseconds} ms');
       debugPrint('Startup time: ${widget.stopwatch.elapsedMilliseconds} ms');
     });
+  }
+
+  Future<void> getFirebaseToken() async {
+    final provider = Provider.of<FirebaseProvider>(context, listen: false);
+    await provider.getFCMToken();
   }
   
   @override
@@ -144,7 +158,12 @@ class _MyAppState extends State<MyApp> {
             primaryColorDark: Colors.black,
             scaffoldBackgroundColor: Colors.white,
           ),
-          home: SplashScreen(userLogged: widget.userLogged,),
+          home: Builder(
+            builder: (context) {
+              NotificationService().initialize(context);
+              return SplashScreen(userLogged: widget.userLogged,);
+            }
+          ),
         );
       },
     );
@@ -153,6 +172,7 @@ class _MyAppState extends State<MyApp> {
 
 
 Future<void> _initializeFirebaseMessaging(BuildContext context) async {
+
   final provider = Provider.of<FirebaseProvider>(context);
     // Ask the permission from the user for sending notifications
   await provider.getPermission();

@@ -1,5 +1,9 @@
 plugins {
     id "com.android.application"
+    // START: FlutterFire Configuration
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+    // END: FlutterFire Configuration
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
 }
@@ -88,6 +92,7 @@ dependencies {
     // Could not determine the dependencies of task ':app:packageDebug'.
     // Could not create task ':app:l8DexDesugarLibDebug'.
     // coreLibraryDesugaring configuration contains no dependencies. If you intend to enable core library desugaring, please add dependencies to coreLibraryDesugaring configuration.
-
+    implementation("androidx.window:window:1.0.0")
+    implementation("androidx.window:window-java:1.0.0")
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
 }

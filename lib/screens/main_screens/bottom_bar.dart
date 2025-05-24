@@ -42,16 +42,6 @@ class _BottomBarState extends State<BottomBar> {
      preloadApi();
   }
 
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-  //     context.r
-  //     // final cartItemsHelper = Provider.of<CartProvider>(context, listen: false);
-  //     // cartItemsHelper.cartItemsAPI();
-  //     _isInitialized = true;
-    
-  // }
-
   @override
   Widget build(BuildContext context) {
     _pages = [

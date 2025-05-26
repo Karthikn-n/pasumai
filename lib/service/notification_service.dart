@@ -44,6 +44,7 @@ class NotificationService {
       initSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
         final payload = response.payload;
+        print("Payload: $payload");
         if (payload != null && payload.isNotEmpty) {
           _handleNavigation(context, payload);
         }
@@ -93,11 +94,12 @@ class NotificationService {
       _apiProvider.setIndex(4);
       _apiProvider.setQuick(false);
       _profileProvider.changeBody(0);
-    } else if (data["type"] == "subscribe") {
       Navigator.pushAndRemoveUntil(context, SideTransistionRoute(screen: const BottomBar()), (route) => false,);
-      _apiProvider.setIndex(4);
-      _apiProvider.setQuick(false);
-      _profileProvider.changeBody(1);
+    } else if (data["type"] == "subscription") {
+        _apiProvider.setIndex(4);
+        _apiProvider.setQuick(false);
+        _profileProvider.changeBody(1);
+      Navigator.pushAndRemoveUntil(context, SideTransistionRoute(screen: const BottomBar()), (route) => false,);
     } else if (payload == 'address_added') {
       Navigator.pushNamed(context, '/addressBook');
     }

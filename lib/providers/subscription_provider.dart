@@ -151,14 +151,6 @@ class SubscriptionProvider extends ChangeNotifier{
     String decrptedData = decryptAES(response.body);
     final decodedResponse = json.decode(decrptedData.replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), ''));
     print('Pre order Subscription Response: $decodedResponse, Code: ${response.statusCode}');
-    //  final renewsubscriptionMessage = snackBarMessage(
-    //   context: context, 
-    //   message: decodedResponse['message'], 
-    //   backgroundColor: Theme.of(context).primaryColor, 
-    //   sidePadding: size.width * 0.1, 
-    //   duration: const Duration(seconds: 2),
-    //   bottomPadding: size.height * 0.05
-    // );
     if (response.statusCode == 200 && decodedResponse["status"] == "success") {
       confirmSubscriptionMessage(context, size, decodedResponse["message"], "assets/icons/happy-face.png");
       _notificationService.showNotification(
@@ -241,7 +233,7 @@ class SubscriptionProvider extends ChangeNotifier{
       _notificationService.showNotification(
           id: notificationId,
           title: "Subscription Cancelled",
-          body: "Your order has been cancelled successfully!",
+          body: "Your subscription has been cancelled successfully!",
           payload: json.encode({"type": "subscription"}),
         );
       Future.delayed(const Duration(seconds: 2), () {
@@ -273,16 +265,19 @@ class SubscriptionProvider extends ChangeNotifier{
     final decodedResponse = json.decode(decrptedData.replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), ''));
     print('Resume Subscription Response: $decodedResponse, Code: ${response.statusCode}');
     if(response.statusCode == 200 && decodedResponse['status'] == "success"){
-        confirmSubscriptionMessage(context, size, decodedResponse["message"], "assets/icons/happy-face.png");
-        Future.delayed(const Duration(seconds: 2), () async {
-          Navigator.pop(context);
-         await activeSubscription().then((value) async {
-            await subscriptionHistoryAPI();
-          },);
-        });
-    //  ScaffoldMessenger.of(context).showSnackBar(resumeSubscriptinoMessage).closed.then((value) async {
-       
-      // },);
+      await _notificationService.showNotification(
+        id: notificationId,
+        title: "Subscription Resumed",
+        body: "Your subscription has been resumed successfully!",
+        payload: json.encode({"type": "subscription"}),
+      );
+      confirmSubscriptionMessage(context, size, decodedResponse["message"], "assets/icons/happy-face.png");
+      Future.delayed(const Duration(seconds: 2), () async {
+        Navigator.pop(context);
+        await activeSubscription().then((value) async {
+          await subscriptionHistoryAPI();
+        },);
+      });
      print("Called");
     }else{
       print('Success: ${response.body}');

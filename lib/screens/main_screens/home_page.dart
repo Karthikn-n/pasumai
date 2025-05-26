@@ -72,7 +72,6 @@ class _HomePageState extends State<HomePage> {
 
   Widget homePage(BuildContext context){
     final addressProvider = Provider.of<AddressProvider>(context);
-    
     final localeProvider = Provider.of<LocaleProvider>(context);
     Size size = MediaQuery.sizeOf(context);
     return Consumer<ApiProvider>(
@@ -99,29 +98,7 @@ class _HomePageState extends State<HomePage> {
             }
             
           },
-          child: provider.serverDown
-          ? Scaffold(
-              appBar: AppBar(
-                actions: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 15),
-                    child: Icon(
-                      CupertinoIcons.bell, 
-                      size: 28,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
-                ],
-              ),
-              body: const Center(
-                child: AppTextWidget(
-                  text: "Unable to load content. Our services are currently down. Please try again later.", 
-                  fontWeight: FontWeight.w500,
-                  textAlign: TextAlign.start,
-                ),
-              ),
-            )
-          : Scaffold(
+          child: Scaffold(
               backgroundColor: Colors.white,
               appBar: provider.isQuick ? null
               : AppBar(
@@ -208,12 +185,6 @@ class _HomePageState extends State<HomePage> {
                           splashRadius: 80,
                           tooltip: "Notification",
                           onPressed: () async {
-                            
-                            // Navigator.push(context, MaterialPageRoute(builder: (context) => const OtpPage(fromRegister: false),));
-                            // wishlistProductProvider.getFCMToken();
-                            // await wishlistProductProvider.
-                            // wishlistProductProvider.wishlistProductsAPI();
-                            // Navigator.push(context, downToTop(screen: const NotificationScreen()));
                           },
                           icon: const Icon(
                             CupertinoIcons.bell, 

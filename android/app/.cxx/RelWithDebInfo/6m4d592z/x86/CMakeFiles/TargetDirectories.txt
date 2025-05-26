@@ -1,0 +1,2 @@
+D:/Projects/Madurai_Market/Madurai_Market/android/app/.cxx/RelWithDebInfo/6m4d592z/x86/CMakeFiles/edit_cache.dir
+D:/Projects/Madurai_Market/Madurai_Market/android/app/.cxx/RelWithDebInfo/6m4d592z/x86/CMakeFiles/rebuild_cache.dir

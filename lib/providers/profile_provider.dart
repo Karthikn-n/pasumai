@@ -784,8 +784,9 @@ class ProfileProvider extends ChangeNotifier{
               color: Colors.white,
               borderRadius: BorderRadius.circular(10),
             ),
-            height: isMobileEdited ? 200 : 180,
+            // height: isMobileEdited ? 200 : 180,
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
                   padding: const EdgeInsets.all(10),
@@ -808,22 +809,23 @@ class ProfileProvider extends ChangeNotifier{
                           ),
                         )
                       : Center(
-                          child: Column(
-                            children: [
-                             const Text(
-                              "OTP sent to your new mobile number",
-                              style: TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.w400
+                          child: RichText(
+                            text: TextSpan(
+                              text: "OTP sent to your new mobile number ",
+                              style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w400,
+                                color: Colors.black
                               ),
-                            ),
-                            Text(
-                              profileData["mobile_no"],
-                              style:  TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.w500,
-                                color: Theme.of(context).primaryColor
-                              ),
+                              children: [
+                                TextSpan(
+                                  text: profileData["mobile_no"],
+                                    style:  TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.w500,
+                                    color: Theme.of(context).primaryColor
+                                  ),
+                                )
+                              ]
                             )
-                            ],
                           ),
                         )
                     ],

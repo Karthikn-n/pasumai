@@ -1,5 +1,6 @@
 import 'dart:developer' as dev;
 
+import 'package:app_3/l10n/app_localizations.dart';
 import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/providers/firebase_provider.dart';
 import 'package:app_3/providers/locale_provider.dart';
@@ -13,7 +14,6 @@ import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:app_3/helper/shared_preference_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

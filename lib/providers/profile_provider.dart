@@ -141,27 +141,24 @@ class ProfileProvider extends ChangeNotifier{
       sidePadding: size.width * 0.1, 
       bottomPadding: size.height * 0.05
     );
-    if (response.statusCode == 200) {
+    Navigator.pop(context);
+    if (response.statusCode == 200 && decodedResponse["message"] != "Account Exist" && isMobileEdited) {
       await prefs.setString('firstname', profileData["first_name"]);
       await prefs.setString("lastname", profileData["last_name"]);
       await prefs.setString("mail", profileData["email"]);
       await prefs.setString("mobile", profileData["mobile_no"]);
-      if (isMobileEdited) {
-        Navigator.pop(context);
-        try {
-          print("Mobile Edited: $isMobileEdited");
-          ScaffoldMessenger.of(context).showSnackBar(updateProfileMessage);
-          Navigator.pushReplacement(context, SideTransistionRoute(screen: const OtpPage(fromRegister: false,),),);
-        } catch (e) {
-          print("Something erong $e");
-        }
-      }else{
+      try {
+        print("Mobile Edited: $isMobileEdited");
+        ScaffoldMessenger.of(context).showSnackBar(updateProfileMessage);
+        // Navigator.pushReplacement(context, SideTransistionRoute(screen: const OtpPage(fromRegister: false,),),);
+      } catch (e) {
+        print("Something erong $e");
+      }
+    } else {
         ScaffoldMessenger.of(context).showSnackBar(updateProfileMessage).closed.then((value) {
           Navigator.pop(context);
           Navigator.pop(context);
         },);
-      }
-    } else {
       print('Error: ${response.body}');
     }
     notifyListeners();

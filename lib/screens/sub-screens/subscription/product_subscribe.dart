@@ -275,7 +275,7 @@ class _ProductSubScriptionState extends State<ProductSubScription> {
     // List<String> days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     showModalBottomSheet(
       context: context,
-      sheetAnimationStyle: AnimationStyle(
+      sheetAnimationStyle: const AnimationStyle(
         curve: Curves.elasticInOut,
       ),
       builder: (sheetContext) {

@@ -324,16 +324,16 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
     await Permission.sms.request();
   }
 
-  Widget _soicalLogin(String icon, VoidCallback onPressed){
-    return IconButton(
-      onPressed: onPressed, 
-      icon: SizedBox(
-        height: 20,
-        width: 20,
-        child: Image.asset(
-          icon,
-        ),
-      )
-    );
-  }
+  // Widget _soicalLogin(String icon, VoidCallback onPressed){
+  //   return IconButton(
+  //     onPressed: onPressed, 
+  //     icon: SizedBox(
+  //       height: 20,
+  //       width: 20,
+  //       child: Image.asset(
+  //         icon,
+  //       ),
+  //     )
+  //   );
+  // }
 }

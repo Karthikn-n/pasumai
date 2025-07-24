@@ -17,7 +17,7 @@ void everyDayChange(BuildContext context, ActiveSubscriptionModel edit, Size siz
   bool quantityNeeded = false;
   showModalBottomSheet(
     context: context,
-    sheetAnimationStyle: AnimationStyle(
+    sheetAnimationStyle: const AnimationStyle(
       curve: Curves.elasticInOut,
     ),
     builder: (context) {

@@ -19,7 +19,7 @@ class CartProvider extends ChangeNotifier{
   static final SharedPreferences prefs = SharedPreferencesHelper.getSharedPreferences();
   static final cartRepository = AppRepository(ApiService("https://maduraimarket.in/api"));
   // static final cartRepository = AppRepository(ApiService("http://192.168.1.5/pasumaibhoomi/public/api"));
-  final NotificationService _notificationService = NotificationService();
+  // final NotificationService _notificationService = NotificationService();
   int totalCartProduct = 0;
   int totalCartAmount = 0;
   List<CartProducts> cartItems = [];

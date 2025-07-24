@@ -26,7 +26,7 @@ class OTPProvider extends ChangeNotifier {
     try{
       String hash = await apphash();
       int otp = await generateOTP();
-      String url = "http://instantalerts.in/api/smsapi?key=f665fb10246333b640a6f6bd929e2af3&route=1&sender=INSTNE&number=$mobile&templateid=1407168862906996721&sms=%3C%23%3E+Login+OTP+is+$otp%0A$hash";
+      String url = "http://instantalerts.in/api/smsapi?key=f665fb10246333b640a6f6bd929e2af3&route=1&sender=INSTNE&number=$mobile&templateid=1407168862906996721&sms=$otp is your Madurai market OTP. $hash";
       final response = await http.post(Uri.parse(url));
       if (response.statusCode == 200) {
         print("OTP sent successfully to $mobile");
@@ -65,7 +65,6 @@ class OTPProvider extends ChangeNotifier {
   Future<String?> getLastOtp() async {
     return prefs.getString("last_otp");
   }
-
 
   /// twilio OTP Sender
   /// TODO: NEED TO CHANGE WITH LIVE CREDENTIALS INSTEAD OF TEST CREDENTIALS

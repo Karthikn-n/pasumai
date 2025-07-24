@@ -12,7 +12,6 @@ import 'package:app_3/screens/main_screens/bottom_bar.dart';
 // import 'package:app_3/screens/main_screens/search_screen.dart';
 import 'package:app_3/screens/sub-screens/address_selection_screen.dart';
 import 'package:app_3/service/connectivity_helper.dart';
-import 'package:app_3/service/notification_service.dart';
 import 'package:app_3/widgets/common_widgets.dart/app_bar.dart';
 import 'package:app_3/widgets/common_widgets.dart/input_field_widget.dart';
 import 'package:app_3/widgets/search/search_widget.dart';

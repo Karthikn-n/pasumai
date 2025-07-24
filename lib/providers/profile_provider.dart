@@ -14,7 +14,6 @@ import 'package:app_3/providers/api_provider.dart';
 import 'package:app_3/providers/cart_items_provider.dart';
 import 'package:app_3/providers/subscription_provider.dart';
 import 'package:app_3/repository/app_repository.dart';
-import 'package:app_3/screens/on_boarding/otp_page.dart';
 import 'package:app_3/screens/on_boarding/signin_page.dart';
 import 'package:app_3/service/api_service.dart';
 import 'package:app_3/service/notification_service.dart';
@@ -22,10 +21,12 @@ import 'package:app_3/widgets/common_widgets.dart/snackbar_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 
 class ProfileProvider extends ChangeNotifier{
   AppRepository profileRepository = AppRepository(ApiService("https://maduraimarket.in/api"));
@@ -333,61 +334,94 @@ class ProfileProvider extends ChangeNotifier{
 
   Future<void> downloadInvoice(String fileName, BuildContext context, Size size) async {
     final storagePermission = await Permission.manageExternalStorage.request();
+    final _dio = Dio();
     if (storagePermission.isGranted) {
       try {
-        final downloadDirectory = Directory("/storage/emulated/0/Download");
-        if (!await downloadDirectory.exists()) {
-          await downloadDirectory.create();
+        // final downloadDirectory = Directory("/storage/emulated/0/Download");
+        // if (!await downloadDirectory.exists()) {
+        //   await downloadDirectory.create();
+        // }
+        Directory dir;
+        if (Platform.isAndroid) {
+          dir = await getExternalStorageDirectory() ?? await getApplicationDocumentsDirectory();
+        } else {
+          dir = await getApplicationDocumentsDirectory();
         }
-        
-        final response = await http.get(Uri.parse("https://maduraimarket.in/public/pdf/$fileName"));
-        if (response.statusCode == 200) {
-          // Define the file path
-          final filePath = '${downloadDirectory.path}/$fileName';
-          File file = File(filePath);
+        // final response = await http.get(Uri.parse("https://maduraimarket.in/public/pdf/$fileName"));
+        // Define the file path
+        final filePath = '${dir.path}/$fileName';
+        File file = File(filePath);
 
-          if (file.existsSync()) {
-            ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
-              context: context,
-              message: "File Already exists",
-              showCloseIcon: false,
-              duration: const Duration(seconds: 20),
-              snackBarAction: SnackBarAction(
-                label: "Open",
-                textColor: Colors.white,
-                onPressed: () async {
-                  if (file.existsSync()) {
-                    OpenFile.open(file.path);
-                  }
-                },
-              ),
-              backgroundColor: Theme.of(context).primaryColor,
-              sidePadding: size.width * 0.1,
-              bottomPadding: size.height * 0.05,
-            ));
-          } else {
-            if (response.contentLength != null && response.contentLength! > 0) {
-              // Write the response body bytes to the file
-              await file.writeAsBytes(response.bodyBytes);
-              ScaffoldMessenger.of(context).showSnackBar(
-                snackBarMessage(
-                  context: context,
-                  duration: const Duration(seconds: 20),
-                  message: "File Downloaded",
-                  snackBarAction: SnackBarAction(
-                    label: "Open",
-                    onPressed: () async {
-                      OpenFile.open(file.path);
-                    },
-                    textColor: Colors.white,
-                  ),
-                  backgroundColor: Theme.of(context).primaryColor,
-                  sidePadding: size.width * 0.1,
-                  bottomPadding: size.height * 0.05,
-                ),
-              );
+        if (file.existsSync()) {
+          ScaffoldMessenger.of(context).showSnackBar(snackBarMessage(
+            context: context,
+            message: "File Already exists",
+            showCloseIcon: false,
+            duration: const Duration(seconds: 20),
+            snackBarAction: SnackBarAction(
+              label: "Open",
+              textColor: Colors.white,
+              onPressed: () async {
+                if (file.existsSync()) {
+                  OpenFile.open(file.path);
+                }
+              },
+            ),
+            backgroundColor: Theme.of(context).primaryColor,
+            sidePadding: size.width * 0.1,
+            bottomPadding: size.height * 0.05,
+          ));
+        } else {
+            await _dio.download(
+            "https://www.learningcontainer.com/wp-content/uploads/2019/09/sample-pdf-file.pdf", 
+            '${dir.path}/$fileName',
+            onReceiveProgress: (received, total) async {
+              if (total != -1) {
+                int progress = ((received / total) * 100).toInt();
+                _notification.showNotification(
+                  id: 2, 
+                  title: 'Downloading sample-pdf-file.pdf', 
+                  body: '$progress%',
+                  payload: "payload",
+                  alertOnce: true,
+                  showProgress: true,
+                  progress: progress
+                );
+                print(progress == 100);
+                
+              }
             }
-          }
+          );
+          await _notification.cancelNotification(2);
+          _notification.showNotification(
+            id: 2, 
+            title: 'Download complete', 
+            body: 'sample-pdf-file.pdf saved',
+            payload: json.encode({"type": "download", "filePath": "${dir.path}/$fileName"}),
+            alertOnce: true,
+            // progress: int.tryParse(progress)
+          );
+          // if (response.contentLength != null && response.contentLength! > 0) {
+          //   // Write the response body bytes to the file
+          //   await file.writeAsBytes(response.bodyBytes);
+          //   ScaffoldMessenger.of(context).showSnackBar(
+          //     snackBarMessage(
+          //       context: context,
+          //       duration: const Duration(seconds: 20),
+          //       message: "File Downloaded",
+          //       snackBarAction: SnackBarAction(
+          //         label: "Open",
+          //         onPressed: () async {
+          //           OpenFile.open(file.path);
+          //         },
+          //         textColor: Colors.white,
+          //       ),
+          //       backgroundColor: Theme.of(context).primaryColor,
+          //       sidePadding: size.width * 0.1,
+          //       bottomPadding: size.height * 0.05,
+          //     ),
+          //   );
+          // }
         }
       } catch (e) {
         print("Error: $e");

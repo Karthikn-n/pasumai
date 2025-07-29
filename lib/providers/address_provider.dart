@@ -63,10 +63,12 @@ class AddressProvider extends ChangeNotifier{
     final decodedResponse = json.decode(decryptedResponse);
     print('Address List Response: $decodedResponse, Status Code: ${response.statusCode}');
     if (response.statusCode == 200) {
-      final List<dynamic> addressJson = decodedResponse['results'];
+      final List<dynamic> addressJson = decodedResponse['results'] ?? [];
       addresses.clear();
-      addresses = addressJson.map((json) => AddressModel.fromJson(json)).toList();
-      currentAddress = addresses.firstWhere((element) => element.defaultAddress == "1",);
+      if(addressJson.isNotEmpty) {
+        addresses = addressJson.map((json) => AddressModel.fromJson(json)).toList();
+        currentAddress = addresses.firstWhere((element) => element.defaultAddress == "1",);
+      }
       print('Addresss Length: ${addresses.length}');
       
     } else {

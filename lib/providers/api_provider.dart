@@ -154,8 +154,8 @@ class ApiProvider extends ChangeNotifier{
         ScaffoldMessenger.of(context).showSnackBar(loginMessage).closed.then(
           (value) async {
             // Save User id In Cache
-            await userProfileAPI();
             await OTPProvider().sendOTP(mobileNo);
+            await userProfileAPI();
             Navigator.push(context, SideTransistionRoute(
               screen: const OtpPage(fromRegister: false,), 
             ));

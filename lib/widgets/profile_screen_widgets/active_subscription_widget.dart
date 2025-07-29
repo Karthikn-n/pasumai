@@ -22,57 +22,57 @@ class ActiveSubscriptionWidget extends StatelessWidget {
       builder: (context, provider, child) {
         return provider.activeSubscriptions.isEmpty
           ? FutureBuilder(
-            future: provider.activeSubscription(), 
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12),
-                        child: AppTextWidget(
-                          text: "Active subscriptions", 
-                          fontSize: 16, 
-                          fontWeight: FontWeight.w500
+              future: provider.activeSubscription(), 
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          child: AppTextWidget(
+                            text: "Active subscriptions", 
+                            fontSize: 16, 
+                            fontWeight: FontWeight.w500
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 15,),
-                      Expanded(child: ShimmerSubscriptionWidget())
-                    ],
-                  ),
-                );
-              }else if(!snapshot.hasData){
-                return const Center(
-                  child: AppTextWidget(
-                    text: "No active subscriptions",
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                );
-              } else{
-                return Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12),
-                        child: AppTextWidget(
-                          text: "Active subscriptions", 
-                          fontSize: 16, 
-                          fontWeight: FontWeight.w500
+                        SizedBox(height: 15,),
+                        Expanded(child: ShimmerSubscriptionWidget())
+                      ],
+                    ),
+                  );
+                }else if(!snapshot.hasData){
+                  return const Center(
+                    child: AppTextWidget(
+                      text: "No active subscriptions",
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  );
+                } else{
+                  return Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          child: AppTextWidget(
+                            text: "Active subscriptions", 
+                            fontSize: 16, 
+                            fontWeight: FontWeight.w500
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 15,),
-                      Expanded(
-                        child: activeSubscriptionList(size, provider.activeSubscriptions)
-                      )
-                    ],
-                  ),
-                );
-              }
-            },
-          )
+                        const SizedBox(height: 15,),
+                        Expanded(
+                          child: activeSubscriptionList(size, provider.activeSubscriptions)
+                        )
+                      ],
+                    ),
+                  );
+                }
+              },
+            )
           : Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

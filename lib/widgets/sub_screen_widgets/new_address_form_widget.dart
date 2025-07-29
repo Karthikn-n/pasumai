@@ -42,7 +42,6 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
   TextEditingController addressController = TextEditingController();
   TextEditingController pincodeController = TextEditingController();
   TextEditingController landmarkController = TextEditingController();
-  TextEditingController mapAddressController = TextEditingController();
   late final formKey;
   Set<Marker> markers = {};
   LatLng? currentLocation;
@@ -81,23 +80,24 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
   }
 
   void _validateAddressForm() {
-  final isValid =
-      flatController.text.trim().isNotEmpty &&
-      floorContoller.text.trim().isNotEmpty &&
-      addressController.text.trim().isNotEmpty &&
-      pincodeController.text.trim().isNotEmpty &&
-      RegExp(r'^[0-9]{6}$').hasMatch(pincodeController.text.trim()) &&
-      landmarkController.text.trim().isNotEmpty &&
-      selectedRegion != null &&
-      selectedRegion!.isNotEmpty &&
-      selectedLocation != null &&
-      selectedLocation!.isNotEmpty;
-
-  if (isValid != isAddressFormValid) {
-    setState(() {
-      isAddressFormValid = isValid;
-    });
-  }
+    final provider = Provider.of<AddressProvider>(context, listen: false);
+    final isValid =
+        flatController.text.trim().isNotEmpty &&
+        floorContoller.text.trim().isNotEmpty &&
+        pincodeController.text.trim().isNotEmpty &&
+        (addressController.text.trim().isNotEmpty || provider.mapAddressController.text.trim().isNotEmpty) &&
+        RegExp(r'^[0-9]{6}$').hasMatch(pincodeController.text.trim()) &&
+        landmarkController.text.trim().isNotEmpty &&
+        selectedRegion != null &&
+        selectedRegion!.isNotEmpty &&
+        selectedLocation != null &&
+        selectedLocation!.isNotEmpty;
+    print(isValid);
+    if (isValid != isAddressFormValid) {
+      setState(() {
+        isAddressFormValid = isValid;
+      });
+    }
 }
 
 
@@ -233,6 +233,7 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
                           TextFields(
                             hintText: "Pincode", 
                             isObseure: false, 
+                            maxLength: 6,
                             textInputAction: TextInputAction.next,
                             controller: pincodeController,
                             keyboardType: TextInputType.number,
@@ -339,13 +340,17 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
                           ),
                           const SizedBox(height: 20,),
                           // Add address button 
-                          ButtonWidget(
+                          isLoading
+                          ? const LoadingButton()
+                          : ButtonWidget(
                             onPressed: () async {
-                              setState(() {
-                                isLoading = true;
-                              });
                               try {
+                                print(isAddressFormValid);
                                 if(isAddressFormValid && !isLoading) {
+                                  
+                                  setState(() {
+                                    isLoading = true;
+                                  });
                                   if (widget.needUpdate != null && widget.needUpdate! && widget.updateAddress != null) {
                                     if (formKey.currentState!.validate()) {
                                       List<RegionModel> regions = provider.regionLocationsList;

@@ -12,8 +12,10 @@ import 'package:app_3/model/vacation_model.dart';
 import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/providers/api_provider.dart';
 import 'package:app_3/providers/cart_items_provider.dart';
+import 'package:app_3/providers/otp_provider.dart';
 import 'package:app_3/providers/subscription_provider.dart';
 import 'package:app_3/repository/app_repository.dart';
+import 'package:app_3/screens/on_boarding/otp_page.dart';
 import 'package:app_3/screens/on_boarding/signin_page.dart';
 import 'package:app_3/service/api_service.dart';
 import 'package:app_3/service/notification_service.dart';
@@ -150,7 +152,9 @@ class ProfileProvider extends ChangeNotifier{
       try {
         print("Mobile Edited: $isMobileEdited");
         ScaffoldMessenger.of(context).showSnackBar(updateProfileMessage);
-        // Navigator.pushReplacement(context, SideTransistionRoute(screen: const OtpPage(fromRegister: false,),),);
+        await OTPProvider().sendOTP(profileData["mobile_no"]).then((value) {
+         Navigator.pushReplacement(context, SideTransistionRoute(screen: const OtpPage(fromRegister: false,),),);
+        },);
       } catch (e) {
         print("Something erong $e");
       }

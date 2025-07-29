@@ -176,11 +176,6 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                 isNotValidate = false;
                               });
                               await provider.userLogin(mobileController.text, size, context);
-                                // if (contactList.isNotEmpty) {
-                                //  // Store the user contact to the firestore
-                                //   await FirebaseProvider.storeUserContancts(contactList, mobileController.text);
-                                // }
-
                             }else{
                               setState(() {
                                 isNotValidate = true;

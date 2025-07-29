@@ -25,7 +25,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 
 class ProfileProvider extends ChangeNotifier{
@@ -334,7 +333,7 @@ class ProfileProvider extends ChangeNotifier{
 
   Future<void> downloadInvoice(String fileName, BuildContext context, Size size) async {
     final storagePermission = await Permission.manageExternalStorage.request();
-    final _dio = Dio();
+    final dio = Dio();
     if (storagePermission.isGranted) {
       try {
         // final downloadDirectory = Directory("/storage/emulated/0/Download");
@@ -372,7 +371,7 @@ class ProfileProvider extends ChangeNotifier{
             bottomPadding: size.height * 0.05,
           ));
         } else {
-            await _dio.download(
+            await dio.download(
             "https://www.learningcontainer.com/wp-content/uploads/2019/09/sample-pdf-file.pdf", 
             '${dir.path}/$fileName',
             onReceiveProgress: (received, total) async {

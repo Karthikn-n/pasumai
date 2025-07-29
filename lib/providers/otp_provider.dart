@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:app_3/data/constants.dart';
 import 'package:app_3/helper/shared_preference_helper.dart';
@@ -26,8 +27,13 @@ class OTPProvider extends ChangeNotifier {
     try{
       String hash = await apphash();
       int otp = await generateOTP();
-      String url = "http://instantalerts.in/api/smsapi?key=f665fb10246333b640a6f6bd929e2af3&route=1&sender=INSTNE&number=$mobile&templateid=1407168862906996721&sms=$otp is your Madurai market OTP. $hash";
-      final response = await http.post(Uri.parse(url));
+      String key ="665724d30f70a94a15edc0c43e8ed559";
+      String templateid ="1407175376551411760";
+      String message = "$otp is your otp for Madurai market. $hash";
+      String url = "http://sms.embarkinteractive.com/api/smsapi?key=$key&route=2&sender=INSTNE&number=$mobile&templateid=$templateid&sms=$message";
+      log("OTP link : $url");
+      final response = await http.get(Uri.parse(url));
+      print("Response code and response: ${response.statusCode} & ${response.body}");
       if (response.statusCode == 200) {
         print("OTP sent successfully to $mobile");
       } else {
@@ -50,12 +56,21 @@ class OTPProvider extends ChangeNotifier {
 
   Future<int> generateOTP() async {
     int otp = 1000 + (9999 - 1000) * (DateTime.now().millisecondsSinceEpoch % 1000) ~/ 1000;
-    // await storeOtp(otp.toString());
+    await storeOtp(otp.toString());
     return otp;
   }
 
   Future<void> storeOtp(String otp) async{
-   await prefs.setString("last_otp", otp);
+   await prefs.setString("lastOTP", otp);
+  }
+
+  Future<bool> checkOtp(String otp) async {
+    String storedOTP = prefs.getString("lastOTP") ?? "";
+    if(storedOTP.isNotEmpty && otp == storedOTP) { 
+      await prefs.setBool("${prefs.getString("customerId")}_${prefs.getString("mobile")}_logged", true);
+      return true;
+    }
+    return false;
   }
 
   Future<void> clearOTP() async{
@@ -67,7 +82,6 @@ class OTPProvider extends ChangeNotifier {
   }
 
   /// twilio OTP Sender
-  /// TODO: NEED TO CHANGE WITH LIVE CREDENTIALS INSTEAD OF TEST CREDENTIALS
   Future<void> twilioOTPSender(String mobile) async {
     try {
       await SmsAutoFill().listenForCode();

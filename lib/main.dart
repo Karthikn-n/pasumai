@@ -4,6 +4,7 @@ import 'package:app_3/l10n/app_localizations.dart';
 import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/providers/firebase_provider.dart';
 import 'package:app_3/providers/locale_provider.dart';
+import 'package:app_3/providers/otp_provider.dart';
 import 'package:app_3/screens/on_boarding/splash_screen.dart';
 import 'package:app_3/screens/sub-screens/checkout/provider/payment_proivider.dart';
 import 'package:app_3/service/notification_service.dart';
@@ -70,6 +71,7 @@ void main() async {
           ChangeNotifierProvider(create: (_) => VacationProvider()),
           ChangeNotifierProvider(create: (_) => apiProvider,),
           ChangeNotifierProvider(create: (_) => Constants(),),
+          ChangeNotifierProvider(create: (_) => OTPProvider(),),
           ChangeNotifierProvider(create: (_) => PaymentProivider(),),
           ChangeNotifierProvider(create: (_) => FirebaseProvider(),),
           ChangeNotifierProvider(create: (_) => FilterProvider(),)

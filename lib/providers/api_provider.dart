@@ -113,8 +113,7 @@ class ApiProvider extends ChangeNotifier{
           ScaffoldMessenger.of(context).showSnackBar(registrationMessage).closed.then((value) async {
             await userProfileAPI();
             prefs.setString("mobile", decodedResponse["mobile_no"]);
-            // TODO: Uncomment this line once the OTP provider is fully implemented
-            // await OTPProvider().twilioOTPSender(registerData["mobile_no"]);
+            await OTPProvider().sendOTP(registerData["mobile_no"]);
             Navigator.push(context, SideTransistionRoute(screen: const OtpPage(fromRegister: true,),));
           });
         } catch (e) {
@@ -150,15 +149,13 @@ class ApiProvider extends ChangeNotifier{
       );
       debugPrint('Login Response: $decodedResponse, Status Code: ${response.statusCode}', wrapWidth: 1064);
       if (response.statusCode == 200 && decodedResponse['status'] == 'success') {
-        prefs.setString('customerId', decodedResponse["customer_id"].toString());
-        prefs.setString("mobile", mobileNo);
-        prefs.setBool("${prefs.getString("customerId")}_${prefs.getString("mobile")}_logged", true);
+        await prefs.setString('customerId', decodedResponse["customer_id"].toString());
+        await prefs.setString("mobile", mobileNo);
         ScaffoldMessenger.of(context).showSnackBar(loginMessage).closed.then(
           (value) async {
             // Save User id In Cache
             await userProfileAPI();
-            // TODO: Uncomment this line once the OTP provider is fully implemented
-            await OTPProvider().twilioOTPSender(mobileNo);
+            await OTPProvider().sendOTP(mobileNo);
             Navigator.push(context, SideTransistionRoute(
               screen: const OtpPage(fromRegister: false,), 
             ));
@@ -201,8 +198,7 @@ class ApiProvider extends ChangeNotifier{
 
   // Resend OTP api
   Future<void> resendOTP(BuildContext context, Size size, String mobileNo) async {
-    // TODO: Uncomment this line once the OTP provider is fully implemented
-    // await OTPProvider().twilioOTPSender(mobileNo);
+    await OTPProvider().sendOTP(mobileNo);
     try {
       Map<String, dynamic> resendOtpData = {
         'mobile_no': mobileNo,
@@ -247,9 +243,6 @@ class ApiProvider extends ChangeNotifier{
         print(decodedResponse["banner_image"]);
         categoryBanner = decodedResponse["banner_image"];
         categoryProducts = productsList;
-      
-        
-        // attributesList = decodedResponse['attributes'].map<Attributes>((attr) => Attributes.fromJson(attr)).toList();
       } else {
         print('Error: ${response.body}');
       }

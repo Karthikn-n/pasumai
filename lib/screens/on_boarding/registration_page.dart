@@ -28,15 +28,20 @@ class _RegisterationPageState extends State<RegisterationPage> {
 
   final RegExp nameRegex = RegExp(r'^[a-zA-Z]+$');
   // final RegExp emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
-  final RegExp emailRegex = RegExp(r'^(([^<>()[\]\\.,;:\s@\”]+(\.[^<>()[\]\\.,;:\s@\”]+)*)|(\”.+\”))@((\[[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}\])|(([a-zA-Z\-0–9]+\.)+[a-zA-Z]{2,}))$');
+  final RegExp emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
   bool isLoading = false;
+  bool isFormValid = false;
+
 
   @override
   void initState() {
     super.initState();
     preLoadAPi();
+    firstNameController.addListener(_validateForm);
+    lastNameController.addListener(_validateForm);
+    emailController.addListener(_validateForm);
+    mobileController.addListener(_validateForm);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -162,30 +167,41 @@ class _RegisterationPageState extends State<RegisterationPage> {
                   : ButtonWidget(
                     width: double.infinity,
                     buttonName: 'Signup', 
+                    buttonColor: isFormValid
+                        ? Theme.of(context).primaryColor
+                        : Colors.grey.withValues(alpha: 0.4),
+                    // textColor: isFormValid ? Colors.white : Colors.black38,
                     onPressed: () async {
-                      FocusScope.of(context).unfocus();
-                      setState(() {
-                        isLoading = true;
-                      });
-              
-                      try {
-                        if (_formKey.currentState!.validate()) {
-                          Map<String, dynamic> userData = {
-                              'first_name' : firstNameController.text,
-                              'last_name' : lastNameController.text,
-                              'email' : emailController.text,
-                              'mobile_no': mobileController.text
-                            };
-                            print(userData);
-                          // await DatabaseHelper.storeUsers(userData);
-                          await provider.registerUser(userData, context, size);
-                        }
-                      } catch (e) {
-                        print("Can't Signup $e");
-                      } finally{
+                      if(isFormValid && !isLoading) {
+                        FocusScope.of(context).unfocus();
                         setState(() {
-                          isLoading = false;
+                          isLoading = true;
                         });
+                        try {
+                          if (_formKey.currentState!.validate()) {
+                            if(firstNameController.text.isNotEmpty 
+                              && lastNameController.text.isNotEmpty 
+                              && emailController.text.isNotEmpty 
+                              && mobileController.text.isNotEmpty) {
+
+                            }
+                            Map<String, dynamic> userData = {
+                                'first_name' : firstNameController.text,
+                                'last_name' : lastNameController.text,
+                                'email' : emailController.text,
+                                'mobile_no': mobileController.text
+                              };
+                              print(userData);
+                            // await DatabaseHelper.storeUsers(userData);
+                            await provider.registerUser(userData, context, size);
+                          }
+                        } catch (e) {
+                          print("Can't Signup $e");
+                        } finally{
+                          setState(() {
+                            isLoading = false;
+                          });
+                        }
                       }
                     }
                   );
@@ -264,8 +280,28 @@ class _RegisterationPageState extends State<RegisterationPage> {
     }
   } 
   
- 
+  void _validateForm() {
+    final isValid = nameRegex.hasMatch(firstNameController.text) &&
+                    nameRegex.hasMatch(lastNameController.text) &&
+                    emailRegex.hasMatch(emailController.text) &&
+                    RegExp(r'^[0-9]{10}$').hasMatch(mobileController.text);
 
+    if (isValid != isFormValid) {
+      setState(() {
+        isFormValid = isValid;
+      });
+    }
+  }
+
+ 
+  @override
+  void dispose() {
+    firstNameController.dispose();
+    lastNameController.dispose();
+    emailController.dispose();
+    mobileController.dispose();
+    super.dispose();
+  }
  
  // Pre load API
   void preLoadAPi() async {

@@ -52,10 +52,16 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
   bool isLocationSelected = true;
   List<LocationModel> locations = [];
   bool isLoading = false;
+  bool isAddressFormValid = false;
 
   @override
   void initState() {
     super.initState();
+    flatController.addListener(_validateAddressForm);
+    floorContoller.addListener(_validateAddressForm);
+    addressController.addListener(_validateAddressForm);
+    pincodeController.addListener(_validateAddressForm);
+    landmarkController.addListener(_validateAddressForm);
     if (widget.fromOnboarding ?? false) {
       preLoadRegion();
     }
@@ -74,6 +80,25 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
     
   }
 
+  void _validateAddressForm() {
+  final isValid =
+      flatController.text.trim().isNotEmpty &&
+      floorContoller.text.trim().isNotEmpty &&
+      addressController.text.trim().isNotEmpty &&
+      pincodeController.text.trim().isNotEmpty &&
+      RegExp(r'^[0-9]{6}$').hasMatch(pincodeController.text.trim()) &&
+      landmarkController.text.trim().isNotEmpty &&
+      selectedRegion != null &&
+      selectedRegion!.isNotEmpty &&
+      selectedLocation != null &&
+      selectedLocation!.isNotEmpty;
+
+  if (isValid != isAddressFormValid) {
+    setState(() {
+      isAddressFormValid = isValid;
+    });
+  }
+}
 
 
   @override
@@ -261,6 +286,7 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
                                         isRegionSelected = true;
                                         locations = provider.regionLocationsList.firstWhere((element) => element.regionName == selectedRegion,).locationData;
                                         selectedLocation = null;
+                                        _validateAddressForm();
                                       });
                                     },
                                     items: provider.regionLocationsList.map((region) {
@@ -298,6 +324,7 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
                                     setState(() {
                                       selectedLocation = value!;
                                       isLocationSelected = true;
+                                      _validateAddressForm();
                                     });
                                   },
                                   items: locations.map((location) {
@@ -308,7 +335,6 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
                                   }).toList(),
                                 ),
                               ),
-                          
                             ],
                           ),
                           const SizedBox(height: 20,),
@@ -318,84 +344,83 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
                               setState(() {
                                 isLoading = true;
                               });
-
-                                // List<RegionModel> regions = provider.regionLocationsList;
-                                // print("Current Location: ${widget.updateAddress!.location}");
-                                // print("Default Updated Location name${regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).locationData.firstWhere((element) => widget.updateAddress!.location == element.locationName,).locationName}");
                               try {
-                                if (widget.needUpdate != null && widget.needUpdate! && widget.updateAddress != null) {
-                                  if (formKey.currentState!.validate()) {
-                                    List<RegionModel> regions = provider.regionLocationsList;
-                                    print("Default Updated Location name${regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).locationData.firstWhere((element) => widget.updateAddress!.location == element.locationName,).locationName}");
-                                    Map<String, dynamic> updateAddressData = {
-                                      'customer_id': prefs.getString('customerId'),
-                                      'address_id': widget.updateAddress!.id,
-                                      'flat_no': flatController.text,
-                                      'address': provider.mapAddressController.text.isEmpty ? addressController.text : provider.mapAddressController.text,
-                                      'floor': floorContoller.text,
-                                      'landmark': landmarkController.text,
-                                      'region': selectedRegion == null 
-                                        ? regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).regionId 
-                                        : regions.firstWhere((element) => element.regionName == selectedRegion,).regionId,
-                                      'location':  selectedLocation == null 
-                                        ? regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).locationData.firstWhere((element) => widget.updateAddress!.location == element.locationName,).locationId
-                                        : locations.firstWhere((element) => element.locationName == selectedLocation,).locationId,
-                                      'pincode': pincodeController.text,
-                                    };
-                                    if (selectedLocation == null && selectedLocation == null) {
-                                    print("Updated Address Region: ${widget.updateAddress!.region}");
-                                    print("Updated Address Location: ${widget.updateAddress!.location}");
-                                      print("Default Updated Region name: ${regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).regionName}");
-                                      print("Default Updated Location name: ${regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).locationData.firstWhere((element) => widget.updateAddress!.location == element.locationName,).locationName}");
-                                    }else{
-
-                                      print("Updated Region Name: ${regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).regionName}");
-                                      print("Updated Location Name: ${regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).locationData.firstWhere((element) => element.locationName == element.locationName,).locationName}");
-                                    }
-                                    print("Selected Region: $selectedRegion");
-                                    print("Selected Location: $selectedLocation");
-                                    print("Update Address Data: $updateAddressData");
-                                    await  provider.updateAddressAPI(context, size, updateAddressData).then((value) {
-                                      provider.clearMapAddress();
-                                      Navigator.pop(context);
-                                    },);
-                                  }
-                                  }else{
-                                    if (selectedRegion == null) {
-                                      if (selectedLocation == null) {
-                                        setState(() {
-                                          isRegionSelected = false;
-                                          isLocationSelected = false;
-                                        });
-                                      }
-                                    }
-                                    if (formKey.currentState!.validate() && isRegionSelected && isLocationSelected) {
-                                      print("Region Id: ${provider.regionLocationsList.firstWhere((element) => element.regionName == selectedRegion,).regionId}");
-                                      print("Location Id: ${locations.firstWhere((element) => element.locationName == selectedLocation,).locationId}");
-                                      Map<String, dynamic> addressData = {
+                                if(isAddressFormValid && !isLoading) {
+                                  if (widget.needUpdate != null && widget.needUpdate! && widget.updateAddress != null) {
+                                    if (formKey.currentState!.validate()) {
+                                      List<RegionModel> regions = provider.regionLocationsList;
+                                      print("Default Updated Location name${regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).locationData.firstWhere((element) => widget.updateAddress!.location == element.locationName,).locationName}");
+                                      Map<String, dynamic> updateAddressData = {
                                         'customer_id': prefs.getString('customerId'),
+                                        'address_id': widget.updateAddress!.id,
                                         'flat_no': flatController.text,
                                         'address': provider.mapAddressController.text.isEmpty ? addressController.text : provider.mapAddressController.text,
                                         'floor': floorContoller.text,
                                         'landmark': landmarkController.text,
-                                        'region': provider.regionLocationsList.firstWhere((element) => element.regionName == selectedRegion,).regionId,
-                                        'location': locations.firstWhere((element) => element.locationName == selectedLocation,).locationId,
+                                        'region': selectedRegion == null 
+                                          ? regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).regionId 
+                                          : regions.firstWhere((element) => element.regionName == selectedRegion,).regionId,
+                                        'location':  selectedLocation == null 
+                                          ? regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).locationData.firstWhere((element) => widget.updateAddress!.location == element.locationName,).locationId
+                                          : locations.firstWhere((element) => element.locationName == selectedLocation,).locationId,
                                         'pincode': pincodeController.text,
                                       };
-                                      print("New Address Data: $addressData");
-                                      await  provider.addAddressAPI(context, size, addressData).then((value) async {
-                                        if (widget.fromOnboarding ?? false) {
-                                          provider.clearMapAddress();
-                                          await provider.getAddressesAPI();
-                                          prefs.remove("registered");
-                                          prefs.remove("newUserVerified");
-                                          prefs.remove("phoneNo");
-                                          Navigator.push(context, SideTransistionRoute(screen: const BottomBar()));
-                                        }else{
-                                          Navigator.pop(context);
-                                        } 
+                                      if (selectedLocation == null && selectedLocation == null) {
+                                      print("Updated Address Region: ${widget.updateAddress!.region}");
+                                      print("Updated Address Location: ${widget.updateAddress!.location}");
+                                        print("Default Updated Region name: ${regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).regionName}");
+                                        print("Default Updated Location name: ${regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).locationData.firstWhere((element) => widget.updateAddress!.location == element.locationName,).locationName}");
+                                      }else{
+
+                                        print("Updated Region Name: ${regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).regionName}");
+                                        print("Updated Location Name: ${regions.firstWhere((element) => widget.updateAddress!.region == element.regionName,).locationData.firstWhere((element) => element.locationName == element.locationName,).locationName}");
+                                      }
+                                      print("Selected Region: $selectedRegion");
+                                      print("Selected Location: $selectedLocation");
+                                      print("Update Address Data: $updateAddressData");
+                                      await  provider.updateAddressAPI(context, size, updateAddressData).then((value) {
+                                        provider.clearMapAddress();
+                                        Navigator.pop(context);
                                       },);
                                     }
+                                    } else {
+                                      if (selectedRegion == null) {
+                                        if (selectedLocation == null) {
+                                          setState(() {
+                                            isRegionSelected = false;
+                                            isLocationSelected = false;
+                                          });
+                                        }
+                                      }
+                                      if (formKey.currentState!.validate() && isRegionSelected && isLocationSelected) {
+                                        print("Region Id: ${provider.regionLocationsList.firstWhere((element) => element.regionName == selectedRegion,).regionId}");
+                                        print("Location Id: ${locations.firstWhere((element) => element.locationName == selectedLocation,).locationId}");
+                                        Map<String, dynamic> addressData = {
+                                          'customer_id': prefs.getString('customerId'),
+                                          'flat_no': flatController.text,
+                                          'address': provider.mapAddressController.text.isEmpty ? addressController.text : provider.mapAddressController.text,
+                                          'floor': floorContoller.text,
+                                          'landmark': landmarkController.text,
+                                          'region': provider.regionLocationsList.firstWhere((element) => element.regionName == selectedRegion,).regionId,
+                                          'location': locations.firstWhere((element) => element.locationName == selectedLocation,).locationId,
+                                          'pincode': pincodeController.text,
+                                        };
+                                        print("New Address Data: $addressData");
+                                        await  provider.addAddressAPI(context, size, addressData).then((value) async {
+                                          if (widget.fromOnboarding ?? false) {
+                                            provider.clearMapAddress();
+                                            await provider.getAddressesAPI();
+                                            prefs.remove("registered");
+                                            prefs.remove("newUserVerified");
+                                            prefs.remove("phoneNo");
+                                            Navigator.push(context, SideTransistionRoute(screen: const BottomBar()));
+                                          }else{
+                                            Navigator.pop(context);
+                                          } 
+                                        },
+                                      );
+                                    }
+                                  }
                                 }
                               } catch (e) {
                                 print("Can't register address: $e");
@@ -405,6 +430,9 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
                                 });
                               }
                             }, 
+                            buttonColor: isAddressFormValid
+                              ? Theme.of(context).primaryColor
+                              : Colors.grey.withValues(alpha: 0.4),
                             buttonName: widget.updateAddress != null && widget.needUpdate! ? "Update" : 'Add'
                           )
                         ],
@@ -436,13 +464,20 @@ class _NewAddressFormWidgetState extends State<NewAddressFormWidget> {
     var status = await Permission.location.status;
 
     if (status.isDenied) {
-      await Permission.location.request();
-    } else if(status.isPermanentlyDenied) {
+      var result = await Permission.location.request();
+
+      if (result.isGranted) {
+        await goToCurrentLocation();
+      } else if (result.isPermanentlyDenied) {
+        await openAppSettings();
+      }
+    } else if (status.isPermanentlyDenied) {
       await openAppSettings();
-    } else if(status.isGranted){
+    } else if (status.isGranted) {
       await goToCurrentLocation();
     }
   }
+
 // 
   Future<void> goToCurrentLocation() async {
     // final GoogleMapController controller = await mapController.future;

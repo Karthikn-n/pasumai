@@ -3,11 +3,13 @@ import 'package:app_3/helper/shared_preference_helper.dart';
 import 'package:app_3/providers/address_provider.dart';
 import 'package:app_3/helper/page_transition_helper.dart';
 import 'package:app_3/providers/api_provider.dart';
+import 'package:app_3/providers/otp_provider.dart';
 import 'package:app_3/repository/app_repository.dart';
 import 'package:app_3/screens/main_screens/bottom_bar.dart';
 import 'package:app_3/service/api_service.dart';
 import 'package:app_3/service/connectivity_helper.dart';
 import 'package:app_3/widgets/common_widgets.dart/button_widget.dart';
+import 'package:app_3/widgets/common_widgets.dart/snackbar_widget.dart';
 import 'package:app_3/widgets/common_widgets.dart/text_widget.dart';
 import 'package:app_3/widgets/sub_screen_widgets/new_address_form_widget.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +26,7 @@ class OtpPage extends StatefulWidget {
   State<OtpPage> createState() => _OtpPageState();
 }
 
-class _OtpPageState extends State<OtpPage> with WidgetsBindingObserver{
+class _OtpPageState extends State<OtpPage> with WidgetsBindingObserver, CodeAutoFill{
   // OTP box controller it have 4 so list of controllers
   SharedPreferences prefs = SharedPreferencesHelper.getSharedPreferences();
   AppRepository otpRepository = AppRepository(ApiService("https://maduraimarket.in/api"));
@@ -47,6 +49,7 @@ class _OtpPageState extends State<OtpPage> with WidgetsBindingObserver{
   @override
   void initState() {
     super.initState();
+    listenForCode();
     showResendButton = false;
     // _addKeyboardVisibilityListener();
     _resendTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -98,8 +101,8 @@ class _OtpPageState extends State<OtpPage> with WidgetsBindingObserver{
     if (connectivityService.isConnected) {
       return Scaffold(
         resizeToAvoidBottomInset: true,
-        body: Consumer<ApiProvider>(
-          builder: (context, otpProvider, child) {
+        body: Consumer2<ApiProvider, OTPProvider>(
+          builder: (ctx, provider, otpProvider, child) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -147,51 +150,38 @@ class _OtpPageState extends State<OtpPage> with WidgetsBindingObserver{
                             });
                             FocusScope.of(context).requestFocus(FocusNode());
                           }
-                          try {
-                            await addressProvider.getRegionLocation();
-                              if(widget.fromRegister){
-                                Navigator.push(context, SideTransistionRoute(screen: const NewAddressFormWidget(fromOnboarding: true,)));
-                              }else{
-                                addressProvider.getAddressesAPI();
-                                Navigator.pushAndRemoveUntil(context,  SideTransistionRoute(screen: const BottomBar()), (route) => false);
+                          setState(() {
+                              isLoading = true;
+                            });
+                            try {
+                              bool result = await otpProvider.checkOtp(otpController.text);
+                              if(result) {
+                                await addressProvider.getRegionLocation();
+                                if(widget.fromRegister){
+                                  Navigator.push(context, SideTransistionRoute(screen: const NewAddressFormWidget(fromOnboarding: true,)));
+                                }else{
+                                  await addressProvider.getAddressesAPI().then((value) {
+                                    Navigator.pushAndRemoveUntil(context,  SideTransistionRoute(screen: const BottomBar()), (route) => false);
+                                  },);
+                                }
                               }
-                          } catch (e) {
-                            print("Error occured: $e");
-                          }
+                            } catch (e) {
+                              final emptyOtp = snackBarMessage(
+                                context: context, 
+                                message: 'Please Enter a Valid OTP', 
+                                backgroundColor: Theme.of(context).primaryColor, 
+                                sidePadding: size.width * 0.1, 
+                                bottomPadding: size.height * 0.05
+                              );
+                              ScaffoldMessenger.of(context).showSnackBar(emptyOtp);
+                              print("Error occured: $e");
+                            }finally{
+                              setState(() {
+                                isLoading = false;
+                              });
+                            }
                         },
                       ),
-                      // Center(
-                      //   child: SizedBox(
-                      //     width: size.width,
-                      //     height: kToolbarHeight,
-                      //     child: Pinput(
-                      //       focusedPinTheme: PinTheme(
-                      //         height: kToolbarHeight,
-                      //         width: kToolbarHeight + 10,
-                      //         decoration: BoxDecoration(
-                      //         border: Border.all(color: Theme.of(context).primaryColor),
-                      //         borderRadius: BorderRadius.circular(5),
-                      //         // color: 
-                      //        )
-                      //       ),
-                      //       defaultPinTheme: PinTheme(
-                      //        height:  kToolbarHeight,
-                      //        width: kToolbarHeight + 10,
-                      //        decoration: BoxDecoration(
-                      //         border: Border.all(
-                      //           color: const Color.fromARGB(145, 136, 141, 146)
-                      //         ),
-                      //         borderRadius: BorderRadius.circular(5),
-                      //         // color: 
-                      //        )
-                      //       ),
-                      //       mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      //       controller: otpController,
-                      //       length: 4,
-                      //     ),
-                      //   ),
-                      // ),
-                      
                       const SizedBox(height: 16),
                       // Verify OTP button
                       Center(
@@ -201,82 +191,36 @@ class _OtpPageState extends State<OtpPage> with WidgetsBindingObserver{
                           width: double.infinity,
                           buttonName: 'Verify',
                           onPressed: () async {
-                            
                             setState(() {
                               isLoading = true;
                             });
                             try {
-                              await addressProvider.getRegionLocation();
+                              bool result = await otpProvider.checkOtp(otpController.text);
+                              if (result) {
+                                await addressProvider.getRegionLocation();
                                 if(widget.fromRegister){
                                   Navigator.push(context, SideTransistionRoute(screen: const NewAddressFormWidget(fromOnboarding: true,)));
                                 }else{
-                                  addressProvider.getAddressesAPI();
-                                  Navigator.pushAndRemoveUntil(context,  SideTransistionRoute(screen: const BottomBar()), (route) => false);
+                                  await addressProvider.getAddressesAPI().then((value) {
+                                    Navigator.pushAndRemoveUntil(context,  SideTransistionRoute(screen: const BottomBar()), (route) => false);
+                                  },);
                                 }
+                              }
                             } catch (e) {
+                              final emptyOtp = snackBarMessage(
+                                context: context, 
+                                message: 'Please Enter a Valid OTP', 
+                                backgroundColor: Theme.of(context).primaryColor, 
+                                sidePadding: size.width * 0.1, 
+                                bottomPadding: size.height * 0.05
+                              );
+                              ScaffoldMessenger.of(context).showSnackBar(emptyOtp);
                               print("Error occured: $e");
                             }finally{
                               setState(() {
                                 isLoading = false;
                               });
                             }
-                          
-                            // FocusScope.of(context).unfocus();
-                            // String otp = '';
-                            // for (var controller in controllers) {
-                            //   otp += controller.text;
-                            // }
-                              
-                            // if (otp.isEmpty || otp.length < 4) {
-                            //   final emptyOtp = snackBarMessage(
-                            //     context: context, 
-                            //     message: 'Please Enter a Valid OTP', 
-                            //     backgroundColor: Theme.of(context).primaryColor, 
-                            //     sidePadding: size.width * 0.1, 
-                            //     bottomPadding: size.height * 0.05
-                            //   );
-                            //   ScaffoldMessenger.of(context).showSnackBar(emptyOtp);
-                            // }else if(otp.length == 4){
-                              
-                            //   Map<String, dynamic> otpData = {'mobile_no': prefs.getString("mobile"), 'otp': otp};
-                        
-                            //   final response = await otpRepository.verifyotp(otpData);
-                            //   String decryptedData = decryptAES(response.body).replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
-                            //   final decodedResponse = json.decode(decryptedData);
-                            //   print('Verify OTP Response: $decodedResponse, Status Code: ${response.statusCode}');
-                            //   SnackBar otpMessage = snackBarMessage(
-                            //     context: context, 
-                            //     message: decodedResponse['message'], 
-                            //     backgroundColor: const Color(0xFF60B47B), 
-                            //     sidePadding: size.width * 0.1, 
-                            //     bottomPadding: size.height * 0.05
-                            //   );
-                            //   if (response.statusCode == 200 && decodedResponse['status'] == 'success') {
-                            //     ScaffoldMessenger.of(context).showSnackBar(otpMessage).closed.then(
-                            //       (value) async {
-                            //         await addressProvider.getRegionLocation();
-                            //         if(widget.fromRegister){
-                            //           Navigator.pushAndRemoveUntil(context, SideTransistionRoute(screen: const NewAddressFormWidget(fromOnboarding: true,)), (route) => false,);
-                            //         }else{
-                            //           addressProvider.getAddressesAPI();
-                            //           Navigator.pushAndRemoveUntil(context,  SideTransistionRoute(screen: const BottomBar()), (route) => false);
-                            //         }
-                            //       },
-                            //     );
-                            //   } else {
-                            //     ScaffoldMessenger.of(context).showSnackBar(otpMessage);
-                            //     print('Error: ${response.body}');
-                            //   }
-                            // }else{
-                            //   final emptyOtp = snackBarMessage(
-                            //     context: context, 
-                            //     message: 'Please Enter a OTP', 
-                            //     backgroundColor: Theme.of(context).primaryColor, 
-                            //     sidePadding: size.width * 0.1, 
-                            //     bottomPadding: size.height * 0.85
-                            //   );
-                            //   ScaffoldMessenger.of(context).showSnackBar(emptyOtp);
-                            // }
                           }, 
                         ),
                       ),
@@ -346,6 +290,7 @@ class _OtpPageState extends State<OtpPage> with WidgetsBindingObserver{
                                             isResending = true;
                                           });
                                           try {
+                                            listenForCode();
                                             await provider.resendOTP(context, size, prefs.getString("mobile") ?? "");
                                             setState(() {
                                               showResendButton = false;
@@ -410,6 +355,17 @@ class _OtpPageState extends State<OtpPage> with WidgetsBindingObserver{
         }
       });
     });
+  }
+  
+  @override
+  void codeUpdated() {
+    if (!mounted) return;
+    setState(() {
+      otpController.text = code!;
+      _code = code!;
+    });
+    final provider = Provider.of<OTPProvider>(context, listen: false);
+    provider.checkOtp(otpController.text);
   }
 
 

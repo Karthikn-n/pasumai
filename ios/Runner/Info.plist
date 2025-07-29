@@ -28,6 +28,11 @@
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<!-- ask the location permission here -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need your location to show your current address on the map.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>We need your location to offer you better address and location services.</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
